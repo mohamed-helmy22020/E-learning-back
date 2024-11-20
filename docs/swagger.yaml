@@ -393,25 +393,3 @@ paths:
                                 isEmailVerified: false
                                 isPhoneVerified: false
                                 userProfileImage: "https://example.com/profile.jpg"
-                400:
-                    description: Email is already verified
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    msg:
-                                        type: string
-                            example:
-                                msg: "Email is already verified"
-                500:
-                    description: Error sending verification code
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    msg:
-                                        type: string
-                            example:
-                                msg: "Failed to send verification code"
