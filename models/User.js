@@ -37,6 +37,10 @@ const userSchema = new mongoose.Schema({
     emailVerificationCode: String,
     phoneVerificationCode: String,
     resetPasswordCode: String,
+    userProfileImage: {
+        type: String,
+        default: "",
+    },
 });
 
 userSchema.methods.getData = function () {
@@ -47,6 +51,7 @@ userSchema.methods.getData = function () {
         name: this.name,
         isEmailVerified: this.isEmailVerified,
         isPhoneVerified: this.isPhoneVerified,
+        userProfileImage: this.userProfileImage,
     };
 };
 

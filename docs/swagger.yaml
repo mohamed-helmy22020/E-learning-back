@@ -6,6 +6,12 @@ info:
 servers:
     - url: https://elearning.vercel.app/api
 
+components:
+    securitySchemes:
+        BearerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT
 paths:
     /auth/login:
         post:
@@ -47,6 +53,8 @@ paths:
                                                 type: boolean
                                             isPhoneVerified:
                                                 type: boolean
+                                            userProfileImage:
+                                                type: string
                                     accessToken:
                                         type: string
                             example:
@@ -57,6 +65,7 @@ paths:
                                     name: "FirstName LastName"
                                     isEmailVerified: false
                                     isPhoneVerified: false
+                                    userProfileImage: "https://example.com/profile.jpg"
                                 accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                 400:
                     description: Email or password missing
@@ -125,16 +134,19 @@ paths:
                                                 type: boolean
                                             isPhoneVerified:
                                                 type: boolean
+                                            userProfileImage:
+                                                type: string
                                     accessToken:
                                         type: string
                             example:
                                 user:
                                     userId: "67224b4a633c0c0003c88a45"
-                                    email: "petxtv@gmail.com"
-                                    phone: "+201015615569"
-                                    name: "mohamed"
+                                    email: "example@gmail.com"
+                                    phone: "+201000000000"
+                                    name: "FirstName LastName"
                                     isEmailVerified: false
                                     isPhoneVerified: false
+                                    userProfileImage: "https://example.com/profile.jpg"
                                 accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
                 400:
                     description: Missing required fields
@@ -261,6 +273,8 @@ paths:
             summary: Verify a user's email with a code
             tags:
                 - User Verification
+            security:
+                - BearerAuth: []
             requestBody:
                 required: true
                 content:
@@ -302,6 +316,8 @@ paths:
             summary: Send an email verification code
             tags:
                 - User Verification
+            security:
+                - BearerAuth: []
             responses:
                 200:
                     description: Verification code sent successfully
@@ -317,6 +333,66 @@ paths:
                             example:
                                 success: true
                                 msg: "Verification code sent successfully"
+                400:
+                    description: Email is already verified
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    msg:
+                                        type: string
+                            example:
+                                msg: "Email is already verified"
+                500:
+                    description: Error sending verification code
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    msg:
+                                        type: string
+                            example:
+                                msg: "Failed to send verification code"
+
+    /user/data:
+        get:
+            summary: Get user data
+            tags:
+                - User Data
+            security:
+                - BearerAuth: []
+            responses:
+                200:
+                    description: get user data successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    userId:
+                                        type: string
+                                    email:
+                                        type: string
+                                    phone:
+                                        type: string
+                                    name:
+                                        type: string
+                                    isEmailVerified:
+                                        type: boolean
+                                    isPhoneVerified:
+                                        type: boolean
+                                    userProfileImage:
+                                        type: string
+                            example:
+                                userId: "67224b4a633c0c0003c88a45"
+                                email: "example@gmail.com"
+                                phone: "+201000000000"
+                                name: "FirstName LastName"
+                                isEmailVerified: false
+                                isPhoneVerified: false
+                                userProfileImage: "https://example.com/profile.jpg"
                 400:
                     description: Email is already verified
                     content:
