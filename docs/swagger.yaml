@@ -1,0 +1,341 @@
+openapi: 3.0.0
+info:
+    title: E-Learning API
+    version: 1.0.0
+    description: API Documentation for E-Learning API
+servers:
+    - url: https://elearning.vercel.app/api
+
+paths:
+    /auth/login:
+        post:
+            summary: Log in a user
+            tags:
+                - User Authentication
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                email:
+                                    type: string
+                                    format: email
+                                password:
+                                    type: string
+            responses:
+                200:
+                    description: Successful login
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    user:
+                                        type: object
+                                        properties:
+                                            userId:
+                                                type: string
+                                            email:
+                                                type: string
+                                            phone:
+                                                type: string
+                                            name:
+                                                type: string
+                                            isEmailVerified:
+                                                type: boolean
+                                            isPhoneVerified:
+                                                type: boolean
+                                    accessToken:
+                                        type: string
+                            example:
+                                user:
+                                    userId: "67224b4a633c0c0003c88a45"
+                                    email: "example@gmail.com"
+                                    phone: "+201000000000"
+                                    name: "FirstName LastName"
+                                    isEmailVerified: false
+                                    isPhoneVerified: false
+                                accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                400:
+                    description: Email or password missing
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    msg:
+                                        type: string
+                            example:
+                                msg: "Please provide email and password"
+                401:
+                    description: Invalid credentials
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    msg:
+                                        type: string
+                            example:
+                                msg: "Invalid Credentials"
+
+    /auth/register:
+        post:
+            summary: Register a new user
+            tags:
+                - User Authentication
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                email:
+                                    type: string
+                                    format: email
+                                password:
+                                    type: string
+                                name:
+                                    type: string
+                                phone:
+                                    type: string
+            responses:
+                201:
+                    description: User registered successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    user:
+                                        type: object
+                                        properties:
+                                            userId:
+                                                type: string
+                                            email:
+                                                type: string
+                                            phone:
+                                                type: string
+                                            name:
+                                                type: string
+                                            isEmailVerified:
+                                                type: boolean
+                                            isPhoneVerified:
+                                                type: boolean
+                                    accessToken:
+                                        type: string
+                            example:
+                                user:
+                                    userId: "67224b4a633c0c0003c88a45"
+                                    email: "petxtv@gmail.com"
+                                    phone: "+201015615569"
+                                    name: "mohamed"
+                                    isEmailVerified: false
+                                    isPhoneVerified: false
+                                accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                400:
+                    description: Missing required fields
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    msg:
+                                        type: string
+                            example:
+                                msg: "Email, password, and phone are required"
+
+    /auth/send-reset-code:
+        post:
+            summary: Send a password reset code to the user's email
+            tags:
+                - User Authentication
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                email:
+                                    type: string
+            responses:
+                200:
+                    description: Reset code sent successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    success:
+                                        type: boolean
+                                    msg:
+                                        type: string
+                            example:
+                                success: true
+                                msg: "Reset password code sent to your email"
+                400:
+                    description: Email is required
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    msg:
+                                        type: string
+                            example:
+                                msg: "Please provide email"
+                404:
+                    description: User with email not found
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    msg:
+                                        type: string
+                            example:
+                                msg: "No user with email example@gmail.com"
+
+    /auth/reset-password:
+        post:
+            summary: Reset the user's password
+            tags:
+                - User Authentication
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                email:
+                                    type: string
+                                code:
+                                    type: integer
+                                newPassword:
+                                    type: string
+            responses:
+                200:
+                    description: Password reset successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    success:
+                                        type: boolean
+                                    msg:
+                                        type: string
+                            example:
+                                success: true
+                                msg: "Password reset successfully"
+                400:
+                    description: Invalid code or missing fields
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    msg:
+                                        type: string
+                            example:
+                                msg: "Invalid code"
+                404:
+                    description: User with email not found
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    msg:
+                                        type: string
+                            example:
+                                msg: "No user with email petxtv@gmail.com"
+
+    /verify/email:
+        post:
+            summary: Verify a user's email with a code
+            tags:
+                - User Verification
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                code:
+                                    type: integer
+            responses:
+                200:
+                    description: Email verified successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    success:
+                                        type: boolean
+                                    msg:
+                                        type: string
+                            example:
+                                success: true
+                                msg: "Email verified successfully"
+                400:
+                    description: Invalid or missing verification code
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    msg:
+                                        type: string
+                            example:
+                                msg: "Invalid verification code"
+
+    /verify/send/email:
+        post:
+            summary: Send an email verification code
+            tags:
+                - User Verification
+            responses:
+                200:
+                    description: Verification code sent successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    success:
+                                        type: boolean
+                                    msg:
+                                        type: string
+                            example:
+                                success: true
+                                msg: "Verification code sent successfully"
+                400:
+                    description: Email is already verified
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    msg:
+                                        type: string
+                            example:
+                                msg: "Email is already verified"
+                500:
+                    description: Error sending verification code
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    msg:
+                                        type: string
+                            example:
+                                msg: "Failed to send verification code"
