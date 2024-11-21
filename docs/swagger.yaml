@@ -467,32 +467,54 @@ paths:
             security:
                 - BearerAuth: []
             parameters:
+                - name: title
+                  in: query
+                  description: Filter by title
+                  required: false
+                  schema:
+                      type: string
+                - name: description
+                  in: query
+                  description: Filter by description
+                  required: false
+                  schema:
+                      type: string
                 - name: category
                   in: query
                   description: Filter by category
                   required: false
                   schema:
                       type: string
-                - name: search
+                - name: numericFilters
                   in: query
-                  description: Search courses by title or description
+                  description: get all data that (price and rating only) < ,	 > ,	 = ,	 <= or >= certin number
                   required: false
                   schema:
                       type: string
-                - name: limit
+                - name: sort
                   in: query
-                  description: Limit the number of results
+                  description: sort data by certin items
                   required: false
                   schema:
-                      type: integer
-                      example: 10
+                      type: string
+                - name: fields
+                  in: query
+                  description: get only these fields
+                  required: false
+                  schema:
+                      type: string
                 - name: page
                   in: query
-                  description: Page number for pagination
+                  description: get page
                   required: false
                   schema:
-                      type: integer
-                      example: 1
+                      type: number
+                - name: limit
+                  in: query
+                  description: limit results
+                  required: false
+                  schema:
+                      type: number
             responses:
                 "200":
                     description: Successfully retrieved the courses

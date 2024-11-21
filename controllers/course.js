@@ -34,12 +34,12 @@ const getAllCourses = async (req, res) => {
         const options = ["price", "rating"];
         filters = filters.split(",").forEach((item) => {
             const [field, operator, value] = item.split("-");
+
             if (options.includes(field)) {
                 queryObject[field] = { [operator]: Number(value) };
             }
         });
     }
-
     let result = Course.find(queryObject);
     // sort
     if (sort) {
@@ -80,8 +80,6 @@ const createCourse = async (req, res) => {
     const coursePictureId = new mongoose.Types.ObjectId();
     const { title, description, price, category } = req.body;
     const { file: coursePicture } = req;
-    console.log({ title, description, price, category });
-    console.log({ coursePicture, coursePictureId });
 
     if (!title || !description || !price || !category || !coursePicture) {
         throw new BadRequestError(
@@ -104,7 +102,6 @@ const createCourse = async (req, res) => {
         });
         courseData.picture = cldRes.secure_url;
     } catch (error) {
-        console.log(error);
         throw new Error(error);
     }
 

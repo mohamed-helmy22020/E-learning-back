@@ -14,7 +14,6 @@ const updateUserData = async (req, res) => {
     const user = req.user;
     const { name, email, newPassword, phone, currentPassword } = req.body;
     const { file: profilePicture } = req;
-    console.log(profilePicture);
 
     const isPasswordCorrect = currentPassword
         ? await user.comparePassword(currentPassword)

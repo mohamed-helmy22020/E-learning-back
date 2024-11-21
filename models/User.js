@@ -78,10 +78,8 @@ userSchema.methods.createAccessToken = function () {
     );
 };
 userSchema.methods.encryptPassword = async function (password) {
-    console.log({ password });
     const salt = await bcrypt.genSalt(10);
     const encryptedPassword = await bcrypt.hash(password, salt);
-    console.log({ encryptedPassword, salt, password });
     return encryptedPassword;
 };
 

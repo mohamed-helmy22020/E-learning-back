@@ -32,7 +32,6 @@ const login = async (req, res) => {
 };
 
 const register = async (req, res) => {
-    console.log(req.body);
     const userData = {
         name: req.body.name,
         email: req.body.email,
@@ -74,8 +73,6 @@ const sendResetPasswordCode = async (req, res) => {
             msg: "Failed to send verification code",
         });
     }
-
-    console.log(user.resetPasswordCode);
 
     res.status(StatusCodes.OK).json({
         success: true,

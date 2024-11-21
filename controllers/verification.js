@@ -39,9 +39,6 @@ const sendEmailVerificationCode = async (req, res) => {
     const code = emailVerificationCode || randomBetween(100000, 999999);
 
     try {
-        console.log(emailVerificationCode);
-
-        console.log("sending email");
         await sendEmail(
             email,
             `E-Learning App verification code: ${code}`,
