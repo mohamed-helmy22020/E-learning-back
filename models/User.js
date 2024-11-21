@@ -59,10 +59,14 @@ userSchema.pre("save", async function (next) {
     if (this.isModified("password")) {
         const salt = await bcrypt.genSalt(10);
         this.password = await bcrypt.hash(this.password, salt);
-        next();
-    } else {
-        next();
     }
+    if (this.isModified("email")) {
+        this.isEmailVerified = false;
+    }
+    if (this.isModified("phone")) {
+        this.isPhoneVerified = false;
+    }
+    next();
 });
 
 userSchema.methods.createAccessToken = function () {

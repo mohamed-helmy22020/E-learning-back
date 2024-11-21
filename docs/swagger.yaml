@@ -5,7 +5,6 @@ info:
     description: API Documentation for E-Learning API
 servers:
     - url: https://elearning.vercel.app/api
-
 components:
     securitySchemes:
         BearerAuth:
@@ -31,7 +30,7 @@ paths:
                                 password:
                                     type: string
             responses:
-                200:
+                "200":
                     description: Successful login
                     content:
                         application/json:
@@ -59,15 +58,15 @@ paths:
                                         type: string
                             example:
                                 user:
-                                    userId: "67224b4a633c0c0003c88a45"
-                                    email: "example@gmail.com"
+                                    userId: 67224b4a633c0c0003c88a45
+                                    email: example@gmail.com
                                     phone: "+201000000000"
-                                    name: "FirstName LastName"
+                                    name: FirstName LastName
                                     isEmailVerified: false
                                     isPhoneVerified: false
-                                    userProfileImage: "https://example.com/profile.jpg"
-                                accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-                400:
+                                    userProfileImage: https://example.com/profile.jpg
+                                accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                "400":
                     description: Email or password missing
                     content:
                         application/json:
@@ -77,8 +76,8 @@ paths:
                                     msg:
                                         type: string
                             example:
-                                msg: "Please provide email and password"
-                401:
+                                msg: Please provide email and password
+                "401":
                     description: Invalid credentials
                     content:
                         application/json:
@@ -88,8 +87,7 @@ paths:
                                     msg:
                                         type: string
                             example:
-                                msg: "Invalid Credentials"
-
+                                msg: Invalid Credentials
     /auth/register:
         post:
             summary: Register a new user
@@ -112,7 +110,7 @@ paths:
                                 phone:
                                     type: string
             responses:
-                201:
+                "201":
                     description: User registered successfully
                     content:
                         application/json:
@@ -140,15 +138,15 @@ paths:
                                         type: string
                             example:
                                 user:
-                                    userId: "67224b4a633c0c0003c88a45"
-                                    email: "example@gmail.com"
+                                    userId: 67224b4a633c0c0003c88a45
+                                    email: example@gmail.com
                                     phone: "+201000000000"
-                                    name: "FirstName LastName"
+                                    name: FirstName LastName
                                     isEmailVerified: false
                                     isPhoneVerified: false
-                                    userProfileImage: "https://example.com/profile.jpg"
-                                accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-                400:
+                                    userProfileImage: https://example.com/profile.jpg
+                                accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                "400":
                     description: Missing required fields
                     content:
                         application/json:
@@ -158,8 +156,7 @@ paths:
                                     msg:
                                         type: string
                             example:
-                                msg: "Email, password, and phone are required"
-
+                                msg: Email, password, and phone are required
     /auth/send-reset-code:
         post:
             summary: Send a password reset code to the user's email
@@ -175,7 +172,7 @@ paths:
                                 email:
                                     type: string
             responses:
-                200:
+                "200":
                     description: Reset code sent successfully
                     content:
                         application/json:
@@ -188,8 +185,8 @@ paths:
                                         type: string
                             example:
                                 success: true
-                                msg: "Reset password code sent to your email"
-                400:
+                                msg: Reset password code sent to your email
+                "400":
                     description: Email is required
                     content:
                         application/json:
@@ -199,8 +196,8 @@ paths:
                                     msg:
                                         type: string
                             example:
-                                msg: "Please provide email"
-                404:
+                                msg: Please provide email
+                "404":
                     description: User with email not found
                     content:
                         application/json:
@@ -210,8 +207,7 @@ paths:
                                     msg:
                                         type: string
                             example:
-                                msg: "No user with email example@gmail.com"
-
+                                msg: No user with email example@gmail.com
     /auth/reset-password:
         post:
             summary: Reset the user's password
@@ -231,7 +227,7 @@ paths:
                                 newPassword:
                                     type: string
             responses:
-                200:
+                "200":
                     description: Password reset successfully
                     content:
                         application/json:
@@ -244,8 +240,8 @@ paths:
                                         type: string
                             example:
                                 success: true
-                                msg: "Password reset successfully"
-                400:
+                                msg: Password reset successfully
+                "400":
                     description: Invalid code or missing fields
                     content:
                         application/json:
@@ -255,8 +251,8 @@ paths:
                                     msg:
                                         type: string
                             example:
-                                msg: "Invalid code"
-                404:
+                                msg: Invalid code
+                "404":
                     description: User with email not found
                     content:
                         application/json:
@@ -266,8 +262,7 @@ paths:
                                     msg:
                                         type: string
                             example:
-                                msg: "No user with email petxtv@gmail.com"
-
+                                msg: No user with email petxtv@gmail.com
     /verify/email:
         post:
             summary: Verify a user's email with a code
@@ -285,7 +280,7 @@ paths:
                                 code:
                                     type: integer
             responses:
-                200:
+                "200":
                     description: Email verified successfully
                     content:
                         application/json:
@@ -298,8 +293,8 @@ paths:
                                         type: string
                             example:
                                 success: true
-                                msg: "Email verified successfully"
-                400:
+                                msg: Email verified successfully
+                "400":
                     description: Invalid or missing verification code
                     content:
                         application/json:
@@ -309,8 +304,7 @@ paths:
                                     msg:
                                         type: string
                             example:
-                                msg: "Invalid verification code"
-
+                                msg: Invalid verification code
     /verify/send/email:
         post:
             summary: Send an email verification code
@@ -319,7 +313,7 @@ paths:
             security:
                 - BearerAuth: []
             responses:
-                200:
+                "200":
                     description: Verification code sent successfully
                     content:
                         application/json:
@@ -332,8 +326,8 @@ paths:
                                         type: string
                             example:
                                 success: true
-                                msg: "Verification code sent successfully"
-                400:
+                                msg: Verification code sent successfully
+                "400":
                     description: Email is already verified
                     content:
                         application/json:
@@ -343,8 +337,8 @@ paths:
                                     msg:
                                         type: string
                             example:
-                                msg: "Email is already verified"
-                500:
+                                msg: Email is already verified
+                "500":
                     description: Error sending verification code
                     content:
                         application/json:
@@ -354,8 +348,7 @@ paths:
                                     msg:
                                         type: string
                             example:
-                                msg: "Failed to send verification code"
-
+                                msg: Failed to send verification code
     /user/data:
         get:
             summary: Get user data
@@ -364,7 +357,7 @@ paths:
             security:
                 - BearerAuth: []
             responses:
-                200:
+                "200":
                     description: get user data successfully
                     content:
                         application/json:
@@ -386,10 +379,81 @@ paths:
                                     userProfileImage:
                                         type: string
                             example:
-                                userId: "67224b4a633c0c0003c88a45"
-                                email: "example@gmail.com"
+                                userId: 67224b4a633c0c0003c88a45
+                                email: example@gmail.com
                                 phone: "+201000000000"
-                                name: "FirstName LastName"
+                                name: FirstName LastName
                                 isEmailVerified: false
                                 isPhoneVerified: false
-                                userProfileImage: "https://example.com/profile.jpg"
+                                userProfileImage: https://example.com/profile.jpg
+        post:
+            summary: Update User Data
+            tags:
+                - User Data
+            security:
+                - BearerAuth: []
+            requestBody:
+                required: false
+                content:
+                    multipart/form-data:
+                        schema:
+                            type: object
+                            properties:
+                                email:
+                                    type: string
+                                    format: email
+                                phone:
+                                    type: string
+                                    format: email
+                                name:
+                                    type: string
+                                    format: email
+                                newPassword:
+                                    type: string
+                                currentPassword:
+                                    type: string
+                                image:
+                                    type: string
+                                    format: binary
+                                    description: The image file to upload.
+            responses:
+                "200":
+                    description: Update User Data
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    userId:
+                                        type: string
+                                    email:
+                                        type: string
+                                    phone:
+                                        type: string
+                                    name:
+                                        type: string
+                                    isEmailVerified:
+                                        type: boolean
+                                    isPhoneVerified:
+                                        type: boolean
+                                    userProfileImage:
+                                        type: string
+                            example:
+                                userId: 67224b4a633c0c0003c88a45
+                                email: example@gmail.com
+                                phone: "+201000000000"
+                                name: FirstName LastName
+                                isEmailVerified: false
+                                isPhoneVerified: false
+                                userProfileImage: https://example.com/profile.jpg
+                "401":
+                    description: Error when no current password when changing password or email
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    msg:
+                                        type: string
+                            example:
+                                msg: Current password is incorrect

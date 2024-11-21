@@ -1,9 +1,15 @@
 const { StatusCodes } = require("http-status-codes");
 const errorHandlerMiddleware = (err, req, res, next) => {
+    console.error(err);
     let customError = {
         statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
         msg: err.message || "Something went wrong, try again later",
     };
+
+    if (err.code === "LIMIT_UNEXPECTED_FILE") {
+        customError.msg = "Upload only one file.";
+        customError.statusCode = StatusCodes.BAD_REQUEST;
+    }
 
     if (err.name === "ValidationError") {
         customError.msg = Object.values(err.errors)

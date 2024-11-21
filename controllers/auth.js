@@ -32,9 +32,14 @@ const login = async (req, res) => {
 };
 
 const register = async (req, res) => {
-    const user = await User.create({
-        ...req.body,
-    });
+    console.log(req.body);
+    const userData = {
+        name: req.body.name,
+        email: req.body.email,
+        password: req.body.password,
+        phone: req.body.phone,
+    };
+    const user = await User.create(userData);
 
     res.status(StatusCodes.CREATED).json({
         user: user.getData(),
