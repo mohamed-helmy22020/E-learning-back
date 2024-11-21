@@ -5,7 +5,8 @@ cloudinary.config({
     api_key: process.env.API_KEY,
     api_secret: process.env.API_SECRET,
 });
-async function handleUpload(file, public_id, folder) {
+
+const handleUpload = async (file, public_id, folder) => {
     const res = await cloudinary.uploader.upload(file, {
         resource_type: "auto",
         public_id,
@@ -13,6 +14,13 @@ async function handleUpload(file, public_id, folder) {
         folder: folder || "",
     });
     return res;
-}
+};
 
-module.exports = handleUpload;
+const handleUploadFromBuffer = async (profilePicture, options) => {
+    const b64 = Buffer.from(profilePicture.buffer).toString("base64");
+    let dataURI = "data:" + profilePicture.mimetype + ";base64," + b64;
+
+    return await handleUpload(dataURI, options.public_id, options.folder);
+};
+
+module.exports = { handleUpload, handleUploadFromBuffer };

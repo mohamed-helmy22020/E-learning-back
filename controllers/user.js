@@ -1,8 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
 const User = require("../models/User");
-const handleUpload = require("../config/cloudinary");
 const { UnauthenticatedError } = require("../errors");
-const cloudinary = require("cloudinary").v2;
+const { handleUploadFromBuffer } = require("../config/cloudinary");
 
 const getUserData = async (req, res) => {
     const user = req.user;
@@ -15,6 +14,8 @@ const updateUserData = async (req, res) => {
     const user = req.user;
     const { name, email, newPassword, phone, currentPassword } = req.body;
     const { file: profilePicture } = req;
+    console.log(profilePicture);
+
     const isPasswordCorrect = currentPassword
         ? await user.comparePassword(currentPassword)
         : false;
@@ -37,15 +38,13 @@ const updateUserData = async (req, res) => {
 
     if (profilePicture) {
         try {
-            const b64 = Buffer.from(profilePicture.buffer).toString("base64");
-            let dataURI = "data:" + profilePicture.mimetype + ";base64," + b64;
-            const cldRes = await handleUpload(
-                dataURI,
-                `profile_picture_${user._id}`,
-                "profile_pictures"
-            );
+            const cldRes = await handleUploadFromBuffer(profilePicture, {
+                public_id: `profile_picture_${user._id}`,
+                folder: "profile_pictures",
+            });
             userData.userProfileImage = cldRes.secure_url;
         } catch (error) {
+            console.log(error);
             throw new Error(error);
         }
     }

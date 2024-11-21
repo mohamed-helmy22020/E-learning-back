@@ -1,6 +1,6 @@
 const allowedMimeTypes = ["image/jpeg", "image/png", "image/gif"];
 const { BadRequestError } = require("../errors");
-const checkProfilePicture = {
+const checkPicture = {
     limits: {
         fileSize: 5 * 1024 * 1024,
     },
@@ -18,5 +18,5 @@ const checkProfilePicture = {
 };
 
 module.exports = {
-    checkProfilePicture,
+    checkPicture,
 };
