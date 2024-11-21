@@ -57,8 +57,7 @@ userSchema.methods.getData = function () {
 
 userSchema.pre("save", async function (next) {
     if (this.isModified("password")) {
-        const salt = await bcrypt.genSalt(10);
-        this.password = await bcrypt.hash(this.password, salt);
+        this.password = this.encryptPassword(this.password);
     }
     if (this.isModified("email")) {
         this.isEmailVerified = false;
@@ -78,8 +77,16 @@ userSchema.methods.createAccessToken = function () {
         process.env.ACCESS_TOKEN_SECRET
     );
 };
+userSchema.methods.encryptPassword = async function (password) {
+    console.log({ password });
+    const salt = await bcrypt.genSalt(10);
+    const encryptedPassword = await bcrypt.hash(password, salt);
+    console.log({ encryptedPassword, salt, password });
+    return encryptedPassword;
+};
 
 userSchema.methods.comparePassword = async function (candidatePassword) {
+    console.log(candidatePassword, this.password);
     const isMatch = await bcrypt.compare(candidatePassword, this.password);
     return isMatch;
 };

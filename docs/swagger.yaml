@@ -401,17 +401,19 @@ paths:
                             properties:
                                 email:
                                     type: string
-                                    format: email
+                                    default: ""
                                 phone:
                                     type: string
-                                    format: email
+                                    default: ""
                                 name:
                                     type: string
-                                    format: email
+                                    default: ""
                                 newPassword:
                                     type: string
+                                    default: ""
                                 currentPassword:
                                     type: string
+                                    default: ""
                                 image:
                                     type: string
                                     format: binary
@@ -447,7 +449,7 @@ paths:
                                 isPhoneVerified: false
                                 userProfileImage: https://example.com/profile.jpg
                 "401":
-                    description: Error when no current password when changing password or email
+                    description: Error when no current password when changing password or email or
                     content:
                         application/json:
                             schema:

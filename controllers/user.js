@@ -24,20 +24,15 @@ const updateUserData = async (req, res) => {
     if (name) {
         userData.name = name;
     }
-    if (email) {
+
+    if (email || newPassword || phone) {
         if (!isPasswordCorrect) {
-            throw new UnauthenticatedError("Current password is incorrect");
+            throw new UnauthenticatedError("current password is incorrect");
         }
-        userData.email = email;
-    }
-    if (phone) {
-        userData.phone = phone;
-    }
-    if (currentPassword && newPassword) {
-        if (!isPasswordCorrect) {
-            throw new UnauthenticatedError("Current password is incorrect");
-        }
-        userData.password = newPassword;
+        if (email) userData.email = email;
+        if (phone) userData.phone = phone;
+        if (newPassword)
+            userData.password = await user.encryptPassword(newPassword);
     }
 
     if (profilePicture) {
