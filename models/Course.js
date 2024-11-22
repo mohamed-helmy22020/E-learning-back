@@ -55,6 +55,7 @@ courseSchema.methods.getData = function () {
         category: this.category,
         rates: this.rates,
         rating: calculateAverageRate(this.rates),
+        createdAt: this.createdAt,
     };
 };
 

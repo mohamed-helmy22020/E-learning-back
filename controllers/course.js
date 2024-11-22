@@ -3,11 +3,14 @@ const mongoose = require("mongoose");
 const Course = require("../models/Course");
 const { handleUploadFromBuffer } = require("../config/cloudinary");
 const { calculateAverageRate } = require("../utils");
+const { StatusCodes } = require("http-status-codes");
 
 const getAllCourses = async (req, res) => {
     const { title, description, category, numericFilters, sort, fields } =
         req.query;
-    const queryObject = {};
+    const queryObject = {
+        instructorId: { $ne: req.user._id },
+    };
 
     if (title) {
         queryObject.title = { $regex: title, $options: "i" };
@@ -40,18 +43,21 @@ const getAllCourses = async (req, res) => {
             }
         });
     }
+    console.log(queryObject);
     let result = Course.find(queryObject);
     // sort
     if (sort) {
         const sortList = sort.split(",").join(" ");
         result = result.sort(sortList);
     } else {
-        result = result.sort("createdAt");
+        result = result.sort("-createdAt");
     }
 
     if (fields) {
         const fieldsList = fields.split(",").join(" ");
         result = result.select(fieldsList);
+    } else {
+        result = result.select("-__v -updatedAt");
     }
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 10;
@@ -59,19 +65,39 @@ const getAllCourses = async (req, res) => {
 
     result = result.skip(skip).limit(limit);
 
-    const courses = await result;
-    res.status(200).json({ courses, nbHits: courses.length });
+    let courses = await result;
+    courses = courses
+        .filter((course) => {
+            return !req.user.enrolledCourses.includes(course._id);
+        })
+        .map((course) => {
+            return {
+                ...course.getData(),
+                isFav: req.user.favCourses.includes(course._id),
+            };
+        });
+    console.log(courses);
+    res.status(StatusCodes.OK).json({ courses, nbHits: courses.length });
 };
+
 const getCourseById = async (req, res) => {
+    const user = req.user;
     const { courseId } = req.params;
     if (!courseId || !mongoose.isValidObjectId(courseId)) {
         throw new BadRequestError("Please provide valid course id");
     }
     try {
-        const course = await Course.findById(courseId);
-        return res.status(200).json({ course });
+        let course = await Course.findById(courseId);
+        return res.status(StatusCodes.OK).json({
+            course: {
+                ...course.getData(),
+                isFav: user.favCourses.includes(courseId),
+            },
+        });
     } catch (error) {
-        return res.status(404).json({ msg: "Course not found" });
+        return res
+            .status(StatusCodes.NOT_FOUND)
+            .json({ msg: "Course not found" });
     }
 };
 
@@ -106,11 +132,58 @@ const createCourse = async (req, res) => {
     }
 
     const course = await Course.create(courseData);
-    res.status(200).json(course.getData());
+    res.status(StatusCodes.OK).json(course.getData());
+};
+
+const getAllFavCourses = async (req, res) => {
+    const user = req.user;
+    const favCoursesIDs = user.favCourses.reverse();
+
+    const favCourses = await Course.find({ _id: { $in: favCoursesIDs } });
+
+    res.status(StatusCodes.OK).json({
+        courses: favCourses.map((course) => course.getData()),
+        nbHits: favCourses.length,
+    });
+};
+
+const addCourseToFav = (req, res) => {
+    const user = req.user;
+    const { courseId } = req.params;
+    if (!courseId || !mongoose.isValidObjectId(courseId)) {
+        throw new BadRequestError("Please provide valid course id");
+    }
+    if (user.favCourses.includes(courseId)) {
+        return res.status(StatusCodes.OK).json({ msg: "Course added to fav" });
+    }
+    user.favCourses.push(courseId);
+    user.save();
+    res.status(StatusCodes.OK).json({ msg: "Course added to fav" });
+};
+
+const deleteCourseFromFav = (req, res) => {
+    const user = req.user;
+    const { courseId } = req.params;
+    if (!courseId || !mongoose.isValidObjectId(courseId)) {
+        throw new BadRequestError("Please provide valid course id");
+    }
+    if (!user.favCourses.includes(courseId)) {
+        console.log("wef");
+        return res
+            .status(StatusCodes.OK)
+            .json({ msg: "Course removed from fav" });
+    }
+    user.favCourses = user.favCourses.filter((id) => id != courseId);
+
+    user.save();
+    res.status(StatusCodes.OK).json({ msg: "Course removed from fav" });
 };
 
 module.exports = {
     getAllCourses,
     createCourse,
     getCourseById,
+    getAllFavCourses,
+    addCourseToFav,
+    deleteCourseFromFav,
 };

@@ -3,3 +3,4 @@
 .vercel
 nodemon.json
 note.txt
+.prettierignore

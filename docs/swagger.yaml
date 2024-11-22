@@ -459,6 +459,37 @@ paths:
                                         type: string
                             example:
                                 msg: Current password is incorrect
+    /user/uploaded-courses:
+        get:
+            summary: Get uploaded courses
+            description: Retrieve a list of courses uploaded by the authenticated user.
+            tags:
+                - User Data
+            responses:
+                "200":
+                    description: Successfully retrieved the uploaded courses.
+                    content:
+                        application/json:
+                            example:
+                                courses:
+                                    - id: 673fef0698b338904809d4ca
+                                      title: title
+                                      description: description
+                                      price: "70"
+                                      picture: https://example.com/example.jpg
+                                      category: engineering
+                                      rates:
+                                          - 0
+                                          - 0
+                                          - 0
+                                          - 0
+                                          - 0
+                                      rating: 0
+                                      isFav: false
+                                      createdAt: "2024-11-22T02:40:07.778Z"
+                                nbHits: 1
+            security:
+                - BearerAuth: []
     /courses:
         get:
             summary: Get all courses data
@@ -487,7 +518,9 @@ paths:
                       type: string
                 - name: numericFilters
                   in: query
-                  description: get all data that (price and rating only) < ,	 > ,	 = ,	 <= or >= certin number
+                  description: >-
+                      get all data that (price and rating only) < ,     > ,     = ,     <=
+                      or >= certin number
                   required: false
                   schema:
                       type: string
@@ -531,27 +564,48 @@ paths:
                                         items:
                                             type: object
                                             properties:
-                                                courseId:
+                                                _id:
+                                                    type: string
+                                                rates:
+                                                    type: array
+                                                rating:
+                                                    type: number
+                                                instructorId:
                                                     type: string
                                                 title:
                                                     type: string
                                                 description:
                                                     type: string
+                                                price:
+                                                    type: string
                                                 category:
                                                     type: string
-                                                instructor:
+                                                picture:
                                                     type: string
-                                                duration:
+                                                createdAt:
                                                     type: string
+                                                isFav:
+                                                    type: boolean
+                                                    description: Favorite status of the course
                             example:
                                 nbHits: 1
                                 courses:
-                                    - courseId: "12345"
+                                    - _id: "12345"
+                                      rates:
+                                          - 0
+                                          - 0
+                                          - 0
+                                          - 0
+                                          - 0
+                                      rating: 0
+                                      instructorId: wafawf
                                       title: Introduction to Programming
-                                      description: Learn the basics of programming.
-                                      category: Computer Science
-                                      instructor: John Doe
-                                      duration: 4 weeks
+                                      description: Introduction to Programming
+                                      price: 10
+                                      category: programming
+                                      picture: https://example.com/wef.jpg
+                                      createdAt: "2024-11-21T18:47:09.657Z"
+                                      isFav: false
         post:
             summary: Create a new course
             tags:
@@ -687,13 +741,9 @@ paths:
                                                 type: string
                                                 format: date-time
                                                 description: Creation date of the course
-                                            updatedAt:
-                                                type: string
-                                                format: date-time
-                                                description: Last update date of the course
-                                            __v:
-                                                type: integer
-                                                description: Version key for the document
+                                            isFav:
+                                                type: boolean
+                                                description: Favorite status of the course
                             example:
                                 course:
                                     rates:
@@ -711,7 +761,7 @@ paths:
                                     category: graphic design
                                     picture: https://example.com/example.jpg
                                     createdAt: "2024-11-21T18:48:02.207Z"
-                                    updatedAt: "2024-11-21T18:48:02.207Z"
+                                    isFav: false
                 "400":
                     description: Invalid or missing course ID
                     content:
@@ -734,3 +784,138 @@ paths:
                                         type: string
                             example:
                                 msg: Course not found
+    /courses/fav:
+        get:
+            summary: get favourite courses
+            tags:
+                - Courses Data
+            security:
+                - BearerAuth: []
+            responses:
+                "200":
+                    description: Successfully retrieved the course
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    courses:
+                                        type: array
+                                        items:
+                                            type: object
+                                            properties:
+                                                _id:
+                                                    type: string
+                                                rates:
+                                                    type: array
+                                                rating:
+                                                    type: number
+                                                instructorId:
+                                                    type: string
+                                                title:
+                                                    type: string
+                                                description:
+                                                    type: string
+                                                price:
+                                                    type: string
+                                                category:
+                                                    type: string
+                                                picture:
+                                                    type: string
+                                                createdAt:
+                                                    type: string
+                                                isFav:
+                                                    type: boolean
+                                                    description: Favorite status of the course
+                            example:
+                                nbHits: 1
+                                courses:
+                                    - _id: "12345"
+                                      rates:
+                                          - 0
+                                          - 0
+                                          - 0
+                                          - 0
+                                          - 0
+                                      rating: 0
+                                      instructorId: wafawf
+                                      title: Introduction to Programming
+                                      description: Introduction to Programming
+                                      price: 10
+                                      category: programming
+                                      picture: https://example.com/wef.jpg
+                                      createdAt: "2024-11-21T18:47:09.657Z"
+                                      isFav: false
+    /courses/fav/{courseId}:
+        post:
+            summary: add course to fav
+            tags:
+                - Courses Data
+            security:
+                - BearerAuth: []
+            parameters:
+                - name: courseId
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                      description: The ID of the course to retrieve
+            responses:
+                "200":
+                    description: Successfully retrieved the course
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    msg:
+                                        type: string
+                            example:
+                                msg: Course added to fav
+                "400":
+                    description: course id is incorrect or missing
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    msg:
+                                        type: string
+                            example:
+                                msg: Please provide valid course id
+        delete:
+            summary: delete course from fav
+            tags:
+                - Courses Data
+            security:
+                - BearerAuth: []
+            parameters:
+                - name: courseId
+                  in: path
+                  required: true
+                  schema:
+                      type: string
+                      description: The ID of the course to retrieve
+            responses:
+                "200":
+                    description: Successfully retrieved the course
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    msg:
+                                        type: string
+                            example:
+                                msg: Course added to fav
+                "400":
+                    description: course id is incorrect or missing
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    msg:
+                                        type: string
+                            example:
+                                msg: Please provide valid course id

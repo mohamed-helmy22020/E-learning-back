@@ -9,7 +9,7 @@ const {
     NotFoundError,
 } = require("../errors");
 const { randomBetween } = require("../utils");
-const sendEmail = require("../config/emailConfig");
+const { sendEmail, getEmailHtml } = require("../config/emailConfig");
 
 const login = async (req, res) => {
     const { email, password } = req.body;
@@ -58,11 +58,14 @@ const sendResetPasswordCode = async (req, res) => {
     const resetPasswordCode =
         user.resetPasswordCode || randomBetween(100000, 999999);
     try {
+        const htmlTemplate = getEmailHtml(resetPasswordCode);
         await sendEmail(
             user.email,
             `E-Learning App reset password code: ${resetPasswordCode}`,
-            `reset password code: ${resetPasswordCode}`
+            `reset password code: ${resetPasswordCode}`,
+            htmlTemplate
         );
+
         if (!user.resetPasswordCode) {
             user.resetPasswordCode = resetPasswordCode;
             user.save();

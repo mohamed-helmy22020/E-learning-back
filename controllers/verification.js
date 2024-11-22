@@ -1,5 +1,5 @@
 const { StatusCodes } = require("http-status-codes");
-const sendEmail = require("../config/emailConfig");
+const { sendEmail, getEmailHtml } = require("../config/emailConfig");
 const { randomBetween } = require("../utils");
 const { BadRequestError } = require("../errors");
 
@@ -39,11 +39,14 @@ const sendEmailVerificationCode = async (req, res) => {
     const code = emailVerificationCode || randomBetween(100000, 999999);
 
     try {
+        const htmlTemplate = getEmailHtml(code);
         await sendEmail(
             email,
             `E-Learning App verification code: ${code}`,
-            `Email verification code: ${code}`
+            `Email verification code: ${code}`,
+            htmlTemplate
         );
+
         req.user.emailVerificationCode = code;
         req.user.save();
         res.status(StatusCodes.OK).json({
