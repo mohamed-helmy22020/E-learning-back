@@ -32,6 +32,7 @@ const authRouter = require("./routes/auth");
 const verifyRouter = require("./routes/verify");
 const userRouter = require("./routes/user");
 const coursesRouter = require("./routes/course");
+const lecturesRouter = require("./routes/lecture");
 
 app.use(express.json());
 
@@ -55,6 +56,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/verify", authenticateUser, verifyRouter);
 app.use("/api/user", authenticateUser, userRouter);
 app.use("/api/courses", authenticateUser, coursesRouter);
+app.use("/api/lectures", authenticateUser, lecturesRouter);
 
 // Swagger documentation route
 app.use(

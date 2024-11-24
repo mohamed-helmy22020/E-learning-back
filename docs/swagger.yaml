@@ -1,483 +1,394 @@
-openapi: 3.0.0
-info:
-    title: E-Learning API
-    version: 1.0.0
-    description: API Documentation for E-Learning API
-servers:
-    - url: https://elearning.vercel.app/api
 components:
     securitySchemes:
         BearerAuth:
-            type: http
-            scheme: bearer
             bearerFormat: JWT
+            scheme: bearer
+            type: http
+info:
+    description: API Documentation for E-Learning API
+    title: E-Learning API
+    version: 1.0.0
+openapi: 3.0.0
+servers:
+    - url: https://elearning.vercel.app/api
 paths:
     /auth/login:
         post:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            properties:
+                                email:
+                                    format: email
+                                    type: string
+                                password:
+                                    type: string
+                            type: object
+                required: true
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            example:
+                                accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                                user:
+                                    email: example@gmail.com
+                                    isEmailVerified: false
+                                    isPhoneVerified: false
+                                    name: FirstName LastName
+                                    phone: "+201000000000"
+                                    userId: 67224b4a633c0c0003c88a45
+                                    userProfileImage: https://example.com/profile.jpg
+                            schema:
+                                properties:
+                                    accessToken:
+                                        type: string
+                                    user:
+                                        properties:
+                                            email:
+                                                type: string
+                                            isEmailVerified:
+                                                type: boolean
+                                            isPhoneVerified:
+                                                type: boolean
+                                            name:
+                                                type: string
+                                            phone:
+                                                type: string
+                                            userId:
+                                                type: string
+                                            userProfileImage:
+                                                type: string
+                                        type: object
+                                type: object
+                    description: Successful login
+                "400":
+                    content:
+                        application/json:
+                            example:
+                                msg: Please provide email and password
+                            schema:
+                                properties:
+                                    msg:
+                                        type: string
+                                type: object
+                    description: Email or password missing
+                "401":
+                    content:
+                        application/json:
+                            example:
+                                msg: Invalid Credentials
+                            schema:
+                                properties:
+                                    msg:
+                                        type: string
+                                type: object
+                    description: Invalid credentials
             summary: Log in a user
             tags:
                 - User Authentication
+    /auth/register:
+        post:
             requestBody:
-                required: true
                 content:
                     application/json:
                         schema:
-                            type: object
                             properties:
                                 email:
-                                    type: string
                                     format: email
+                                    type: string
+                                name:
+                                    type: string
                                 password:
                                     type: string
+                                phone:
+                                    type: string
+                            type: object
+                required: true
             responses:
-                "200":
-                    description: Successful login
+                "201":
                     content:
                         application/json:
+                            example:
+                                accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                                user:
+                                    email: example@gmail.com
+                                    isEmailVerified: false
+                                    isPhoneVerified: false
+                                    name: FirstName LastName
+                                    phone: "+201000000000"
+                                    userId: 67224b4a633c0c0003c88a45
+                                    userProfileImage: https://example.com/profile.jpg
                             schema:
-                                type: object
                                 properties:
+                                    accessToken:
+                                        type: string
                                     user:
-                                        type: object
                                         properties:
-                                            userId:
-                                                type: string
                                             email:
-                                                type: string
-                                            phone:
-                                                type: string
-                                            name:
                                                 type: string
                                             isEmailVerified:
                                                 type: boolean
                                             isPhoneVerified:
                                                 type: boolean
+                                            name:
+                                                type: string
+                                            phone:
+                                                type: string
+                                            userId:
+                                                type: string
                                             userProfileImage:
                                                 type: string
-                                    accessToken:
-                                        type: string
-                            example:
-                                user:
-                                    userId: 67224b4a633c0c0003c88a45
-                                    email: example@gmail.com
-                                    phone: "+201000000000"
-                                    name: FirstName LastName
-                                    isEmailVerified: false
-                                    isPhoneVerified: false
-                                    userProfileImage: https://example.com/profile.jpg
-                                accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                                        type: object
+                                type: object
+                    description: User registered successfully
                 "400":
-                    description: Email or password missing
                     content:
                         application/json:
+                            example:
+                                msg: Email, password, and phone are required
                             schema:
-                                type: object
                                 properties:
                                     msg:
                                         type: string
-                            example:
-                                msg: Please provide email and password
-                "401":
-                    description: Invalid credentials
-                    content:
-                        application/json:
-                            schema:
                                 type: object
-                                properties:
-                                    msg:
-                                        type: string
-                            example:
-                                msg: Invalid Credentials
-    /auth/register:
-        post:
+                    description: Missing required fields
             summary: Register a new user
             tags:
                 - User Authentication
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            properties:
-                                email:
-                                    type: string
-                                    format: email
-                                password:
-                                    type: string
-                                name:
-                                    type: string
-                                phone:
-                                    type: string
-            responses:
-                "201":
-                    description: User registered successfully
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    user:
-                                        type: object
-                                        properties:
-                                            userId:
-                                                type: string
-                                            email:
-                                                type: string
-                                            phone:
-                                                type: string
-                                            name:
-                                                type: string
-                                            isEmailVerified:
-                                                type: boolean
-                                            isPhoneVerified:
-                                                type: boolean
-                                            userProfileImage:
-                                                type: string
-                                    accessToken:
-                                        type: string
-                            example:
-                                user:
-                                    userId: 67224b4a633c0c0003c88a45
-                                    email: example@gmail.com
-                                    phone: "+201000000000"
-                                    name: FirstName LastName
-                                    isEmailVerified: false
-                                    isPhoneVerified: false
-                                    userProfileImage: https://example.com/profile.jpg
-                                accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-                "400":
-                    description: Missing required fields
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    msg:
-                                        type: string
-                            example:
-                                msg: Email, password, and phone are required
-    /auth/send-reset-code:
-        post:
-            summary: Send a password reset code to the user's email
-            tags:
-                - User Authentication
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
-                            type: object
-                            properties:
-                                email:
-                                    type: string
-            responses:
-                "200":
-                    description: Reset code sent successfully
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    success:
-                                        type: boolean
-                                    msg:
-                                        type: string
-                            example:
-                                success: true
-                                msg: Reset password code sent to your email
-                "400":
-                    description: Email is required
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    msg:
-                                        type: string
-                            example:
-                                msg: Please provide email
-                "404":
-                    description: User with email not found
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    msg:
-                                        type: string
-                            example:
-                                msg: No user with email example@gmail.com
     /auth/reset-password:
         post:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            properties:
+                                code:
+                                    type: integer
+                                email:
+                                    type: string
+                                newPassword:
+                                    type: string
+                            type: object
+                required: true
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            example:
+                                msg: Password reset successfully
+                                success: true
+                            schema:
+                                properties:
+                                    msg:
+                                        type: string
+                                    success:
+                                        type: boolean
+                                type: object
+                    description: Password reset successfully
+                "400":
+                    content:
+                        application/json:
+                            example:
+                                msg: Invalid code
+                            schema:
+                                properties:
+                                    msg:
+                                        type: string
+                                type: object
+                    description: Invalid code or missing fields
+                "404":
+                    content:
+                        application/json:
+                            example:
+                                msg: No user with email petxtv@gmail.com
+                            schema:
+                                properties:
+                                    msg:
+                                        type: string
+                                type: object
+                    description: User with email not found
             summary: Reset the user's password
             tags:
                 - User Authentication
+    /auth/send-reset-code:
+        post:
             requestBody:
-                required: true
                 content:
                     application/json:
                         schema:
-                            type: object
                             properties:
                                 email:
                                     type: string
-                                code:
-                                    type: integer
-                                newPassword:
-                                    type: string
-            responses:
-                "200":
-                    description: Password reset successfully
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    success:
-                                        type: boolean
-                                    msg:
-                                        type: string
-                            example:
-                                success: true
-                                msg: Password reset successfully
-                "400":
-                    description: Invalid code or missing fields
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    msg:
-                                        type: string
-                            example:
-                                msg: Invalid code
-                "404":
-                    description: User with email not found
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    msg:
-                                        type: string
-                            example:
-                                msg: No user with email petxtv@gmail.com
-    /verify/email:
-        post:
-            summary: Verify a user's email with a code
-            tags:
-                - User Verification
-            security:
-                - BearerAuth: []
-            requestBody:
-                required: true
-                content:
-                    application/json:
-                        schema:
                             type: object
-                            properties:
-                                code:
-                                    type: integer
+                required: true
             responses:
                 "200":
-                    description: Email verified successfully
                     content:
                         application/json:
+                            example:
+                                msg: Reset password code sent to your email
+                                success: true
                             schema:
-                                type: object
                                 properties:
+                                    msg:
+                                        type: string
                                     success:
                                         type: boolean
-                                    msg:
-                                        type: string
-                            example:
-                                success: true
-                                msg: Email verified successfully
+                                type: object
+                    description: Reset code sent successfully
                 "400":
-                    description: Invalid or missing verification code
                     content:
                         application/json:
+                            example:
+                                msg: Please provide email
                             schema:
-                                type: object
                                 properties:
                                     msg:
                                         type: string
+                                type: object
+                    description: Email is required
+                "404":
+                    content:
+                        application/json:
                             example:
-                                msg: Invalid verification code
-    /verify/send/email:
-        post:
-            summary: Send an email verification code
+                                msg: No user with email example@gmail.com
+                            schema:
+                                properties:
+                                    msg:
+                                        type: string
+                                type: object
+                    description: User with email not found
+            summary: Send a password reset code to the user's email
             tags:
-                - User Verification
-            security:
-                - BearerAuth: []
-            responses:
-                "200":
-                    description: Verification code sent successfully
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    success:
-                                        type: boolean
-                                    msg:
-                                        type: string
-                            example:
-                                success: true
-                                msg: Verification code sent successfully
-                "400":
-                    description: Email is already verified
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    msg:
-                                        type: string
-                            example:
-                                msg: Email is already verified
-                "500":
-                    description: Error sending verification code
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    msg:
-                                        type: string
-                            example:
-                                msg: Failed to send verification code
+                - User Authentication
     /user/data:
         get:
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            example:
+                                email: example@gmail.com
+                                isEmailVerified: false
+                                isPhoneVerified: false
+                                name: FirstName LastName
+                                phone: "+201000000000"
+                                userId: 67224b4a633c0c0003c88a45
+                                userProfileImage: https://example.com/profile.jpg
+                            schema:
+                                properties:
+                                    email:
+                                        type: string
+                                    isEmailVerified:
+                                        type: boolean
+                                    isPhoneVerified:
+                                        type: boolean
+                                    name:
+                                        type: string
+                                    phone:
+                                        type: string
+                                    userId:
+                                        type: string
+                                    userProfileImage:
+                                        type: string
+                                type: object
+                    description: get user data successfully
+            security:
+                - BearerAuth: []
             summary: Get user data
             tags:
                 - User Data
-            security:
-                - BearerAuth: []
-            responses:
-                "200":
-                    description: get user data successfully
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    userId:
-                                        type: string
-                                    email:
-                                        type: string
-                                    phone:
-                                        type: string
-                                    name:
-                                        type: string
-                                    isEmailVerified:
-                                        type: boolean
-                                    isPhoneVerified:
-                                        type: boolean
-                                    userProfileImage:
-                                        type: string
-                            example:
-                                userId: 67224b4a633c0c0003c88a45
-                                email: example@gmail.com
-                                phone: "+201000000000"
-                                name: FirstName LastName
-                                isEmailVerified: false
-                                isPhoneVerified: false
-                                userProfileImage: https://example.com/profile.jpg
         post:
-            summary: Update User Data
-            tags:
-                - User Data
-            security:
-                - BearerAuth: []
             requestBody:
-                required: false
                 content:
                     multipart/form-data:
                         schema:
-                            type: object
                             properties:
-                                email:
-                                    type: string
-                                    default: ""
-                                phone:
-                                    type: string
-                                    default: ""
-                                name:
-                                    type: string
-                                    default: ""
-                                newPassword:
-                                    type: string
-                                    default: ""
                                 currentPassword:
-                                    type: string
                                     default: ""
-                                profilePicture:
                                     type: string
-                                    format: binary
+                                email:
+                                    default: ""
+                                    type: string
+                                name:
+                                    default: ""
+                                    type: string
+                                newPassword:
+                                    default: ""
+                                    type: string
+                                phone:
+                                    default: ""
+                                    type: string
+                                profilePicture:
                                     description: The image file to upload.
+                                    format: binary
+                                    type: string
+                            type: object
+                required: false
             responses:
                 "200":
-                    description: Update User Data
                     content:
                         application/json:
+                            example:
+                                email: example@gmail.com
+                                isEmailVerified: false
+                                isPhoneVerified: false
+                                name: FirstName LastName
+                                phone: "+201000000000"
+                                userId: 67224b4a633c0c0003c88a45
+                                userProfileImage: https://example.com/profile.jpg
                             schema:
-                                type: object
                                 properties:
-                                    userId:
-                                        type: string
                                     email:
-                                        type: string
-                                    phone:
-                                        type: string
-                                    name:
                                         type: string
                                     isEmailVerified:
                                         type: boolean
                                     isPhoneVerified:
                                         type: boolean
+                                    name:
+                                        type: string
+                                    phone:
+                                        type: string
+                                    userId:
+                                        type: string
                                     userProfileImage:
                                         type: string
-                            example:
-                                userId: 67224b4a633c0c0003c88a45
-                                email: example@gmail.com
-                                phone: "+201000000000"
-                                name: FirstName LastName
-                                isEmailVerified: false
-                                isPhoneVerified: false
-                                userProfileImage: https://example.com/profile.jpg
+                                type: object
+                    description: Update User Data
                 "401":
-                    description: Error when no current password when changing password or email or
                     content:
                         application/json:
+                            example:
+                                msg: Current password is incorrect
                             schema:
-                                type: object
                                 properties:
                                     msg:
                                         type: string
-                            example:
-                                msg: Current password is incorrect
-    /user/uploaded-courses:
-        get:
-            summary: Get uploaded courses
-            description: Retrieve a list of courses uploaded by the authenticated user.
+                                type: object
+                    description: Error when no current password when changing password or email or
+            security:
+                - BearerAuth: []
+            summary: Update User Data
             tags:
                 - User Data
+    /user/uploaded-courses:
+        get:
+            description: Retrieve a list of courses uploaded by the authenticated user.
             responses:
                 "200":
-                    description: Successfully retrieved the uploaded courses.
                     content:
                         application/json:
                             example:
                                 courses:
-                                    - id: 673fef0698b338904809d4ca
-                                      title: title
+                                    - category: engineering
+                                      createdAt: "2024-11-22T02:40:07.778Z"
                                       description: description
-                                      price: "70"
+                                      id: 673fef0698b338904809d4ca
+                                      isFav: false
                                       picture: https://example.com/example.jpg
-                                      category: engineering
+                                      price: "70"
                                       rates:
                                           - 0
                                           - 0
@@ -485,183 +396,246 @@ paths:
                                           - 0
                                           - 0
                                       rating: 0
-                                      isFav: false
-                                      createdAt: "2024-11-22T02:40:07.778Z"
+                                      title: title
                                 nbHits: 1
+                    description: Successfully retrieved the uploaded courses.
             security:
                 - BearerAuth: []
+            summary: Get uploaded courses
+            tags:
+                - User Data
+    /verify/email:
+        post:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            properties:
+                                code:
+                                    type: integer
+                            type: object
+                required: true
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            example:
+                                msg: Email verified successfully
+                                success: true
+                            schema:
+                                properties:
+                                    msg:
+                                        type: string
+                                    success:
+                                        type: boolean
+                                type: object
+                    description: Email verified successfully
+                "400":
+                    content:
+                        application/json:
+                            example:
+                                msg: Invalid verification code
+                            schema:
+                                properties:
+                                    msg:
+                                        type: string
+                                type: object
+                    description: Invalid or missing verification code
+            security:
+                - BearerAuth: []
+            summary: Verify a user's email with a code
+            tags:
+                - User Verification
+    /verify/send/email:
+        post:
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            example:
+                                msg: Verification code sent successfully
+                                success: true
+                            schema:
+                                properties:
+                                    msg:
+                                        type: string
+                                    success:
+                                        type: boolean
+                                type: object
+                    description: Verification code sent successfully
+                "400":
+                    content:
+                        application/json:
+                            example:
+                                msg: Email is already verified
+                            schema:
+                                properties:
+                                    msg:
+                                        type: string
+                                type: object
+                    description: Email is already verified
+                "500":
+                    content:
+                        application/json:
+                            example:
+                                msg: Failed to send verification code
+                            schema:
+                                properties:
+                                    msg:
+                                        type: string
+                                type: object
+                    description: Error sending verification code
+            security:
+                - BearerAuth: []
+            summary: Send an email verification code
+            tags:
+                - User Verification
     /courses:
         get:
-            summary: Get all courses data
-            tags:
-                - Courses Data
-            security:
-                - BearerAuth: []
             parameters:
-                - name: title
+                - description: Filter by title
                   in: query
-                  description: Filter by title
+                  name: title
                   required: false
                   schema:
                       type: string
-                - name: description
+                - description: Filter by description
                   in: query
-                  description: Filter by description
+                  name: description
                   required: false
                   schema:
                       type: string
-                - name: category
+                - description: Filter by category
                   in: query
-                  description: Filter by category
+                  name: category
                   required: false
                   schema:
                       type: string
-                - name: numericFilters
-                  in: query
-                  description: >-
+                - description: >-
                       get all data that (price and rating only) < ,     > ,     = ,     <=
                       or >= certin number
+                  in: query
+                  name: numericFilters
                   required: false
                   schema:
                       type: string
-                - name: sort
+                - description: sort data by certin items
                   in: query
-                  description: sort data by certin items
+                  name: sort
                   required: false
                   schema:
                       type: string
-                - name: fields
+                - description: get only these fields
                   in: query
-                  description: get only these fields
+                  name: fields
                   required: false
                   schema:
                       type: string
-                - name: page
+                - description: get page
                   in: query
-                  description: get page
+                  name: page
                   required: false
                   schema:
                       type: number
-                - name: limit
+                - description: limit results
                   in: query
-                  description: limit results
+                  name: limit
                   required: false
                   schema:
                       type: number
             responses:
                 "200":
-                    description: Successfully retrieved the courses
                     content:
                         application/json:
+                            example:
+                                courses:
+                                    - _id: "12345"
+                                      category: programming
+                                      createdAt: "2024-11-21T18:47:09.657Z"
+                                      description: Introduction to Programming
+                                      instructorId: wafawf
+                                      isFav: false
+                                      picture: https://example.com/wef.jpg
+                                      price: 10
+                                      rates:
+                                          - 0
+                                          - 0
+                                          - 0
+                                          - 0
+                                          - 0
+                                      rating: 0
+                                      title: Introduction to Programming
+                                nbHits: 1
                             schema:
-                                type: object
                                 properties:
-                                    nbHits:
-                                        type: integer
-                                        example: 100
                                     courses:
-                                        type: array
                                         items:
-                                            type: object
                                             properties:
                                                 _id:
+                                                    type: string
+                                                category:
+                                                    type: string
+                                                createdAt:
+                                                    type: string
+                                                description:
+                                                    type: string
+                                                instructorId:
+                                                    type: string
+                                                isFav:
+                                                    description: Favorite status of the course
+                                                    type: boolean
+                                                picture:
+                                                    type: string
+                                                price:
                                                     type: string
                                                 rates:
                                                     type: array
                                                 rating:
                                                     type: number
-                                                instructorId:
-                                                    type: string
                                                 title:
                                                     type: string
-                                                description:
-                                                    type: string
-                                                price:
-                                                    type: string
-                                                category:
-                                                    type: string
-                                                picture:
-                                                    type: string
-                                                createdAt:
-                                                    type: string
-                                                isFav:
-                                                    type: boolean
-                                                    description: Favorite status of the course
-                            example:
-                                nbHits: 1
-                                courses:
-                                    - _id: "12345"
-                                      rates:
-                                          - 0
-                                          - 0
-                                          - 0
-                                          - 0
-                                          - 0
-                                      rating: 0
-                                      instructorId: wafawf
-                                      title: Introduction to Programming
-                                      description: Introduction to Programming
-                                      price: 10
-                                      category: programming
-                                      picture: https://example.com/wef.jpg
-                                      createdAt: "2024-11-21T18:47:09.657Z"
-                                      isFav: false
-        post:
-            summary: Create a new course
-            tags:
-                - Courses Data
+                                            type: object
+                                        type: array
+                                    nbHits:
+                                        example: 100
+                                        type: integer
+                                type: object
+                    description: Successfully retrieved the courses
             security:
                 - BearerAuth: []
+            summary: Get all courses data
+            tags:
+                - Courses Data
+        post:
             requestBody:
-                required: true
                 content:
                     multipart/form-data:
                         schema:
-                            type: object
                             properties:
-                                title:
+                                category:
+                                    type: string
+                                coursePicture:
+                                    description: The image file to upload.
+                                    format: binary
                                     type: string
                                 description:
                                     type: string
                                 price:
                                     type: string
-                                category:
+                                title:
                                     type: string
-                                coursePicture:
-                                    type: string
-                                    format: binary
-                                    description: The image file to upload.
+                            type: object
+                required: true
             responses:
                 "201":
-                    description: Course created successfully
                     content:
                         application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    id:
-                                        type: string
-                                    title:
-                                        type: string
-                                    description:
-                                        type: string
-                                    price:
-                                        type: string
-                                    picture:
-                                        type: string
-                                    category:
-                                        type: string
-                                    rates:
-                                        type: array
-                                    rating:
-                                        type: number
                             example:
-                                id: 673f80618fd93e372cc54de5
-                                title: photoshop
-                                description: photoshop course
-                                price: "20"
-                                picture: https://example.com/wef.jpg
                                 category: graphic design
+                                description: photoshop course
+                                id: 673f80618fd93e372cc54de5
+                                picture: https://example.com/wef.jpg
+                                price: "20"
                                 rates:
                                     - 0
                                     - 0
@@ -669,168 +643,61 @@ paths:
                                     - 0
                                     - 0
                                 rating: 0
+                                title: photoshop
+                            schema:
+                                properties:
+                                    category:
+                                        type: string
+                                    description:
+                                        type: string
+                                    id:
+                                        type: string
+                                    picture:
+                                        type: string
+                                    price:
+                                        type: string
+                                    rates:
+                                        type: array
+                                    rating:
+                                        type: number
+                                    title:
+                                        type: string
+                                type: object
+                    description: Course created successfully
                 "400":
-                    description: Missing required fields
                     content:
                         application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    msg:
-                                        type: string
                             example:
                                 msg: >-
                                     Please provide title, description, price, category and course
                                     picture
-    /courses/{courseId}:
-        get:
-            summary: Get a course by ID
-            tags:
-                - Courses Data
+                            schema:
+                                properties:
+                                    msg:
+                                        type: string
+                                type: object
+                    description: Missing required fields
             security:
                 - BearerAuth: []
-            parameters:
-                - name: courseId
-                  in: path
-                  required: true
-                  schema:
-                      type: string
-                      description: The ID of the course to retrieve
-            responses:
-                "200":
-                    description: Successfully retrieved the course
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    course:
-                                        type: object
-                                        properties:
-                                            rates:
-                                                type: array
-                                                items:
-                                                    type: integer
-                                                description: Array of ratings
-                                            rating:
-                                                type: integer
-                                                description: Calculated average rating
-                                            _id:
-                                                type: string
-                                                description: Course ID
-                                            instructorId:
-                                                type: string
-                                                description: Instructor ID
-                                            title:
-                                                type: string
-                                                description: Title of the course
-                                            description:
-                                                type: string
-                                                description: Description of the course
-                                            price:
-                                                type: string
-                                                description: Price of the course
-                                            category:
-                                                type: string
-                                                description: Category of the course
-                                            picture:
-                                                type: string
-                                                format: uri
-                                                description: URL to the course picture
-                                            createdAt:
-                                                type: string
-                                                format: date-time
-                                                description: Creation date of the course
-                                            isFav:
-                                                type: boolean
-                                                description: Favorite status of the course
-                            example:
-                                course:
-                                    rates:
-                                        - 0
-                                        - 0
-                                        - 0
-                                        - 0
-                                        - 0
-                                    rating: 0
-                                    _id: 673f80618fd93e372cc54we5
-                                    instructorId: 673e45b7c8256w20449d5470
-                                    title: photoshop
-                                    description: photoshop course
-                                    price: "20"
-                                    category: graphic design
-                                    picture: https://example.com/example.jpg
-                                    createdAt: "2024-11-21T18:48:02.207Z"
-                                    isFav: false
-                "400":
-                    description: Invalid or missing course ID
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    msg:
-                                        type: string
-                            example:
-                                msg: Please provide valid course id
-                "404":
-                    description: Course not found
-                    content:
-                        application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    msg:
-                                        type: string
-                            example:
-                                msg: Course not found
+            summary: Create a new course
+            tags:
+                - Courses Data
     /courses/fav:
         get:
-            summary: get favourite courses
-            tags:
-                - Courses Data
-            security:
-                - BearerAuth: []
             responses:
                 "200":
-                    description: Successfully retrieved the course
                     content:
                         application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    courses:
-                                        type: array
-                                        items:
-                                            type: object
-                                            properties:
-                                                _id:
-                                                    type: string
-                                                rates:
-                                                    type: array
-                                                rating:
-                                                    type: number
-                                                instructorId:
-                                                    type: string
-                                                title:
-                                                    type: string
-                                                description:
-                                                    type: string
-                                                price:
-                                                    type: string
-                                                category:
-                                                    type: string
-                                                picture:
-                                                    type: string
-                                                createdAt:
-                                                    type: string
-                                                isFav:
-                                                    type: boolean
-                                                    description: Favorite status of the course
                             example:
-                                nbHits: 1
                                 courses:
                                     - _id: "12345"
+                                      category: programming
+                                      createdAt: "2024-11-21T18:47:09.657Z"
+                                      description: Introduction to Programming
+                                      instructorId: wafawf
+                                      isFav: false
+                                      picture: https://example.com/wef.jpg
+                                      price: 10
                                       rates:
                                           - 0
                                           - 0
@@ -838,84 +705,367 @@ paths:
                                           - 0
                                           - 0
                                       rating: 0
-                                      instructorId: wafawf
                                       title: Introduction to Programming
-                                      description: Introduction to Programming
-                                      price: 10
-                                      category: programming
-                                      picture: https://example.com/wef.jpg
-                                      createdAt: "2024-11-21T18:47:09.657Z"
-                                      isFav: false
-    /courses/fav/{courseId}:
-        post:
-            summary: add course to fav
-            tags:
-                - Courses Data
+                                nbHits: 1
+                            schema:
+                                properties:
+                                    courses:
+                                        items:
+                                            properties:
+                                                _id:
+                                                    type: string
+                                                category:
+                                                    type: string
+                                                createdAt:
+                                                    type: string
+                                                description:
+                                                    type: string
+                                                instructorId:
+                                                    type: string
+                                                isFav:
+                                                    description: Favorite status of the course
+                                                    type: boolean
+                                                picture:
+                                                    type: string
+                                                price:
+                                                    type: string
+                                                rates:
+                                                    type: array
+                                                rating:
+                                                    type: number
+                                                title:
+                                                    type: string
+                                            type: object
+                                        type: array
+                                type: object
+                    description: Successfully retrieved the course
             security:
                 - BearerAuth: []
+            summary: get favourite courses
+            tags:
+                - Courses Data
+    /courses/fav/{courseId}:
+        delete:
             parameters:
-                - name: courseId
-                  in: path
+                - in: path
+                  name: courseId
                   required: true
                   schema:
-                      type: string
                       description: The ID of the course to retrieve
+                      type: string
             responses:
                 "200":
-                    description: Successfully retrieved the course
                     content:
                         application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    msg:
-                                        type: string
                             example:
                                 msg: Course added to fav
-                "400":
-                    description: course id is incorrect or missing
-                    content:
-                        application/json:
                             schema:
-                                type: object
                                 properties:
                                     msg:
                                         type: string
+                                type: object
+                    description: Successfully retrieved the course
+                "400":
+                    content:
+                        application/json:
                             example:
                                 msg: Please provide valid course id
-        delete:
+                            schema:
+                                properties:
+                                    msg:
+                                        type: string
+                                type: object
+                    description: course id is incorrect or missing
+            security:
+                - BearerAuth: []
             summary: delete course from fav
             tags:
                 - Courses Data
-            security:
-                - BearerAuth: []
+        post:
             parameters:
-                - name: courseId
-                  in: path
+                - in: path
+                  name: courseId
                   required: true
                   schema:
-                      type: string
                       description: The ID of the course to retrieve
+                      type: string
             responses:
                 "200":
-                    description: Successfully retrieved the course
                     content:
                         application/json:
-                            schema:
-                                type: object
-                                properties:
-                                    msg:
-                                        type: string
                             example:
                                 msg: Course added to fav
-                "400":
-                    description: course id is incorrect or missing
-                    content:
-                        application/json:
                             schema:
-                                type: object
                                 properties:
                                     msg:
                                         type: string
+                                type: object
+                    description: Successfully retrieved the course
+                "400":
+                    content:
+                        application/json:
                             example:
                                 msg: Please provide valid course id
+                            schema:
+                                properties:
+                                    msg:
+                                        type: string
+                                type: object
+                    description: course id is incorrect or missing
+            security:
+                - BearerAuth: []
+            summary: add course to fav
+            tags:
+                - Courses Data
+    /courses/{courseId}:
+        get:
+            parameters:
+                - in: path
+                  name: courseId
+                  required: true
+                  schema:
+                      description: The ID of the course to retrieve
+                      type: string
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            example:
+                                course:
+                                    _id: 673f80618fd93e372cc54we5
+                                    category: graphic design
+                                    createdAt: "2024-11-21T18:48:02.207Z"
+                                    description: photoshop course
+                                    instructorId: 673e45b7c8256w20449d5470
+                                    isFav: false
+                                    picture: https://example.com/example.jpg
+                                    price: "20"
+                                    rates:
+                                        - 0
+                                        - 0
+                                        - 0
+                                        - 0
+                                        - 0
+                                    rating: 0
+                                    title: photoshop
+                            schema:
+                                properties:
+                                    course:
+                                        properties:
+                                            _id:
+                                                description: Course ID
+                                                type: string
+                                            category:
+                                                description: Category of the course
+                                                type: string
+                                            createdAt:
+                                                description: Creation date of the course
+                                                format: date-time
+                                                type: string
+                                            description:
+                                                description: Description of the course
+                                                type: string
+                                            instructorId:
+                                                description: Instructor ID
+                                                type: string
+                                            isFav:
+                                                description: Favorite status of the course
+                                                type: boolean
+                                            picture:
+                                                description: URL to the course picture
+                                                format: uri
+                                                type: string
+                                            price:
+                                                description: Price of the course
+                                                type: string
+                                            rates:
+                                                description: Array of ratings
+                                                items:
+                                                    type: integer
+                                                type: array
+                                            rating:
+                                                description: Calculated average rating
+                                                type: integer
+                                            title:
+                                                description: Title of the course
+                                                type: string
+                                        type: object
+                                type: object
+                    description: Successfully retrieved the course
+                "400":
+                    content:
+                        application/json:
+                            example:
+                                msg: Please provide valid course id
+                            schema:
+                                properties:
+                                    msg:
+                                        type: string
+                                type: object
+                    description: Invalid or missing course ID
+                "404":
+                    content:
+                        application/json:
+                            example:
+                                msg: Course not found
+                            schema:
+                                properties:
+                                    msg:
+                                        type: string
+                                type: object
+                    description: Course not found
+            security:
+                - BearerAuth: []
+            summary: Get a course by ID
+            tags:
+                - Courses Data
+    /lectures:
+        post:
+            description: >-
+                Retrieve a list of lectures for a specified course. Requires
+                authentication and course enrollment.
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            properties:
+                                courseId:
+                                    type: string
+                            type: object
+                required: true
+            security:
+                - BearerAuth: []
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            example:
+                                lectures:
+                                    - courseId: 673f9165aab21d9aa0fb6b99
+                                      createdAt: "2024-11-23T03:45:41.855Z"
+                                      description: Lecture Description
+                                      instructorId: 673f9165aab21d9aa0fb6b99
+                                      lectureId: 673f9165aab21d9aa0fb6b99
+                                      lectureNumber: 1
+                                      rates:
+                                          - 0
+                                          - 0
+                                          - 0
+                                          - 0
+                                          - 0
+                                      rating: 0
+                                      thumbnailUrl: https://example.com/thumbnail.jpg
+                                      title: Sample Lecture
+                                      videoUrl: https://example.com/video.mp4
+                                nbHits: 1
+                    description: List of lectures
+                "400":
+                    description: Invalid course ID
+                "401":
+                    description: Unauthorized access
+            summary: Get all lectures for a course
+            tags:
+                - Lectures
+    /lectures/create:
+        post:
+            description: create new lecture.
+            requestBody:
+                content:
+                    multipart/form-data:
+                        schema:
+                            properties:
+                                courseId:
+                                    default: ""
+                                    type: string
+                                video:
+                                    description: video to upload
+                                    format: binary
+                                    type: string
+                                title:
+                                    default: ""
+                                    type: string
+                                description:
+                                    default: ""
+                                    type: string
+                                thumbnail:
+                                    description: The thumbnail file to upload.
+                                    format: binary
+                                    type: string
+                            type: object
+                required: true
+            security:
+                - BearerAuth: []
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            example:
+                                lectures:
+                                    - courseId: 673f9165aab21d9aa0fb6b99
+                                      createdAt: "2024-11-23T03:45:41.855Z"
+                                      description: Lecture Description
+                                      instructorId: 673f9165aab21d9aa0fb6b99
+                                      lectureId: 673f9165aab21d9aa0fb6b99
+                                      lectureNumber: 1
+                                      rates:
+                                          - 0
+                                          - 0
+                                          - 0
+                                          - 0
+                                          - 0
+                                      rating: 0
+                                      thumbnailUrl: https://example.com/thumbnail.jpg
+                                      title: Sample Lecture
+                                      videoUrl: https://example.com/video.mp4
+                                nbHits: 1
+                    description: List of lectures
+                "400":
+                    description: Invalid course ID
+                "401":
+                    description: Unauthorized access
+            summary: create new lecture.
+            tags:
+                - Lectures
+    /lectures/{lectureId}:
+        get:
+            parameters:
+                - in: path
+                  name: lectureId
+                  required: true
+                  schema:
+                      description: The ID of the course to retrieve
+                      type: string
+            description: create new lecture.
+            security:
+                - BearerAuth: []
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            example:
+                                lectures:
+                                    - courseId: 673f9165aab21d9aa0fb6b99
+                                      createdAt: "2024-11-23T03:45:41.855Z"
+                                      description: Lecture Description
+                                      instructorId: 673f9165aab21d9aa0fb6b99
+                                      lectureId: 673f9165aab21d9aa0fb6b99
+                                      lectureNumber: 1
+                                      rates:
+                                          - 0
+                                          - 0
+                                          - 0
+                                          - 0
+                                          - 0
+                                      rating: 0
+                                      thumbnailUrl: https://example.com/thumbnail.jpg
+                                      title: Sample Lecture
+                                      videoUrl: https://example.com/video.mp4
+                                nbHits: 1
+                    description: List of lectures
+                "400":
+                    description: Invalid course ID
+                "401":
+                    description: Unauthorized access
+            summary: create new lecture.
+            tags:
+                - Lectures

@@ -8,6 +8,7 @@ const {
     getUserData,
     updateUserData,
     getUploadedCourses,
+    getEnrolledCourses,
 } = require("../controllers/user");
 const router = express.Router();
 
@@ -17,4 +18,6 @@ router
     .post(upload.single("profilePicture"), updateUserData);
 
 router.route("/uploaded-courses").get(getUploadedCourses);
+//TODO: Add route to swagger
+router.route("/enrolled-courses").get(getEnrolledCourses);
 module.exports = router;

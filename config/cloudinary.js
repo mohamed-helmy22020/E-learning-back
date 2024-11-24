@@ -16,11 +16,35 @@ const handleUpload = async (file, public_id, folder) => {
     return res;
 };
 
-const handleUploadFromBuffer = async (profilePicture, options) => {
-    const b64 = Buffer.from(profilePicture.buffer).toString("base64");
-    let dataURI = "data:" + profilePicture.mimetype + ";base64," + b64;
+const handleUploadPicFromBuffer = async (picture, options) => {
+    const b64 = Buffer.from(picture.buffer).toString("base64");
+    let dataURI = "data:" + picture.mimetype + ";base64," + b64;
 
     return await handleUpload(dataURI, options.public_id, options.folder);
 };
 
-module.exports = { handleUpload, handleUploadFromBuffer };
+const handleUploadVideoFromBuffer = async (video, options) => {
+    return await new Promise((resolve) => {
+        cloudinary.uploader
+            .upload_stream(
+                {
+                    resource_type: "video",
+                    public_id: options.public_id,
+                    folder: options.folder,
+                },
+                (error, uploadResult) => {
+                    if (error) {
+                        throw new Error(error);
+                    }
+                    return resolve(uploadResult);
+                }
+            )
+            .end(video.buffer);
+    });
+};
+module.exports = {
+    cloudinary,
+    handleUpload,
+    handleUploadPicFromBuffer,
+    handleUploadVideoFromBuffer,
+};

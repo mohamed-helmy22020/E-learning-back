@@ -1,7 +1,7 @@
 const { BadRequestError } = require("../errors");
 const mongoose = require("mongoose");
 const Course = require("../models/Course");
-const { handleUploadFromBuffer } = require("../config/cloudinary");
+const { handleUploadPicFromBuffer } = require("../config/cloudinary");
 const { calculateAverageRate } = require("../utils");
 const { StatusCodes } = require("http-status-codes");
 
@@ -43,7 +43,6 @@ const getAllCourses = async (req, res) => {
             }
         });
     }
-    console.log(queryObject);
     let result = Course.find(queryObject);
     // sort
     if (sort) {
@@ -76,7 +75,6 @@ const getAllCourses = async (req, res) => {
                 isFav: req.user.favCourses.includes(course._id),
             };
         });
-    console.log(courses);
     res.status(StatusCodes.OK).json({ courses, nbHits: courses.length });
 };
 
@@ -103,7 +101,7 @@ const getCourseById = async (req, res) => {
 
 const createCourse = async (req, res) => {
     const user = req.user;
-    const coursePictureId = new mongoose.Types.ObjectId();
+    const courseId = new mongoose.Types.ObjectId();
     const { title, description, price, category } = req.body;
     const { file: coursePicture } = req;
 
@@ -113,7 +111,7 @@ const createCourse = async (req, res) => {
         );
     }
     const courseData = {
-        _id: coursePictureId,
+        _id: courseId,
         instructorId: user._id,
         title,
         description,
@@ -122,8 +120,8 @@ const createCourse = async (req, res) => {
     };
 
     try {
-        const cldRes = await handleUploadFromBuffer(coursePicture, {
-            public_id: `course_picture_${user._id}_${coursePictureId}`,
+        const cldRes = await handleUploadPicFromBuffer(coursePicture, {
+            public_id: `course_picture_${user._id}_${courseId}`,
             folder: "course_pictures",
         });
         courseData.picture = cldRes.secure_url;
@@ -132,7 +130,7 @@ const createCourse = async (req, res) => {
     }
 
     const course = await Course.create(courseData);
-    res.status(StatusCodes.OK).json(course.getData());
+    res.status(StatusCodes.CREATED).json(course.getData());
 };
 
 const getAllFavCourses = async (req, res) => {

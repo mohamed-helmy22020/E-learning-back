@@ -41,6 +41,10 @@ const courseSchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
+        lecturesCount: {
+            type: Number,
+            default: 0,
+        },
     },
     { timestamps: true }
 );
@@ -48,13 +52,15 @@ const courseSchema = new mongoose.Schema(
 courseSchema.methods.getData = function () {
     return {
         id: this._id,
+        instructorId: this.instructorId,
         title: this.title,
         description: this.description,
         price: this.price,
         picture: this.picture,
         category: this.category,
         rates: this.rates,
-        rating: calculateAverageRate(this.rates),
+        rating: this.rating,
+        lecturesCount: this.lecturesCount,
         createdAt: this.createdAt,
     };
 };

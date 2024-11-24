@@ -1,7 +1,7 @@
 const { StatusCodes } = require("http-status-codes");
 const User = require("../models/User");
 const { UnauthenticatedError } = require("../errors");
-const { handleUploadFromBuffer } = require("../config/cloudinary");
+const { handleUploadPicFromBuffer } = require("../config/cloudinary");
 const Course = require("../models/Course");
 
 const getUserData = async (req, res) => {
@@ -38,7 +38,7 @@ const updateUserData = async (req, res) => {
 
     if (profilePicture) {
         try {
-            const cldRes = await handleUploadFromBuffer(profilePicture, {
+            const cldRes = await handleUploadPicFromBuffer(profilePicture, {
                 public_id: `profile_picture_${user._id}`,
                 folder: "profile_pictures",
             });
@@ -69,8 +69,19 @@ const getUploadedCourses = async (req, res) => {
     });
 };
 
+const getEnrolledCourses = async (req, res) => {
+    const user = req.user;
+    let courses = Course.find({ _id: { $in: user.enrolledCourses } });
+    courses = await courses.sort("-createdAt");
+    res.status(StatusCodes.OK).json({
+        courses: courses.map((course) => course.getData()),
+        nbHits: courses.length,
+    });
+};
+
 module.exports = {
     getUserData,
     updateUserData,
     getUploadedCourses,
+    getEnrolledCourses,
 };
