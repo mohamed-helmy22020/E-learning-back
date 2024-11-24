@@ -72,8 +72,12 @@ userSchema.methods.getData = function () {
 };
 
 userSchema.pre("save", async function (next) {
+    console.log(this);
+    console.log(this.isModified("password"));
     if (this.isModified("password")) {
-        this.password = this.encryptPassword(this.password);
+        console.log("password changed");
+        this.password = await this.encryptPassword(this.password);
+        console.log(this.password);
     }
     if (this.isModified("email")) {
         this.isEmailVerified = false;
