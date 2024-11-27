@@ -17,7 +17,6 @@ const {
 const getCourseLectures = async (req, res) => {
     const user = req.user;
     const { courseId } = req.body;
-    console.log(courseId);
 
     if (!courseId || !isValidObjectId(courseId)) {
         throw new BadRequestError("Please provide valid course id");
@@ -77,10 +76,6 @@ const uploadLecture = async (req, res) => {
             "you are not authorized to access this course"
         );
     }
-    console.log("---------------------------------------------");
-    console.log({ thumbnail, video });
-    console.log("---------------------------------------------");
-    console.log({ courseId, title, description });
 
     const lectureId = new mongoose.Types.ObjectId();
 
@@ -117,8 +112,6 @@ const uploadLecture = async (req, res) => {
         throw new Error(error);
     }
 
-    console.log(lectureData);
-
     const lecture = await Lecture.create(lectureData);
     course.lecturesCount++;
     course.save();
@@ -128,7 +121,6 @@ const uploadLecture = async (req, res) => {
 const getLectureById = async (req, res) => {
     const user = req.user;
     const { lectureId } = req.params;
-    console.log(lectureId);
 
     if (!lectureId || !isValidObjectId(lectureId)) {
         throw new BadRequestError("Please provide valid lecture id");

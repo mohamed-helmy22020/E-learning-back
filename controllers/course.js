@@ -1,6 +1,7 @@
 const { BadRequestError } = require("../errors");
 const mongoose = require("mongoose");
 const Course = require("../models/Course");
+const User = require("../models/User");
 const { handleUploadPicFromBuffer } = require("../config/cloudinary");
 const { calculateAverageRate } = require("../utils");
 const { StatusCodes } = require("http-status-codes");
@@ -26,24 +27,27 @@ const getAllCourses = async (req, res) => {
             ">": "$gt",
             ">=": "$gte",
             "=": "$eq",
-            "<": "$lt",
+            "&lt;": "$lt",
             "<=": "$lte",
         };
-        const regEx = /\b(<|>|>=|=|<|<=)\b/g;
+        const regEx = /\b(&lt;|>|>=|=|<|<=)\b/g;
         let filters = numericFilters.replace(
             regEx,
             (match) => `-${operatorMap[match]}-`
         );
         const options = ["price", "rating"];
+
         filters = filters.split(",").forEach((item) => {
             const [field, operator, value] = item.split("-");
-
             if (options.includes(field)) {
                 queryObject[field] = { [operator]: Number(value) };
             }
         });
     }
-    let result = Course.find(queryObject);
+    let result = Course.find(queryObject).populate(
+        "instructorId",
+        "name userProfileImage"
+    );
     // sort
     if (sort) {
         const sortList = sort.split(",").join(" ");
@@ -70,11 +74,14 @@ const getAllCourses = async (req, res) => {
             return !req.user.enrolledCourses.includes(course._id);
         })
         .map((course) => {
-            return {
+            const { instructorId, ...rest } = {
                 ...course.getData(),
+                instructorDetails: course.instructorId,
                 isFav: req.user.favCourses.includes(course._id),
             };
+            return rest;
         });
+
     res.status(StatusCodes.OK).json({ courses, nbHits: courses.length });
 };
 
@@ -115,7 +122,7 @@ const createCourse = async (req, res) => {
         instructorId: user._id,
         title,
         description,
-        price,
+        price: Number(price),
         category,
     };
 
@@ -166,7 +173,6 @@ const deleteCourseFromFav = (req, res) => {
         throw new BadRequestError("Please provide valid course id");
     }
     if (!user.favCourses.includes(courseId)) {
-        console.log("wef");
         return res
             .status(StatusCodes.OK)
             .json({ msg: "Course removed from fav" });
@@ -177,6 +183,22 @@ const deleteCourseFromFav = (req, res) => {
     res.status(StatusCodes.OK).json({ msg: "Course removed from fav" });
 };
 
+const getInstructorData = (req, res) => {
+    const { instructorId } = req.params;
+    if (!instructorId || !mongoose.isValidObjectId(instructorId)) {
+        throw new BadRequestError("Please provide valid instructor id");
+    }
+    User.findOne({ _id: instructorId })
+        .then((user) => {
+            res.status(StatusCodes.OK).json({ instructor: user.getData() });
+        })
+        .catch((err) => {
+            res.status(StatusCodes.NOT_FOUND).json({
+                msg: "Instructor not found",
+            });
+        });
+};
+
 module.exports = {
     getAllCourses,
     createCourse,
@@ -184,4 +206,5 @@ module.exports = {
     getAllFavCourses,
     addCourseToFav,
     deleteCourseFromFav,
+    getInstructorData,
 };

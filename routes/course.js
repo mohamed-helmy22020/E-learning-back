@@ -20,4 +20,5 @@ router
 router.route("/fav/").get(getAllFavCourses);
 router.route("/fav/:courseId").post(addCourseToFav).delete(deleteCourseFromFav);
 router.route("/:courseId").get(getCourseById);
+router.route("/instructor/:instructorId").get(getCourseById);
 module.exports = router;

@@ -1,6 +1,4 @@
 const mongoose = require("mongoose");
-const { calculateAverageRate } = require("../utils");
-const { type } = require("os");
 
 const courseSchema = new mongoose.Schema(
     {
@@ -18,7 +16,7 @@ const courseSchema = new mongoose.Schema(
             required: [true, "Please provide description"],
         },
         price: {
-            type: String,
+            type: Number,
             required: [true, "Please provide price"],
         },
         picture: {
