@@ -3,21 +3,35 @@ const mongoose = require("mongoose");
 const Course = require("../models/Course");
 const User = require("../models/User");
 const { handleUploadPicFromBuffer } = require("../config/cloudinary");
-const { calculateAverageRate } = require("../utils");
 const { StatusCodes } = require("http-status-codes");
 
 const getAllCourses = async (req, res) => {
-    const { title, description, category, numericFilters, sort, fields } =
-        req.query;
+    const {
+        title,
+        description,
+        category,
+        numericFilters,
+        sort,
+        fields,
+        search,
+    } = req.query;
+
     const queryObject = {
         instructorId: { $ne: req.user._id },
     };
 
-    if (title) {
-        queryObject.title = { $regex: title, $options: "i" };
-    }
-    if (description) {
-        queryObject.description = { $regex: description, $options: "i" };
+    if (search) {
+        queryObject.$or = [
+            { title: { $regex: search, $options: "i" } },
+            { description: { $regex: search, $options: "i" } },
+        ];
+    } else {
+        if (title) {
+            queryObject.title = { $regex: title, $options: "i" };
+        }
+        if (description) {
+            queryObject.description = { $regex: description, $options: "i" };
+        }
     }
     if (category) {
         queryObject.category = category;
@@ -69,6 +83,7 @@ const getAllCourses = async (req, res) => {
     result = result.skip(skip).limit(limit);
 
     let courses = await result;
+
     courses = courses
         .filter((course) => {
             return !req.user.enrolledCourses.includes(course._id);
@@ -92,7 +107,10 @@ const getCourseById = async (req, res) => {
         throw new BadRequestError("Please provide valid course id");
     }
     try {
-        let course = await Course.findById(courseId);
+        let { instructorId, ...course } = await Course.findById(
+            courseId
+        ).populate("instructorId", "name userProfileImage");
+
         return res.status(StatusCodes.OK).json({
             course: {
                 ...course.getData(),
@@ -137,17 +155,32 @@ const createCourse = async (req, res) => {
     }
 
     const course = await Course.create(courseData);
-    res.status(StatusCodes.CREATED).json(course.getData());
+    res.status(StatusCodes.CREATED).json({
+        ...course.getData(),
+        instructorDetails: {
+            name: user.name,
+            userProfileImage: user.userProfileImage,
+        },
+    });
 };
 
 const getAllFavCourses = async (req, res) => {
     const user = req.user;
     const favCoursesIDs = user.favCourses.reverse();
 
-    const favCourses = await Course.find({ _id: { $in: favCoursesIDs } });
+    const favCourses = await Course.find({
+        _id: { $in: favCoursesIDs },
+    }).populate("instructorId", "name userProfileImage");
 
     res.status(StatusCodes.OK).json({
-        courses: favCourses.map((course) => course.getData()),
+        courses: favCourses.map((course) => {
+            const { instructorId, ...rest } = {
+                ...course.getData(),
+                instructorDetails: course.instructorId,
+                isFav: true,
+            };
+            return rest;
+        }),
         nbHits: favCourses.length,
     });
 };

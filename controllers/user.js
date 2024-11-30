@@ -64,7 +64,15 @@ const getUploadedCourses = async (req, res) => {
     let courses = Course.find({ instructorId: user._id });
     courses = await courses.sort("-createdAt");
     res.status(StatusCodes.OK).json({
-        courses: courses.map((course) => course.getData()),
+        courses: courses.map((course) => {
+            return {
+                ...course.getData(),
+                instructorDetails: {
+                    name: user.name,
+                    userProfileImage: user.userProfileImage,
+                },
+            };
+        }),
         nbHits: courses.length,
     });
 };
@@ -74,7 +82,15 @@ const getEnrolledCourses = async (req, res) => {
     let courses = Course.find({ _id: { $in: user.enrolledCourses } });
     courses = await courses.sort("-createdAt");
     res.status(StatusCodes.OK).json({
-        courses: courses.map((course) => course.getData()),
+        courses: courses.map((course) => {
+            return {
+                ...course.getData(),
+                instructorDetails: {
+                    name: user.name,
+                    userProfileImage: user.userProfileImage,
+                },
+            };
+        }),
         nbHits: courses.length,
     });
 };

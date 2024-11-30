@@ -53,7 +53,7 @@ const sendResetPasswordCode = async (req, res) => {
     }
     const user = await User.findOne({ email });
     if (!user) {
-        throw new NotFoundError(`No user with email ${email}`);
+        throw new NotFoundError(`No user with this email`);
     }
     const resetPasswordCode =
         user.resetPasswordCode || randomBetween(100000, 999999);

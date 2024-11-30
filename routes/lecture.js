@@ -15,7 +15,6 @@ const uploadLectureFiles = upload.fields([
     { name: "video", maxCount: 1 }, // Single video file
     { name: "thumbnail", maxCount: 1 }, // Single thumbnail file
 ]);
-//TODO: Add all routes to swagger
 router.route("/").post(getCourseLectures);
 
 router.route("/create").post(uploadLectureFiles, uploadLecture);
