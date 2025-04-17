@@ -23,6 +23,10 @@ const courseSchema = new mongoose.Schema(
             type: String,
             required: [true, "Please provide image"],
         },
+        overview: {
+            type: String,
+            default: "",
+        },
         category: {
             type: String,
             required: [true, "Please provide category"],
@@ -60,6 +64,7 @@ courseSchema.methods.getData = function () {
         rating: this.rating,
         lecturesCount: this.lecturesCount,
         createdAt: this.createdAt,
+        overview: this.overview,
     };
 };
 

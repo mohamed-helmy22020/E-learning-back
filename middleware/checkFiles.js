@@ -13,6 +13,19 @@ const MAX_VIDEO_SIZE = 100 * 1024 * 1024; // 100 MB
 
 const checkPicture = {
     fileFilter: (req, file, cb) => {
+        if (file.fieldname === "courseOverview") {
+            if (!allowedVideoTypes.includes(file.mimetype)) {
+                return cb(new Error("Only video files are allowed"), false);
+            }
+            if (file.size > MAX_VIDEO_SIZE) {
+                return cb(
+                    new Error("Video size must be less than 100MB"),
+                    false
+                );
+            }
+            return cb(null, true);
+        }
+
         if (!allowedPictureTypes.includes(file.mimetype)) {
             return cb(
                 new BadRequestError(
@@ -27,7 +40,7 @@ const checkPicture = {
             );
         }
 
-        cb(null, true);
+        return cb(null, true);
     },
 };
 

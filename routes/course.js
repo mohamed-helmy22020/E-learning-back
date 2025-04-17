@@ -6,6 +6,7 @@ const {
     getAllFavCourses,
     addCourseToFav,
     deleteCourseFromFav,
+    updateCourseData,
 } = require("../controllers/course");
 const router = express.Router();
 const { checkPicture } = require("../middleware/checkFiles");
@@ -16,7 +17,20 @@ const upload = multer({ storage, ...checkPicture });
 router
     .route("/")
     .get(getAllCourses)
-    .post(upload.single("coursePicture"), createCourse);
+    .post(
+        upload.fields([
+            { name: "coursePicture", maxCount: 1 }, // Single file for coursePicture
+            { name: "courseOverview", maxCount: 1 }, // Single file for courseIntro
+        ]),
+        createCourse
+    )
+    .patch(
+        upload.fields([
+            { name: "coursePicture", maxCount: 1 }, // Single file for coursePicture
+            { name: "courseOverview", maxCount: 1 }, // Single file for courseIntro
+        ]),
+        updateCourseData
+    );
 router.route("/fav/").get(getAllFavCourses);
 router.route("/fav/:courseId").post(addCourseToFav).delete(deleteCourseFromFav);
 router.route("/:courseId").get(getCourseById);

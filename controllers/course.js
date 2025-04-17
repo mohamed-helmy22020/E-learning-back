@@ -1,9 +1,152 @@
-const { BadRequestError } = require("../errors");
+const {
+    BadRequestError,
+    NotFoundError,
+    UnauthenticatedError,
+} = require("../errors");
 const mongoose = require("mongoose");
 const Course = require("../models/Course");
 const User = require("../models/User");
-const { handleUploadPicFromBuffer } = require("../config/cloudinary");
+const {
+    handleUploadPicFromBuffer,
+    handleUploadVideoFromBuffer,
+} = require("../config/cloudinary");
 const { StatusCodes } = require("http-status-codes");
+
+const createCourse = async (req, res) => {
+    const user = req.user;
+    const courseId = new mongoose.Types.ObjectId();
+    const { title, description, price, category } = req.body;
+    const {
+        files: { coursePicture, courseOverview },
+    } = req;
+    console.log(coursePicture, courseOverview);
+
+    if (!title || !description || !price || !category || !coursePicture) {
+        throw new BadRequestError(
+            "Please provide title, description, price, category and course picture"
+        );
+    }
+    const courseData = {
+        _id: courseId,
+        instructorId: user._id,
+        title,
+        description,
+        price: Number(price),
+        category,
+    };
+
+    try {
+        const cldRes = await handleUploadPicFromBuffer(coursePicture[0], {
+            public_id: `course_picture_${user._id}_${courseId}`,
+            folder: "course_pictures",
+        });
+        courseData.picture = cldRes.secure_url;
+    } catch (error) {
+        throw new Error(error);
+    }
+
+    if (courseOverview) {
+        try {
+            const cldRes = await handleUploadVideoFromBuffer(
+                courseOverview[0],
+                {
+                    public_id: `course_overview_${user._id}_${courseId}`,
+                    folder: "course_overviews",
+                }
+            );
+            courseData.overview = cldRes.secure_url;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
+    const course = await Course.create(courseData);
+    res.status(StatusCodes.CREATED).json({
+        ...course.getData(),
+        instructorDetails: {
+            name: user.name,
+            userProfileImage: user.userProfileImage,
+        },
+        success: true,
+    });
+};
+
+const updateCourseData = async (req, res) => {
+    const user = req.user;
+    const { courseId, title, description, price, category } = req.body;
+    const {
+        files: { coursePicture, courseOverview },
+    } = req;
+
+    if (!courseId) {
+        throw new BadRequestError("Please provide course ID");
+    }
+    const fetchedCourse = await Course.findById(courseId, "  instructorId");
+    if (!fetchedCourse) {
+        throw new NotFoundError("No course with this id");
+    }
+
+    if (fetchedCourse.instructorId.toString() != user._id.toString()) {
+        throw new UnauthenticatedError("You can change only your courses.");
+    }
+
+    const courseData = {};
+    if (title) {
+        courseData.title = title;
+    }
+    if (description) {
+        courseData.description = description;
+    }
+    if (price) {
+        courseData.price = price;
+    }
+    if (category) {
+        courseData.category = category;
+    }
+
+    if (coursePicture) {
+        try {
+            const cldRes = await handleUploadPicFromBuffer(coursePicture[0], {
+                public_id: `course_picture_${user._id}_${courseId}`,
+                folder: "course_pictures",
+            });
+            courseData.picture = cldRes.secure_url;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
+    if (courseOverview) {
+        try {
+            const cldRes = await handleUploadVideoFromBuffer(
+                courseOverview[0],
+                {
+                    public_id: `course_overview_${user._id}_${courseId}`,
+                    folder: "course_overviews",
+                }
+            );
+            courseData.overview = cldRes.secure_url;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
+    console.log(courseData);
+
+    const course = await Course.findByIdAndUpdate(courseId, courseData, {
+        new: true,
+        runValidators: true,
+    });
+
+    res.status(StatusCodes.OK).json({
+        ...course.getData(),
+        instructorDetails: {
+            name: user.name,
+            userProfileImage: user.userProfileImage,
+        },
+        success: true,
+    });
+};
 
 const getAllCourses = async (req, res) => {
     const {
@@ -103,14 +246,17 @@ const getAllCourses = async (req, res) => {
 const getCourseById = async (req, res) => {
     const user = req.user;
     const { courseId } = req.params;
+    console.log(courseId);
     if (!courseId || !mongoose.isValidObjectId(courseId)) {
         throw new BadRequestError("Please provide valid course id");
     }
     try {
-        let { instructorId, ...course } = await Course.findById(
-            courseId
-        ).populate("instructorId", "name userProfileImage");
+        let course = await Course.findById(courseId).populate(
+            "instructorId",
+            "name userProfileImage"
+        );
 
+        console.log(course.getData());
         return res.status(StatusCodes.OK).json({
             course: {
                 ...course.getData(),
@@ -118,50 +264,11 @@ const getCourseById = async (req, res) => {
             },
         });
     } catch (error) {
+        console.log(error);
         return res
             .status(StatusCodes.NOT_FOUND)
             .json({ msg: "Course not found" });
     }
-};
-
-const createCourse = async (req, res) => {
-    const user = req.user;
-    const courseId = new mongoose.Types.ObjectId();
-    const { title, description, price, category } = req.body;
-    const { file: coursePicture } = req;
-
-    if (!title || !description || !price || !category || !coursePicture) {
-        throw new BadRequestError(
-            "Please provide title, description, price, category and course picture"
-        );
-    }
-    const courseData = {
-        _id: courseId,
-        instructorId: user._id,
-        title,
-        description,
-        price: Number(price),
-        category,
-    };
-
-    try {
-        const cldRes = await handleUploadPicFromBuffer(coursePicture, {
-            public_id: `course_picture_${user._id}_${courseId}`,
-            folder: "course_pictures",
-        });
-        courseData.picture = cldRes.secure_url;
-    } catch (error) {
-        throw new Error(error);
-    }
-
-    const course = await Course.create(courseData);
-    res.status(StatusCodes.CREATED).json({
-        ...course.getData(),
-        instructorDetails: {
-            name: user.name,
-            userProfileImage: user.userProfileImage,
-        },
-    });
 };
 
 const getAllFavCourses = async (req, res) => {
@@ -233,8 +340,9 @@ const getInstructorData = (req, res) => {
 };
 
 module.exports = {
-    getAllCourses,
     createCourse,
+    updateCourseData,
+    getAllCourses,
     getCourseById,
     getAllFavCourses,
     addCourseToFav,

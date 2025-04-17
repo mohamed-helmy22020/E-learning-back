@@ -55,6 +55,7 @@ const updateUserData = async (req, res) => {
     });
 
     res.status(StatusCodes.OK).json({
+        success: true,
         user: updatedUser.getData(),
     });
 };

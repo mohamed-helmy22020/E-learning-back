@@ -1,5 +1,6 @@
 const { StatusCodes } = require("http-status-codes");
 const errorHandlerMiddleware = (err, req, res, next) => {
+    console.log({ err });
     let customError = {
         statusCode: err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR,
         msg: err.message || "Something went wrong, try again later",
@@ -26,6 +27,10 @@ const errorHandlerMiddleware = (err, req, res, next) => {
     if (err.name === "CastError") {
         customError.msg = `No item found with id: ${err.value}`;
         customError.statusCode = StatusCodes.NOT_FOUND;
+        if (err.message.toLowerCase().includes("cast to number failed")) {
+            customError.msg = `${err.path} should be number.`;
+            customError.statusCode = StatusCodes.BAD_REQUEST;
+        }
     }
     return res.status(customError.statusCode).json({ msg: customError.msg });
 };
