@@ -1,5 +1,4 @@
 openapi: 3.0.0
-
 info:
     description: API Documentation for E-Learning API
     title: E-Learning API
@@ -619,6 +618,10 @@ paths:
                                     description: The image file to upload.
                                     format: binary
                                     type: string
+                                courseOverview:
+                                    description: the course overview.
+                                    format: binary
+                                    type: string
                                 description:
                                     type: string
                                 price:
@@ -636,6 +639,7 @@ paths:
                                 description: photoshop course
                                 id: 673f80618fd93e372cc54de5
                                 picture: https://example.com/wef.jpg
+                                overview: https://example.com/wef.mp4
                                 price: "20"
                                 rates:
                                     - 0
@@ -654,6 +658,8 @@ paths:
                                     id:
                                         type: string
                                     picture:
+                                        type: string
+                                    overview:
                                         type: string
                                     price:
                                         type: string
@@ -681,6 +687,91 @@ paths:
             security:
                 - BearerAuth: []
             summary: Create a new course
+            tags:
+                - Courses Data
+        patch:
+            requestBody:
+                content:
+                    multipart/form-data:
+                        schema:
+                            properties:
+                                courseId:
+                                    type: string
+                                category:
+                                    type: string
+                                coursePicture:
+                                    description: The image file to upload.
+                                    format: binary
+                                    type: string
+                                courseOverview:
+                                    description: the course overview.
+                                    format: binary
+                                    type: string
+                                description:
+                                    type: string
+                                price:
+                                    type: string
+                                title:
+                                    type: string
+                            type: object
+                required: true
+            responses:
+                "201":
+                    content:
+                        application/json:
+                            example:
+                                category: graphic design
+                                description: photoshop course
+                                id: 673f80618fd93e372cc54de5
+                                picture: https://example.com/wef.jpg
+                                overview: https://example.com/wef.mp4
+                                price: "20"
+                                rates:
+                                    - 0
+                                    - 0
+                                    - 0
+                                    - 0
+                                    - 0
+                                rating: 0
+                                title: photoshop
+                            schema:
+                                properties:
+                                    category:
+                                        type: string
+                                    description:
+                                        type: string
+                                    id:
+                                        type: string
+                                    picture:
+                                        type: string
+                                    overview:
+                                        type: string
+                                    price:
+                                        type: string
+                                    rates:
+                                        type: array
+                                    rating:
+                                        type: number
+                                    title:
+                                        type: string
+                                type: object
+                    description: Course updated successfully
+                "400":
+                    content:
+                        application/json:
+                            example:
+                                msg: >-
+                                    Please provide title, description, price, category and course
+                                    picture
+                            schema:
+                                properties:
+                                    msg:
+                                        type: string
+                                type: object
+                    description: Missing required fields
+            security:
+                - BearerAuth: []
+            summary: update course data
             tags:
                 - Courses Data
     /courses/fav:
