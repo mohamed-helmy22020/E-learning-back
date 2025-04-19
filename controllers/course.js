@@ -256,12 +256,14 @@ const getCourseById = async (req, res) => {
             "name userProfileImage"
         );
 
-        console.log(course.getData());
+        const { instructorId, ...courseData } = {
+            ...course.getData(),
+            instructorDetails: course.instructorId,
+            isFav: user.favCourses.includes(courseId),
+        };
+
         return res.status(StatusCodes.OK).json({
-            course: {
-                ...course.getData(),
-                isFav: user.favCourses.includes(courseId),
-            },
+            course: courseData,
         });
     } catch (error) {
         console.log(error);
