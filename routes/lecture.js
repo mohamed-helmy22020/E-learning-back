@@ -3,6 +3,7 @@ const {
     getCourseLectures,
     uploadLecture,
     getLectureById,
+    updateLectureData,
 } = require("../controllers/lecture");
 const { lectureChecker } = require("../middleware/checkFiles");
 const router = express.Router();
@@ -12,10 +13,13 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage, ...lectureChecker });
 
 const uploadLectureFiles = upload.fields([
-    { name: "video", maxCount: 1 }, // Single video file
-    { name: "thumbnail", maxCount: 1 }, // Single thumbnail file
+    { name: "video", maxCount: 1 },
+    { name: "thumbnail", maxCount: 1 },
 ]);
-router.route("/").post(getCourseLectures);
+router
+    .route("/")
+    .post(getCourseLectures)
+    .patch(uploadLectureFiles, updateLectureData);
 
 router.route("/create").post(uploadLectureFiles, uploadLecture);
 router.route("/:lectureId").get(getLectureById);

@@ -26,7 +26,6 @@ const lectureSchema = new mongoose.Schema(
         lectureNumber: {
             type: Number,
             required: [true, "Please provide lecture number"],
-            unique: [true, "Lecture number should be unique"],
         },
         instructorId: {
             type: mongoose.Schema.Types.ObjectId,

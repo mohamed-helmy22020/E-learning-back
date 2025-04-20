@@ -37,7 +37,7 @@ const getCourseLectures = async (req, res) => {
         );
     }
 
-    const lectures = await Lecture.find({});
+    const lectures = await Lecture.find({ courseId: courseId });
 
     res.status(StatusCodes.OK).json({
         lectures: lectures.map((lecture) => lecture.getData()),
@@ -118,6 +118,83 @@ const uploadLecture = async (req, res) => {
     res.status(StatusCodes.CREATED).json({ lecture: lecture.getData() });
 };
 
+const updateLectureData = async (req, res) => {
+    const user = req.user;
+    const {
+        body: { courseId, lectureId, title, description },
+        files: { thumbnail, video },
+    } = req;
+
+    if (!courseId || !isValidObjectId(courseId)) {
+        throw new BadRequestError("Please provide valid course id ");
+    }
+
+    if (!lectureId || !isValidObjectId(lectureId)) {
+        throw new BadRequestError("Please provide valid lecture id");
+    }
+
+    const course = await Course.findOne({ _id: courseId });
+
+    if (!course) {
+        throw new NotFoundError(`No course with id ${courseId}`);
+    }
+
+    if (course.instructorId.toString() != user._id.toString()) {
+        throw new UnauthenticatedError(
+            "you are not authorized to access this course lectures"
+        );
+    }
+
+    const lectureData = {};
+
+    if (title) {
+        lectureData.title = title;
+    }
+    if (description) {
+        lectureData.description = description;
+    }
+
+    if (thumbnail) {
+        try {
+            const uploadThumbnailResult = await handleUploadPicFromBuffer(
+                thumbnail[0],
+                {
+                    public_id: `lecture_thumbnail_${courseId}_${lectureData.lectureNumber}`,
+                    folder: "lecture_pictures",
+                }
+            );
+            lectureData.thumbnailUrl = uploadThumbnailResult.secure_url;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+    if (video) {
+        try {
+            const uploadVideoResult = await handleUploadVideoFromBuffer(
+                video[0],
+                {
+                    public_id: `lecture_video_${courseId}_${lectureData.lectureNumber}`,
+                    folder: "lecture_videos",
+                }
+            );
+
+            lectureData.videoUrl = uploadVideoResult.secure_url;
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
+
+    const lecture = await Lecture.findByIdAndUpdate(lectureId, lectureData, {
+        new: true,
+        runValidators: true,
+    });
+
+    res.status(StatusCodes.CREATED).json({
+        lecture: lecture.getData(),
+        success: true,
+    });
+};
+
 const getLectureById = async (req, res) => {
     const user = req.user;
     const { lectureId } = req.params;
@@ -150,4 +227,5 @@ module.exports = {
     getCourseLectures,
     uploadLecture,
     getLectureById,
+    updateLectureData,
 };
