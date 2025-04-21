@@ -2,12 +2,13 @@ const { isValidObjectId } = require("mongoose");
 const { BadRequestError, NotFoundError } = require("../errors");
 const Course = require("../models/Course");
 const User = require("../models/User");
+const Coupon = require("../models/Coupon");
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const createPaymentSheet = async (req, res) => {
     const user = req.user;
-    const { courseId } = req.body;
+    const { courseId, coupon } = req.body;
     if (!courseId || !isValidObjectId(courseId)) {
         throw new BadRequestError("Please provide valid course id.");
     }
@@ -29,17 +30,39 @@ const createPaymentSheet = async (req, res) => {
         { customer: customerId },
         { apiVersion: "2020-08-27" }
     );
+    const metadata = {
+        courseId,
+        userId: user.id,
+    };
+    let endPrice = course.price * 100;
 
-    const endPrice = course.price * 100;
+    let couponData;
+    if (coupon) {
+        const coupons = await Coupon.find({
+            coupon,
+            courseId,
+        });
+        if (coupons.length > 0) {
+            couponData = coupons[0];
+            console.log({ couponData });
+            if (Date.now() > new Date(couponData.expiryDate)) {
+                throw new BadRequestError("This is coupon is expired");
+            }
 
+            if (couponData.numberOfUses >= couponData.userLimit) {
+                throw new BadRequestError(
+                    "This coupon has reached the users limit"
+                );
+            }
+            endPrice *= parseInt(couponData.discountPercentage) / 100;
+            metadata.couponId = couponData._id.toString();
+        }
+    }
     const paymentIntent = await stripe.paymentIntents.create({
         amount: endPrice,
         currency: "usd",
         customer: customerId,
-        metadata: {
-            courseId,
-            userId: user.id,
-        },
+        metadata,
     });
 
     res.json({
@@ -75,12 +98,18 @@ const handlePostPaymentEvents = async (req, res) => {
             // Extract metadata
             const courseId = paymentIntent.metadata.courseId;
             const userId = paymentIntent.metadata.userId;
+            const couponId = paymentIntent.metadata.couponId;
 
             const user = await User.findById(userId);
+            const coupon = await Coupon.findById(couponId);
             console.log(user.enrolledCourses);
             if (!user.enrolledCourses.includes(courseId)) {
                 user.enrolledCourses.push(courseId);
                 await user.save();
+                if (coupon) {
+                    coupon.numberOfUses = numberOfUses + 1;
+                    await coupon.save();
+                }
                 console.log(user.enrolledCourses);
             }
 

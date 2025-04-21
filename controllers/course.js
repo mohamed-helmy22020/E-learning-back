@@ -248,27 +248,51 @@ const getCourseById = async (req, res) => {
     if (!courseId || !mongoose.isValidObjectId(courseId)) {
         throw new BadRequestError("Please provide valid course id");
     }
-    try {
-        let course = await Course.findById(courseId).populate(
-            "instructorId",
-            "name userProfileImage"
-        );
 
-        const { instructorId, ...courseData } = {
-            ...course.getData(),
-            instructorDetails: course.instructorId,
-            isFav: user.favCourses.includes(courseId),
-        };
+    let course = await Course.findById(courseId).populate(
+        "instructorId",
+        "name userProfileImage"
+    );
 
-        return res.status(StatusCodes.OK).json({
-            course: courseData,
-        });
-    } catch (error) {
-        console.log(error);
-        return res
-            .status(StatusCodes.NOT_FOUND)
-            .json({ msg: "Course not found" });
+    if (!course) {
+        throw new NotFoundError("Course not found");
     }
+    const { instructorId, ...courseData } = {
+        ...course.getData(),
+        instructorDetails: course.instructorId,
+        isFav: user.favCourses.includes(courseId),
+    };
+
+    return res.status(StatusCodes.OK).json({
+        course: courseData,
+    });
+};
+
+const getUploadedCourseData = async (req, res) => {
+    const user = req.user;
+    const { courseId } = req.params;
+    if (!courseId || !mongoose.isValidObjectId(courseId)) {
+        throw new BadRequestError("Please provide valid course id");
+    }
+
+    let course = await Course.findById(courseId).populate(
+        "instructorId",
+        "name userProfileImage"
+    );
+    console.log(course);
+
+    if (!course) {
+        throw new NotFoundError("Course not found");
+    }
+    const { instructorId, ...courseData } = {
+        ...course.getData(),
+        instructorDetails: course.instructorId,
+        isFav: user.favCourses.includes(courseId),
+    };
+
+    return res.status(StatusCodes.OK).json({
+        course: courseData,
+    });
 };
 
 const getAllFavCourses = async (req, res) => {
@@ -344,6 +368,7 @@ module.exports = {
     updateCourseData,
     getAllCourses,
     getCourseById,
+    getUploadedCourseData,
     getAllFavCourses,
     addCourseToFav,
     deleteCourseFromFav,

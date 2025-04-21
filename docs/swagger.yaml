@@ -1161,3 +1161,248 @@ paths:
             summary: get lecture by id.
             tags:
                 - Lectures
+    /payments/payment-sheet:
+        post:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            properties:
+                                courseId:
+                                    type: string
+                                coupon:
+                                    type: string
+                            type: object
+                        example:
+                            courseId: course id
+                            coupon: coupon
+                required: true
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            example:
+                                paymentIntent: pi_...............
+                                ephemeralKey: ek_...............
+                                customer: cus_............
+                                publishableKey: pk_..............
+                    description: Successful request
+                "400":
+                    content:
+                        application/json:
+                            example:
+                                msg: Please provide valid course id
+                            schema:
+                                properties:
+                                    msg:
+                                        type: string
+                                type: object
+                    description: Course id missing
+                "404":
+                    content:
+                        application/json:
+                            example:
+                                msg: There is no course with this course id
+                            schema:
+                                properties:
+                                    msg:
+                                        type: string
+                                type: object
+                    description: course not found
+            security:
+                - BearerAuth: []
+            summary: Create payment sheet
+            tags:
+                - Payments
+    /coupons/create:
+        post:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            properties:
+                                coupon:
+                                    type: string
+                                courseId:
+                                    type: string
+                                discountPercentage:
+                                    type: number
+                                userLimit:
+                                    type: string
+                                expiryDate:
+                                    type: string
+                            type: object
+                        example:
+                            coupon: coupon
+                            courseId: courseId
+                            discountPercentage: 50
+                            userLimit: 50
+                            expiryDate: 5/5/2025
+                required: true
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            example:
+                                success: true
+                                data:
+                                    id: 68065c6c8eded03db15f4238
+                                    coupon: coupon
+                                    courseId: courseId
+                                    discountPercentage: 50
+                                    userLimit: 50
+                                    expiryDate: "2025-05-04T21:00:00.000Z"
+                    description: Successful request
+                "400":
+                    content:
+                        application/json:
+                            example:
+                                msg: >-
+                                    Please provide valid course id or Please provide Coupon,
+                                    CourseId, Discount Percentage, User Limit and Expiry Date
+                            schema:
+                                properties:
+                                    msg:
+                                        type: string
+                                type: object
+                    description: >-
+                        Coupon, CourseId, Discount Percentage, User Limit and Expiry Date
+                        missing
+                "404":
+                    content:
+                        application/json:
+                            example:
+                                msg: There is no course with this course id
+                            schema:
+                                properties:
+                                    msg:
+                                        type: string
+                                type: object
+                    description: course not found
+            security:
+                - BearerAuth: []
+            summary: Create coupon
+            tags:
+                - Coupons
+    /coupons/get-coupon-data:
+        post:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            properties:
+                                coupon:
+                                    type: string
+                                courseId:
+                                    type: string
+                            type: object
+                        example:
+                            coupon: coupon
+                            courseId: courseId
+                required: true
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            example:
+                                success: true
+                                data:
+                                    id: 68065c6c8eded03db15f4238
+                                    coupon: coupon
+                                    courseId: courseId
+                                    discountPercentage: 50
+                                    userLimit: 50
+                                    expiryDate: "2025-05-04T21:00:00.000Z"
+                    description: Successful request
+                "400":
+                    content:
+                        application/json:
+                            example:
+                                msg: >-
+                                    Please provide valid course id or Please provide Coupon,
+                                    CourseId, Discount Percentage, User Limit and Expiry Date
+                            schema:
+                                properties:
+                                    msg:
+                                        type: string
+                                type: object
+                    description: >-
+                        Coupon, CourseId, Discount Percentage, User Limit and Expiry Date
+                        missing
+                "404":
+                    content:
+                        application/json:
+                            example:
+                                msg: There is no course with this course id
+                            schema:
+                                properties:
+                                    msg:
+                                        type: string
+                                type: object
+                    description: course not found
+            security:
+                - BearerAuth: []
+            summary: Get coupon data
+            tags:
+                - Coupons
+    /coupons/delete:
+        delete:
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            properties:
+                                coupon:
+                                    type: string
+                                courseId:
+                                    type: string
+                            type: object
+                        example:
+                            coupon: coupon
+                            courseId: courseId
+                required: true
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            example:
+                                success: true
+                                data:
+                                    id: 68065c6c8eded03db15f4238
+                                    coupon: coupon
+                                    courseId: courseId
+                                    discountPercentage: 50
+                                    userLimit: 50
+                                    expiryDate: "2025-05-04T21:00:00.000Z"
+                    description: Successful request
+                "400":
+                    content:
+                        application/json:
+                            example:
+                                msg: >-
+                                    Please provide valid course id or Please provide Coupon,
+                                    CourseId, Discount Percentage, User Limit and Expiry Date
+                            schema:
+                                properties:
+                                    msg:
+                                        type: string
+                                type: object
+                    description: >-
+                        Coupon, CourseId, Discount Percentage, User Limit and Expiry Date
+                        missing
+                "404":
+                    content:
+                        application/json:
+                            example:
+                                msg: There is no course with this course id
+                            schema:
+                                properties:
+                                    msg:
+                                        type: string
+                                type: object
+                    description: course not found
+            security:
+                - BearerAuth: []
+            summary: delete coupon
+            tags:
+                - Coupons

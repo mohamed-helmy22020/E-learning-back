@@ -7,6 +7,7 @@ const {
     addCourseToFav,
     deleteCourseFromFav,
     updateCourseData,
+    getUploadedCourseData,
 } = require("../controllers/course");
 const router = express.Router();
 const { checkPicture } = require("../middleware/checkFiles");
@@ -34,5 +35,6 @@ router
 router.route("/fav/").get(getAllFavCourses);
 router.route("/fav/:courseId").post(addCourseToFav).delete(deleteCourseFromFav);
 router.route("/:courseId").get(getCourseById);
+router.route("/uploaded-course/:courseId").get(getUploadedCourseData);
 router.route("/instructor/:instructorId").get(getCourseById);
 module.exports = router;
