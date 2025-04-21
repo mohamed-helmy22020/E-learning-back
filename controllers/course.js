@@ -19,7 +19,6 @@ const createCourse = async (req, res) => {
     const {
         files: { coursePicture, courseOverview },
     } = req;
-    console.log(coursePicture, courseOverview);
 
     if (!title || !description || !price || !category || !coursePicture) {
         throw new BadRequestError(
@@ -55,6 +54,7 @@ const createCourse = async (req, res) => {
                 }
             );
             courseData.overview = cldRes.secure_url;
+            courseData.overviewPlaybackUrl = cldRes.playback_url;
         } catch (error) {
             throw new Error(error);
         }
@@ -126,12 +126,11 @@ const updateCourseData = async (req, res) => {
                 }
             );
             courseData.overview = cldRes.secure_url;
+            courseData.overviewPlaybackUrl = cldRes.playback_url;
         } catch (error) {
             throw new Error(error);
         }
     }
-
-    console.log(courseData);
 
     const course = await Course.findByIdAndUpdate(courseId, courseData, {
         new: true,
@@ -246,7 +245,6 @@ const getAllCourses = async (req, res) => {
 const getCourseById = async (req, res) => {
     const user = req.user;
     const { courseId } = req.params;
-    console.log(courseId);
     if (!courseId || !mongoose.isValidObjectId(courseId)) {
         throw new BadRequestError("Please provide valid course id");
     }

@@ -27,10 +27,6 @@ const courseSchema = new mongoose.Schema(
             type: String,
             default: "",
         },
-        overviewPlaybackUrl: {
-            type: String,
-            default: "",
-        },
         category: {
             type: String,
             required: [true, "Please provide category"],
@@ -69,7 +65,6 @@ courseSchema.methods.getData = function () {
         lecturesCount: this.lecturesCount,
         createdAt: this.createdAt,
         overview: this.overview,
-        overviewPlaybackUrl: this.overviewPlaybackUrl,
     };
 };
 

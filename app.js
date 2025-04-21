@@ -33,8 +33,7 @@ const verifyRouter = require("./routes/verify");
 const userRouter = require("./routes/user");
 const coursesRouter = require("./routes/course");
 const lecturesRouter = require("./routes/lecture");
-
-app.use(express.json());
+const paymentsRouter = require("./routes/payment");
 
 // extra packages
 app.set("trust proxy", 1);
@@ -52,6 +51,9 @@ app.use(xss());
 app.get("/", (req, res) => {
     res.send("E-Learning Api");
 });
+
+app.use("/api/payments", paymentsRouter);
+app.use(express.json());
 app.use("/api/auth", authRouter);
 app.use("/api/verify", authenticateUser, verifyRouter);
 app.use("/api/user", authenticateUser, userRouter);

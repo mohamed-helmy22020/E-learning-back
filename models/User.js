@@ -53,6 +53,9 @@ const userSchema = new mongoose.Schema(
             ref: "Course",
             default: [],
         },
+        stripeCustomerId: {
+            type: String,
+        },
     },
     {
         timestamps: true,
@@ -68,6 +71,7 @@ userSchema.methods.getData = function () {
         isEmailVerified: this.isEmailVerified,
         isPhoneVerified: this.isPhoneVerified,
         userProfileImage: this.userProfileImage,
+        stripeCustomerId: this.stripeCustomerId,
     };
 };
 

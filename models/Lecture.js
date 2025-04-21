@@ -14,6 +14,9 @@ const lectureSchema = new mongoose.Schema(
             type: String,
             required: [true, "Please provide videoUrl"],
         },
+        playbackUrl: {
+            type: String,
+        },
         thumbnailUrl: {
             type: String,
             required: [true, "Please provide thumbnailUrl"],
@@ -52,6 +55,7 @@ lectureSchema.methods.getData = function () {
         title: this.title,
         description: this.description,
         videoUrl: this.videoUrl,
+        playbackUrl: this.playbackUrl,
         thumbnailUrl: this.thumbnailUrl,
         courseId: this.courseId,
         lectureNumber: this.lectureNumber,

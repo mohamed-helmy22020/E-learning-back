@@ -80,17 +80,19 @@ const getUploadedCourses = async (req, res) => {
 
 const getEnrolledCourses = async (req, res) => {
     const user = req.user;
-    let courses = Course.find({ _id: { $in: user.enrolledCourses } });
+    let courses = Course.find({ _id: { $in: user.enrolledCourses } }).populate(
+        "instructorId",
+        "name userProfileImage"
+    );
     courses = await courses.sort("-createdAt");
     res.status(StatusCodes.OK).json({
         courses: courses.map((course) => {
-            return {
+            const { instructorId, ...rest } = {
                 ...course.getData(),
-                instructorDetails: {
-                    name: user.name,
-                    userProfileImage: user.userProfileImage,
-                },
+                instructorDetails: course.instructorId,
+                isFav: user.favCourses.includes(course._id),
             };
+            return rest;
         }),
         nbHits: courses.length,
     });

@@ -179,6 +179,7 @@ const updateLectureData = async (req, res) => {
             );
 
             lectureData.videoUrl = uploadVideoResult.secure_url;
+            lectureData.playbackUrl = uploadVideoResult.playback_url;
         } catch (error) {
             throw new Error(error);
         }
