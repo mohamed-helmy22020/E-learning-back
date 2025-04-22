@@ -6,6 +6,8 @@ const {
 const mongoose = require("mongoose");
 const Course = require("../models/Course");
 const User = require("../models/User");
+const Lecture = require("../models/Lecture");
+
 const {
     handleUploadPicFromBuffer,
     handleUploadVideoFromBuffer,
@@ -284,10 +286,22 @@ const getUploadedCourseData = async (req, res) => {
     if (!course) {
         throw new NotFoundError("Course not found");
     }
+    const lectures = (
+        await Lecture.find(
+            {
+                courseId: courseId,
+            },
+            "_id"
+        )
+    ).map((lecture) => {
+        return lecture._id;
+    });
+    console.log(lectures);
     const { instructorId, ...courseData } = {
         ...course.getData(),
         instructorDetails: course.instructorId,
         isFav: user.favCourses.includes(courseId),
+        lectures,
     };
 
     return res.status(StatusCodes.OK).json({
