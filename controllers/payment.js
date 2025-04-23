@@ -17,6 +17,10 @@ const createPaymentSheet = async (req, res) => {
     if (!course) {
         throw new NotFoundError("There is no course with this course id.");
     }
+
+    if (user.enrolledCourses.includes(courseId)) {
+        throw new BadRequestError("You've already bought this course");
+    }
     if (!user.stripeCustomerId) {
         const customer = await stripe.customers.create({
             email: user.email,
@@ -44,7 +48,6 @@ const createPaymentSheet = async (req, res) => {
         });
         if (coupons.length > 0) {
             couponData = coupons[0];
-            console.log({ couponData });
             if (Date.now() > new Date(couponData.expiryDate)) {
                 throw new BadRequestError("This is coupon is expired");
             }
@@ -54,7 +57,9 @@ const createPaymentSheet = async (req, res) => {
                     "This coupon has reached the users limit"
                 );
             }
-            endPrice *= parseInt(couponData.discountPercentage) / 100;
+
+            endPrice -=
+                (endPrice * parseInt(couponData.discountPercentage)) / 100;
             metadata.couponId = couponData._id.toString();
         }
     }
@@ -86,6 +91,7 @@ const handlePostPaymentEvents = async (req, res) => {
     } catch (err) {
         console.error(`Webhook signature verification failed: ${err}`);
         return res.status(400).json({
+            success: false,
             msg: `Webhook Error: ${err}`,
         });
     }
@@ -102,15 +108,13 @@ const handlePostPaymentEvents = async (req, res) => {
 
             const user = await User.findById(userId);
             const coupon = await Coupon.findById(couponId);
-            console.log(user.enrolledCourses);
             if (!user.enrolledCourses.includes(courseId)) {
                 user.enrolledCourses.push(courseId);
                 await user.save();
                 if (coupon) {
-                    coupon.numberOfUses = numberOfUses + 1;
+                    coupon.numberOfUses = coupon.numberOfUses + 1;
                     await coupon.save();
                 }
-                console.log(user.enrolledCourses);
             }
 
             console.log(`Course purchased: ${courseId} by User: ${userId}`);

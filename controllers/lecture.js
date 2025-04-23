@@ -40,6 +40,7 @@ const getCourseLectures = async (req, res) => {
     const lectures = await Lecture.find({ courseId: courseId });
 
     res.status(StatusCodes.OK).json({
+        success: true,
         lectures: lectures.map((lecture) => lecture.getData()),
         nbHits: lectures.length,
     });
@@ -116,7 +117,10 @@ const uploadLecture = async (req, res) => {
     const lecture = await Lecture.create(lectureData);
     course.lecturesCount++;
     course.save();
-    res.status(StatusCodes.CREATED).json({ lecture: lecture.getData() });
+    res.status(StatusCodes.CREATED).json({
+        success: true,
+        lecture: lecture.getData(),
+    });
 };
 
 const updateLectureData = async (req, res) => {
@@ -192,8 +196,8 @@ const updateLectureData = async (req, res) => {
     });
 
     res.status(StatusCodes.CREATED).json({
-        lecture: lecture.getData(),
         success: true,
+        lecture: lecture.getData(),
     });
 };
 
@@ -222,7 +226,10 @@ const getLectureById = async (req, res) => {
         );
     }
 
-    res.status(StatusCodes.OK).json({ lecture: lecture.getData() });
+    res.status(StatusCodes.OK).json({
+        success: true,
+        lecture: lecture.getData(),
+    });
 };
 
 module.exports = {

@@ -6,9 +6,7 @@ const Course = require("../models/Course");
 
 const getUserData = async (req, res) => {
     const user = req.user;
-    res.status(StatusCodes.OK).json({
-        user: user.getData(),
-    });
+    res.status(StatusCodes.OK).json({ success: true, user: user.getData() });
 };
 
 const updateUserData = async (req, res) => {
@@ -65,6 +63,7 @@ const getUploadedCourses = async (req, res) => {
     let courses = Course.find({ instructorId: user._id });
     courses = await courses.sort("-createdAt");
     res.status(StatusCodes.OK).json({
+        success: true,
         courses: courses.map((course) => {
             return {
                 ...course.getData(),
@@ -86,6 +85,7 @@ const getEnrolledCourses = async (req, res) => {
     );
     courses = await courses.sort("-createdAt");
     res.status(StatusCodes.OK).json({
+        success: true,
         courses: courses.map((course) => {
             const { instructorId, ...rest } = {
                 ...course.getData(),

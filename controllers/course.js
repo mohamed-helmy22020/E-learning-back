@@ -65,11 +65,11 @@ const createCourse = async (req, res) => {
     const course = await Course.create(courseData);
     res.status(StatusCodes.CREATED).json({
         ...course.getData(),
+        success: true,
         instructorDetails: {
             name: user.name,
             userProfileImage: user.userProfileImage,
         },
-        success: true,
     });
 };
 
@@ -140,12 +140,12 @@ const updateCourseData = async (req, res) => {
     });
 
     res.status(StatusCodes.OK).json({
+        success: true,
         ...course.getData(),
         instructorDetails: {
             name: user.name,
             userProfileImage: user.userProfileImage,
         },
-        success: true,
     });
 };
 
@@ -241,7 +241,11 @@ const getAllCourses = async (req, res) => {
             return rest;
         });
 
-    res.status(StatusCodes.OK).json({ courses, nbHits: courses.length });
+    res.status(StatusCodes.OK).json({
+        success: true,
+        courses,
+        nbHits: courses.length,
+    });
 };
 
 const getCourseById = async (req, res) => {
@@ -266,6 +270,7 @@ const getCourseById = async (req, res) => {
     };
 
     return res.status(StatusCodes.OK).json({
+        success: true,
         course: courseData,
     });
 };
@@ -281,7 +286,6 @@ const getUploadedCourseData = async (req, res) => {
         "instructorId",
         "name userProfileImage"
     );
-    console.log(course);
 
     if (!course) {
         throw new NotFoundError("Course not found");
@@ -296,7 +300,6 @@ const getUploadedCourseData = async (req, res) => {
     ).map((lecture) => {
         return lecture._id;
     });
-    console.log(lectures);
     const { instructorId, ...courseData } = {
         ...course.getData(),
         instructorDetails: course.instructorId,
@@ -305,6 +308,7 @@ const getUploadedCourseData = async (req, res) => {
     };
 
     return res.status(StatusCodes.OK).json({
+        success: true,
         course: courseData,
     });
 };
@@ -318,6 +322,7 @@ const getAllFavCourses = async (req, res) => {
     }).populate("instructorId", "name userProfileImage");
 
     res.status(StatusCodes.OK).json({
+        success: true,
         courses: favCourses.map((course) => {
             const { instructorId, ...rest } = {
                 ...course.getData(),
@@ -337,11 +342,16 @@ const addCourseToFav = (req, res) => {
         throw new BadRequestError("Please provide valid course id");
     }
     if (user.favCourses.includes(courseId)) {
-        return res.status(StatusCodes.OK).json({ msg: "Course added to fav" });
+        return res
+            .status(StatusCodes.OK)
+            .json({ success: true, msg: "Course added to fav" });
     }
     user.favCourses.push(courseId);
     user.save();
-    res.status(StatusCodes.OK).json({ msg: "Course added to fav" });
+    res.status(StatusCodes.OK).json({
+        success: true,
+        msg: "Course added to fav",
+    });
 };
 
 const deleteCourseFromFav = (req, res) => {
@@ -358,7 +368,10 @@ const deleteCourseFromFav = (req, res) => {
     user.favCourses = user.favCourses.filter((id) => id != courseId);
 
     user.save();
-    res.status(StatusCodes.OK).json({ msg: "Course removed from fav" });
+    res.status(StatusCodes.OK).json({
+        success: true,
+        msg: "Course removed from fav",
+    });
 };
 
 const getInstructorData = (req, res) => {
@@ -368,10 +381,14 @@ const getInstructorData = (req, res) => {
     }
     User.findOne({ _id: instructorId })
         .then((user) => {
-            res.status(StatusCodes.OK).json({ instructor: user.getData() });
+            res.status(StatusCodes.OK).json({
+                success: true,
+                instructor: user.getData(),
+            });
         })
         .catch((err) => {
             res.status(StatusCodes.NOT_FOUND).json({
+                success: false,
                 msg: "Instructor not found",
             });
         });

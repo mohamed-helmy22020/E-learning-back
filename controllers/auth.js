@@ -25,6 +25,7 @@ const login = async (req, res) => {
         throw new UnauthenticatedError("Invalid Credentials");
     }
     res.status(StatusCodes.OK).json({
+        success: true,
         user: user.getData(),
         accessToken: user.createAccessToken(),
     });
@@ -40,6 +41,7 @@ const register = async (req, res) => {
     const user = await User.create(userData);
 
     res.status(StatusCodes.CREATED).json({
+        success: true,
         user: user.getData(),
         accessToken: user.createAccessToken(),
     });

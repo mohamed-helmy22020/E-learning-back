@@ -28,7 +28,6 @@ const createCoupon = async (req, res) => {
             "Please provide Coupon, CourseId, Discount Percentage, User Limit and Expiry Date"
         );
     }
-
     const coupons = await Coupon.find({
         coupon,
         courseId,
@@ -62,12 +61,45 @@ const createCoupon = async (req, res) => {
     const createdCoupon = await Coupon.create(couponData);
     res.status(StatusCodes.CREATED).json({
         success: true,
-        data: { ...createdCoupon.getData() },
+        data: { ...createdCoupon.getData(), numberOfUses: 0 },
+    });
+};
+
+const getCourseCoupons = async (req, res) => {
+    const user = req.user;
+    const { courseId } = req.params;
+
+    if (!courseId || !isValidObjectId(courseId)) {
+        throw new BadRequestError("Please provide valid course id");
+    }
+
+    const course = await Course.findById(courseId);
+    if (!course) {
+        throw new NotFoundError("This course cannot be found");
+    }
+
+    if (course.instructorId.toString() !== user._id.toString()) {
+        throw new UnauthenticatedError(
+            "You can only get coupons of your courses"
+        );
+    }
+
+    const coupons = (
+        await Coupon.find({
+            courseId,
+        })
+    ).map((c) => ({
+        ...c.getData(),
+        numberOfUses: c.numberOfUses,
+    }));
+
+    res.status(StatusCodes.OK).json({
+        success: true,
+        data: coupons,
     });
 };
 
 const getCouponData = async (req, res) => {
-    const user = req.user;
     const { coupon, courseId } = req.body;
 
     if (!courseId || !isValidObjectId(courseId)) {
@@ -134,7 +166,7 @@ const deleteCoupon = async (req, res) => {
         throw new BadRequestError("This coupon cannot be found");
     }
 
-    const deletedCoupon = await Coupon.findOneAndDelete(
+    const deletedCoupon = await Coupon.findByIdAndDelete(
         coupons[0]._id.toString()
     );
     res.status(StatusCodes.CREATED).json({
@@ -147,4 +179,5 @@ module.exports = {
     createCoupon,
     getCouponData,
     deleteCoupon,
+    getCourseCoupons,
 };
