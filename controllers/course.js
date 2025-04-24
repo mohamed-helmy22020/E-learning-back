@@ -263,10 +263,24 @@ const getCourseById = async (req, res) => {
     if (!course) {
         throw new NotFoundError("Course not found");
     }
+
+    const lectures = (
+        await Lecture.find(
+            {
+                courseId,
+            },
+            { title: 1, _id: 1 }
+        )
+    ).map((l) => ({
+        id: l._id,
+        title: l.title,
+    }));
+    console.log(lectures);
     const { instructorId, ...courseData } = {
         ...course.getData(),
         instructorDetails: course.instructorId,
         isFav: user.favCourses.includes(courseId),
+        lectures,
     };
 
     return res.status(StatusCodes.OK).json({
@@ -290,21 +304,11 @@ const getUploadedCourseData = async (req, res) => {
     if (!course) {
         throw new NotFoundError("Course not found");
     }
-    const lectures = (
-        await Lecture.find(
-            {
-                courseId: courseId,
-            },
-            "_id"
-        )
-    ).map((lecture) => {
-        return lecture._id;
-    });
+
     const { instructorId, ...courseData } = {
         ...course.getData(),
         instructorDetails: course.instructorId,
         isFav: user.favCourses.includes(courseId),
-        lectures,
     };
 
     return res.status(StatusCodes.OK).json({
