@@ -25,7 +25,7 @@ const getCourseLectures = async (req, res) => {
     const course = await Course.findOne({ _id: courseId });
 
     if (!course) {
-        throw new NotFoundError(`No course with id ${courseId}`);
+        throw new NotFoundError(`No course with this id`);
     }
 
     if (
@@ -33,7 +33,7 @@ const getCourseLectures = async (req, res) => {
         course.instructorId.toString() != user._id.toString()
     ) {
         throw new UnauthenticatedError(
-            "you are not authorized to access this course"
+            "You are not authorized to access this course"
         );
     }
 
@@ -69,7 +69,7 @@ const uploadLecture = async (req, res) => {
     const course = await Course.findOne({ _id: courseId });
 
     if (!course) {
-        throw new NotFoundError(`No course with id ${courseId}`);
+        throw new NotFoundError(`No course with this id`);
     }
 
     if (course.instructorId.toString() != user._id.toString()) {
@@ -141,12 +141,12 @@ const updateLectureData = async (req, res) => {
     const course = await Course.findOne({ _id: courseId });
 
     if (!course) {
-        throw new NotFoundError(`No course with id ${courseId}`);
+        throw new NotFoundError(`No course with this id`);
     }
 
     if (course.instructorId.toString() != user._id.toString()) {
         throw new UnauthenticatedError(
-            "you are not authorized to access this course lectures"
+            "You are not authorized to access this course lectures"
         );
     }
 
@@ -212,7 +212,7 @@ const getLectureById = async (req, res) => {
     const lecture = await Lecture.findOne({ _id: lectureId });
 
     if (!lecture) {
-        throw new NotFoundError(`No lecture with id ${lectureId}`);
+        throw new NotFoundError(`No lecture with this id`);
     }
 
     const course = await Course.findOne({ _id: lecture.courseId });
@@ -222,7 +222,7 @@ const getLectureById = async (req, res) => {
         course.instructorId.toString() != user._id.toString()
     ) {
         throw new UnauthenticatedError(
-            "you are not authorized to access this course"
+            "You are not authorized to access this course"
         );
     }
 

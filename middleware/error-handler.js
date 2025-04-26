@@ -31,6 +31,10 @@ const errorHandlerMiddleware = (err, req, res, next) => {
             customError.msg = `${err.path} should be number.`;
             customError.statusCode = StatusCodes.BAD_REQUEST;
         }
+        if (err.message.toLowerCase().includes("cast to objectid failed")) {
+            customError.msg = `No item found with this id`;
+            customError.statusCode = StatusCodes.NOT_FOUND;
+        }
     }
     return res.status(customError.statusCode).json({ msg: customError.msg });
 };

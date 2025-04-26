@@ -89,7 +89,7 @@ const updateCourseData = async (req, res) => {
     }
 
     if (fetchedCourse.instructorId.toString() != user._id.toString()) {
-        throw new UnauthenticatedError("You can change only your courses.");
+        throw new UnauthenticatedError("You can change only your courses");
     }
 
     const courseData = {};

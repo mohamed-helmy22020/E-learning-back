@@ -74,7 +74,7 @@ const sendResetPasswordCode = async (req, res) => {
     } catch (error) {
         throw new res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
             success: false,
-            msg: "Failed to send verification code",
+            msg: "Failed to send reset password code",
         });
     }
 
@@ -93,7 +93,7 @@ const resetPassword = async (req, res) => {
     }
     const user = await User.findOne({ email });
     if (!user) {
-        throw new NotFoundError(`No user with email ${email}`);
+        throw new NotFoundError(`No user with this email`);
     }
     if (parseInt(user.resetPasswordCode) != parseInt(code)) {
         throw new BadRequestError("Invalid code");

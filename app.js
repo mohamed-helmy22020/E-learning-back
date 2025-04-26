@@ -35,6 +35,7 @@ const coursesRouter = require("./routes/course");
 const lecturesRouter = require("./routes/lecture");
 const paymentsRouter = require("./routes/payment");
 const couponsRouter = require("./routes/coupon");
+const notesRouter = require("./routes/note");
 
 // extra packages
 app.set("trust proxy", 1);
@@ -60,7 +61,9 @@ app.use("/api/verify", authenticateUser, verifyRouter);
 app.use("/api/user", authenticateUser, userRouter);
 app.use("/api/courses", authenticateUser, coursesRouter);
 app.use("/api/lectures", authenticateUser, lecturesRouter);
+notesRouter;
 app.use("/api/coupons", authenticateUser, couponsRouter);
+app.use("/api/notes", authenticateUser, notesRouter);
 
 // Swagger documentation route
 app.use(

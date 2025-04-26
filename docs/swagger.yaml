@@ -1,1408 +1,2054 @@
 openapi: 3.0.0
 info:
-    description: API Documentation for E-Learning API
-    title: E-Learning API
-    version: 1.0.0
+  description: API Documentation for E-Learning API
+  title: E-Learning API
+  version: 1.0.0
 servers:
-    - url: https://elearning.vercel.app/api
+  - url: 'https://elearning.vercel.app/api'
+    description: vercel
+  - url: 'http://localhost:5000/api'
+    description: local
 components:
-    securitySchemes:
-        BearerAuth:
-            bearerFormat: JWT
-            scheme: bearer
-            type: http
+  securitySchemes:
+    accessToken:
+      type: http
+      scheme: bearer
+  schemas:
+    User:
+      title: User
+      type: object
+      properties:
+        userId:
+          type: string
+        email:
+          type: string
+          x-stoplight:
+            id: jqzasmv643b1l
+        phone:
+          type: string
+          x-stoplight:
+            id: 5e5zzgyxl8ra3
+        name:
+          type: string
+          x-stoplight:
+            id: j8byeo8lbdmi8
+        isEmailVerified:
+          type: boolean
+          x-stoplight:
+            id: 4enzpi70p78xc
+        isPhoneVerified:
+          type: boolean
+          x-stoplight:
+            id: giab62oethp3l
+        userProfileImage:
+          type: string
+          x-stoplight:
+            id: hstga53e1pz5a
+        stripeCustomerId:
+          type: string
+          x-stoplight:
+            id: 97anm8mg4qrtu
+    Course:
+      type: object
+      properties:
+        id:
+          type: string
+        instructorId:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: integer
+        picture:
+          type: string
+        category:
+          type: string
+        rates:
+          type: array
+          items:
+            type: integer
+        rating:
+          type: integer
+        lecturesCount:
+          type: integer
+        createdAt:
+          type: string
+        overview:
+          type: string
+        overviewPlaybackUrl:
+          type: string
+        instructorDetails:
+          type: object
+          properties:
+            name:
+              type: string
+            userProfileImage:
+              type: string
+      x-examples:
+        Example 1:
+          id: 6802993257064aa9ea7dc641
+          instructorId: 67e26bba0d297baab9da4923
+          title: awfawf
+          description: awfawf
+          price: 10
+          picture: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1745000757/course_pictures/course_picture_67e26bba0d297baab9da4923_6802993257064aa9ea7dc641.jpg'
+          category: ytjtyjtyjt
+          rates:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+          rating: 0
+          lecturesCount: 0
+          createdAt: '2025-04-18T18:27:04.802Z'
+          overview: 'https://res.cloudinary.com/dwpc6ln1q/video/upload/v1745000823/course_overviews/course_overview_67e26bba0d297baab9da4923_6802993257064aa9ea7dc641.mp4'
+          overviewPlaybackUrl: ''
+          instructorDetails:
+            name: Mohamed Helmy
+            userProfileImage: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744925442/profile_pictures/profile_picture_67e26bba0d297baab9da4923.jpg'
+      description: ''
+    Lecture:
+      type: object
+      properties:
+        lectureId:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        videoUrl:
+          type: string
+        playbackUrl:
+          type: string
+        thumbnailUrl:
+          type: string
+        courseId:
+          type: string
+        lectureNumber:
+          type: integer
+        instructorId:
+          type: string
+        rates:
+          type: array
+          items:
+            type: integer
+        rating:
+          type: integer
+        createdAt:
+          type: string
+      x-examples:
+        Example 1:
+          lectureId: 680c313e04de6e350cb152a7
+          title: 1qwdqwd
+          description: a12d12d12d12d12d
+          videoUrl: 'https://res.cloudinary.com/dwpc6ln1q/video/upload/v1745629527/lecture_videos/lecture_video_680c30b904de6e350cb15297_1.mp4'
+          playbackUrl: 'https://res.cloudinary.com/dwpc6ln1q/video/upload/sp_auto/v1745629527/lecture_videos/lecture_video_680c30b904de6e350cb15297_1.m3u8'
+          thumbnailUrl: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1745629521/lecture_pictures/lecture_thumbnail_680c30b904de6e350cb15297_1.jpg'
+          courseId: 680c30b904de6e350cb15297
+          lectureNumber: 1
+          instructorId: 67e26bba0d297baab9da4923
+          rates:
+            - 0
+            - 0
+            - 0
+            - 0
+            - 0
+          rating: 0
+          createdAt: '2025-04-26T01:05:27.781Z'
+    Coupon:
+      type: object
+      properties:
+        id:
+          type: string
+        coupon:
+          type: string
+        courseId:
+          type: string
+        discountPercentage:
+          type: integer
+        userLimit:
+          type: integer
+        expiryDate:
+          type: string
+        numberOfUses:
+          type: integer
+      x-examples:
+        Example 1:
+          id: 680c31ac04de6e350cb152ae
+          coupon: awfawfawf
+          courseId: 68041e2e624f11005b869cdc
+          discountPercentage: 50
+          userLimit: 245
+          expiryDate: '2021-02-01T22:00:00.000Z'
+          numberOfUses: 0
+    Note:
+      type: object
+      properties:
+        id:
+          type: string
+        note:
+          type: string
+        lectureId:
+          type: string
+        videoSeconds:
+          type: integer
+      x-examples:
+        Example 1:
+          id: 680c31f104de6e350cb152b3
+          note: wieofjwoiefjwef
+          lectureId: 680c313e04de6e350cb152a7
+          videoSeconds: 112
+  requestBodies: {}
+  responses:
+    auth:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              user:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                  email:
+                    type: string
+                  phone:
+                    type: string
+                  name:
+                    type: string
+                  isEmailVerified:
+                    type: boolean
+                  isPhoneVerified:
+                    type: boolean
+                  userProfileImage:
+                    type: string
+                  stripeCustomerId:
+                    type: string
+              accessToken:
+                type: string
+            x-examples:
+              Example 1:
+                success: true
+                user:
+                  userId: 67e26bba0d297baab9da4923
+                  email: petxtv@gmail.com
+                  phone: '0654648498'
+                  name: Mohamed Helmy
+                  isEmailVerified: false
+                  isPhoneVerified: false
+                  userProfileImage: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744925442/profile_pictures/profile_picture_67e26bba0d297baab9da4923.jpg'
+                  stripeCustomerId: cus_SAQpTrr8opSmuA
+                accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2UyNmJiYTBkMjk3YmFhYjlkYTQ5MjMiLCJlbWFpbCI6InBldHh0dkBnbWFpbC5jb20iLCJpYXQiOjE3NDU2MjU0NzN9.TnI5yIebU1xY7Rpa_2MvMRj4j-ju9y7uVH7-AxN5jvM
+      headers:
+        header-0:
+          schema:
+            type: string
+    sendResetCode:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              msg:
+                type: string
+            x-examples:
+              Example 1:
+                success: true
+                msg: Reset password code sent to your email
+    getCourses:
+      description: Successfully retrieved the courses
+      content:
+        application/json:
+          schema:
+            type: object
+            x-examples:
+              Example 1:
+                success: true
+                courses:
+                  - id: 68041e2e624f11005b869cdc
+                    instructorId: 67e26bba0d297baab9da4923
+                    title: '1234'
+                    description: awfawfawf
+                    price: 10
+                    picture: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1745263150/course_pictures/course_picture_67e26bba0d297baab9da4923_68041e2e624f11005b869cdc.jpg'
+                    category: wafawf
+                    rates:
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                    rating: 0
+                    lecturesCount: 7
+                    createdAt: '2025-04-19T22:05:41.732Z'
+                    overview: 'https://res.cloudinary.com/dwpc6ln1q/video/upload/v1745100341/course_overviews/course_overview_67e26bba0d297baab9da4923_68041e2e624f11005b869cdc.mp4'
+                    overviewPlaybackUrl: ''
+                    instructorDetails:
+                      name: Mohamed Helmy
+                      userProfileImage: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744925442/profile_pictures/profile_picture_67e26bba0d297baab9da4923.jpg'
+                  - id: 6802993257064aa9ea7dc641
+                    instructorId: 67e26bba0d297baab9da4923
+                    title: awfawf
+                    description: awfawf
+                    price: 10
+                    picture: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1745000757/course_pictures/course_picture_67e26bba0d297baab9da4923_6802993257064aa9ea7dc641.jpg'
+                    category: ytjtyjtyjt
+                    rates:
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                    rating: 0
+                    lecturesCount: 0
+                    createdAt: '2025-04-18T18:27:04.802Z'
+                    overview: 'https://res.cloudinary.com/dwpc6ln1q/video/upload/v1745000823/course_overviews/course_overview_67e26bba0d297baab9da4923_6802993257064aa9ea7dc641.mp4'
+                    overviewPlaybackUrl: ''
+                    instructorDetails:
+                      name: Mohamed Helmy
+                      userProfileImage: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744925442/profile_pictures/profile_picture_67e26bba0d297baab9da4923.jpg'
+                  - id: 680168226c99331dfadd6c7b
+                    instructorId: 67e26bba0d297baab9da4923
+                    title: wfqwfqwfqwf
+                    description: qwfqwfqwf
+                    price: 31
+                    picture: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744922661/course_pictures/course_picture_67e26bba0d297baab9da4923_680168226c99331dfadd6c7b.jpg'
+                    category: awfawfawf
+                    rates:
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                    rating: 0
+                    lecturesCount: 0
+                    createdAt: '2025-04-17T20:44:28.223Z'
+                    overview: 'https://res.cloudinary.com/dwpc6ln1q/video/upload/v1744922667/course_overviews/course_overview_67e26bba0d297baab9da4923_680168226c99331dfadd6c7b.mp4'
+                    overviewPlaybackUrl: ''
+                    instructorDetails:
+                      name: Mohamed Helmy
+                      userProfileImage: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744925442/profile_pictures/profile_picture_67e26bba0d297baab9da4923.jpg'
+                  - id: 68012adf8f0b4d0004938ce4
+                    instructorId: 67e26bba0d297baab9da4923
+                    title: html
+                    description: desc
+                    price: 150
+                    picture: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744906975/course_pictures/course_picture_67e26bba0d297baab9da4923_68012adf8f0b4d0004938ce4.jpg'
+                    category: programming
+                    rates:
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                    rating: 0
+                    lecturesCount: 0
+                    createdAt: '2025-04-17T16:22:56.734Z'
+                    overview: 'https://res.cloudinary.com/dwpc6ln1q/video/upload/v1744906976/course_overviews/course_overview_67e26bba0d297baab9da4923_68012adf8f0b4d0004938ce4.mp4'
+                    overviewPlaybackUrl: ''
+                    instructorDetails:
+                      name: Mohamed Helmy
+                      userProfileImage: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744925442/profile_pictures/profile_picture_67e26bba0d297baab9da4923.jpg'
+                  - id: 68012503036ede43fe3d8e66
+                    instructorId: 67e26bba0d297baab9da4923
+                    title: html
+                    description: desc
+                    price: 150
+                    picture: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744905477/course_pictures/course_picture_67e26bba0d297baab9da4923_68012503036ede43fe3d8e66.jpg'
+                    category: programming
+                    rates:
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                    rating: 0
+                    lecturesCount: 0
+                    createdAt: '2025-04-17T15:58:02.531Z'
+                    overview: 'https://res.cloudinary.com/dwpc6ln1q/video/upload/v1744905481/course_overviews/course_overview_67e26bba0d297baab9da4923_68012503036ede43fe3d8e66.mp4'
+                    overviewPlaybackUrl: ''
+                    instructorDetails:
+                      name: Mohamed Helmy
+                      userProfileImage: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744925442/profile_pictures/profile_picture_67e26bba0d297baab9da4923.jpg'
+                  - id: 680121d78a3143052a442a8a
+                    instructorId: 67e26bba0d297baab9da4923
+                    title: html
+                    description: desc
+                    price: 150
+                    picture: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744904665/course_pictures/course_picture_67e26bba0d297baab9da4923_680121d78a3143052a442a8a.jpg'
+                    category: programming
+                    rates:
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                    rating: 0
+                    lecturesCount: 0
+                    createdAt: '2025-04-17T15:44:25.882Z'
+                    overview: ''
+                    overviewPlaybackUrl: ''
+                    instructorDetails:
+                      name: Mohamed Helmy
+                      userProfileImage: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744925442/profile_pictures/profile_picture_67e26bba0d297baab9da4923.jpg'
+                  - id: 680121bca1ea231e42e26aeb
+                    instructorId: 67e26bba0d297baab9da4923
+                    title: html
+                    description: desc
+                    price: 150
+                    picture: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744904638/course_pictures/course_picture_67e26bba0d297baab9da4923_680121bca1ea231e42e26aeb.jpg'
+                    category: programming
+                    rates:
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                    rating: 0
+                    lecturesCount: 0
+                    createdAt: '2025-04-17T15:43:59.088Z'
+                    overview: ''
+                    overviewPlaybackUrl: ''
+                    instructorDetails:
+                      name: Mohamed Helmy
+                      userProfileImage: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744925442/profile_pictures/profile_picture_67e26bba0d297baab9da4923.jpg'
+                  - id: 680121961889052d52c5d16f
+                    instructorId: 67e26bba0d297baab9da4923
+                    title: html
+                    description: desc
+                    price: 150
+                    picture: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744904600/course_pictures/course_picture_67e26bba0d297baab9da4923_680121961889052d52c5d16f.jpg'
+                    category: programming
+                    rates:
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                    rating: 0
+                    lecturesCount: 0
+                    createdAt: '2025-04-17T15:43:21.010Z'
+                    overview: ''
+                    overviewPlaybackUrl: ''
+                    instructorDetails:
+                      name: Mohamed Helmy
+                      userProfileImage: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744925442/profile_pictures/profile_picture_67e26bba0d297baab9da4923.jpg'
+                  - id: 67ffcc0a4cccc8c101473e04
+                    instructorId: 67e26bba0d297baab9da4923
+                    title: '12312312'
+                    description: '122121'
+                    price: 1221
+                    picture: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744903410/course_pictures/course_picture_67e26bba0d297baab9da4923_67ffcc0a4cccc8c101473e04.jpg'
+                    category: qfwqfqwf
+                    rates:
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                    rating: 0
+                    lecturesCount: 0
+                    createdAt: '2025-04-16T15:26:05.679Z'
+                    overview: 'https://res.cloudinary.com/dwpc6ln1q/video/upload/v1744905654/course_overviews/course_overview_67e26bba0d297baab9da4923_67ffcc0a4cccc8c101473e04.mp4'
+                    overviewPlaybackUrl: ''
+                    instructorDetails:
+                      name: Mohamed Helmy
+                      userProfileImage: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744925442/profile_pictures/profile_picture_67e26bba0d297baab9da4923.jpg'
+                  - id: 67ffcb8b4cccc8c101473deb
+                    instructorId: 67e26bba0d297baab9da4923
+                    title: qwdqwd
+                    description: qwdqwdqwd
+                    price: 10
+                    picture: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744817037/course_pictures/course_picture_67e26bba0d297baab9da4923_67ffcb8b4cccc8c101473deb.jpg'
+                    category: qwdqwd
+                    rates:
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                    rating: 0
+                    lecturesCount: 0
+                    createdAt: '2025-04-16T15:23:58.018Z'
+                    overview: ''
+                    overviewPlaybackUrl: ''
+                    instructorDetails:
+                      name: Mohamed Helmy
+                      userProfileImage: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744925442/profile_pictures/profile_picture_67e26bba0d297baab9da4923.jpg'
+                  - id: 67ffcb614cccc8c101473de6
+                    instructorId: 67e26bba0d297baab9da4923
+                    title: qwrfqwf
+                    description: qwfqwfqwf
+                    price: 10
+                    picture: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744816996/course_pictures/course_picture_67e26bba0d297baab9da4923_67ffcb614cccc8c101473de6.jpg'
+                    category: qwfqwfqwf
+                    rates:
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                    rating: 0
+                    lecturesCount: 0
+                    createdAt: '2025-04-16T15:23:16.236Z'
+                    overview: ''
+                    overviewPlaybackUrl: ''
+                    instructorDetails:
+                      name: Mohamed Helmy
+                      userProfileImage: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744925442/profile_pictures/profile_picture_67e26bba0d297baab9da4923.jpg'
+                  - id: 67ffcaf34cccc8c101473ddf
+                    instructorId: 67e26bba0d297baab9da4923
+                    title: qwdqwd
+                    description: qwdqwd
+                    price: 10
+                    picture: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744816886/course_pictures/course_picture_67e26bba0d297baab9da4923_67ffcaf34cccc8c101473ddf.jpg'
+                    category: asdqwf
+                    rates:
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                    rating: 0
+                    lecturesCount: 0
+                    createdAt: '2025-04-16T15:21:26.447Z'
+                    overview: ''
+                    overviewPlaybackUrl: ''
+                    instructorDetails:
+                      name: Mohamed Helmy
+                      userProfileImage: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744925442/profile_pictures/profile_picture_67e26bba0d297baab9da4923.jpg'
+                  - id: 67ffca4b4cccc8c101473dd6
+                    instructorId: 67e26bba0d297baab9da4923
+                    title: qwdqwd
+                    description: qwdqwdqw
+                    price: 10
+                    picture: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744816717/course_pictures/course_picture_67e26bba0d297baab9da4923_67ffca4b4cccc8c101473dd6.jpg'
+                    category: wdqwdqdw
+                    rates:
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                    rating: 0
+                    lecturesCount: 0
+                    createdAt: '2025-04-16T15:18:38.083Z'
+                    overview: ''
+                    overviewPlaybackUrl: ''
+                    instructorDetails:
+                      name: Mohamed Helmy
+                      userProfileImage: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744925442/profile_pictures/profile_picture_67e26bba0d297baab9da4923.jpg'
+                  - id: 67ffca18a8734ed871f2dffa
+                    instructorId: 67e26bba0d297baab9da4923
+                    title: qwdqwd
+                    description: qwdqwdqw
+                    price: 10
+                    picture: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744816667/course_pictures/course_picture_67e26bba0d297baab9da4923_67ffca18a8734ed871f2dffa.jpg'
+                    category: wdqwdqdw
+                    rates:
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                    rating: 0
+                    lecturesCount: 0
+                    createdAt: '2025-04-16T15:17:47.815Z'
+                    overview: ''
+                    overviewPlaybackUrl: ''
+                    instructorDetails:
+                      name: Mohamed Helmy
+                      userProfileImage: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744925442/profile_pictures/profile_picture_67e26bba0d297baab9da4923.jpg'
+                  - id: 67ffc8fda8734ed871f2dff6
+                    instructorId: 67e26bba0d297baab9da4923
+                    title: qwdqwd
+                    description: qwdqwdqw
+                    price: 10
+                    picture: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744816384/course_pictures/course_picture_67e26bba0d297baab9da4923_67ffc8fda8734ed871f2dff6.jpg'
+                    category: wdqwdqdw
+                    rates:
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                    rating: 0
+                    lecturesCount: 0
+                    createdAt: '2025-04-16T15:13:04.717Z'
+                    overview: ''
+                    overviewPlaybackUrl: ''
+                    instructorDetails:
+                      name: Mohamed Helmy
+                      userProfileImage: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744925442/profile_pictures/profile_picture_67e26bba0d297baab9da4923.jpg'
+                  - id: 67ffc8e18bf783dc616d2774
+                    instructorId: 67e26bba0d297baab9da4923
+                    title: qwdqwd
+                    description: qwdqwdqw
+                    price: 10
+                    picture: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744816356/course_pictures/course_picture_67e26bba0d297baab9da4923_67ffc8e18bf783dc616d2774.jpg'
+                    category: wdqwdqdw
+                    rates:
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                    rating: 0
+                    lecturesCount: 0
+                    createdAt: '2025-04-16T15:12:36.789Z'
+                    overview: ''
+                    overviewPlaybackUrl: ''
+                    instructorDetails:
+                      name: Mohamed Helmy
+                      userProfileImage: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744925442/profile_pictures/profile_picture_67e26bba0d297baab9da4923.jpg'
+                  - id: 67e26e02ddabf1000317009e
+                    instructorId: 67e26bba0d297baab9da4923
+                    title: stringwefwef
+                    description: efwefw
+                    price: 2145
+                    picture: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1742892546/course_pictures/course_picture_67e26bba0d297baab9da4923_67e26e02ddabf1000317009e.jpg'
+                    category: sdfwef
+                    rates:
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                    rating: 0
+                    lecturesCount: 0
+                    createdAt: '2025-03-25T08:49:06.942Z'
+                    overview: ''
+                    overviewPlaybackUrl: ''
+                    instructorDetails:
+                      name: Mohamed Helmy
+                      userProfileImage: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744925442/profile_pictures/profile_picture_67e26bba0d297baab9da4923.jpg'
+                  - id: 67e26cec42be302c25e1aee6
+                    instructorId: 67e26bba0d297baab9da4923
+                    title: ewfwefwef
+                    description: dsfsf
+                    price: 15
+                    picture: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1742892277/course_pictures/course_picture_67e26bba0d297baab9da4923_67e26cec42be302c25e1aee6.jpg'
+                    category: ewfwefwef
+                    rates:
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                    rating: 0
+                    lecturesCount: 0
+                    createdAt: '2025-03-25T08:44:37.205Z'
+                    overview: ''
+                    overviewPlaybackUrl: ''
+                    instructorDetails:
+                      name: Mohamed Helmy
+                      userProfileImage: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1744925442/profile_pictures/profile_picture_67e26bba0d297baab9da4923.jpg'
+                nbHits: 18
+            properties:
+              success:
+                type: boolean
+              courses:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Course'
+              nbHits:
+                type: integer
+    getLectures:
+      description: List of lectures
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              lectures:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    lectureId:
+                      type: string
+                    title:
+                      type: string
+                    description:
+                      type: string
+                    videoUrl:
+                      type: string
+                    playbackUrl:
+                      type: string
+                    thumbnailUrl:
+                      type: string
+                    courseId:
+                      type: string
+                    lectureNumber:
+                      type: integer
+                    instructorId:
+                      type: string
+                    rates:
+                      type: array
+                      items:
+                        type: integer
+                    rating:
+                      type: integer
+                    createdAt:
+                      type: string
+              nbHits:
+                type: integer
+            x-examples:
+              Example 1:
+                success: true
+                lectures:
+                  - lectureId: 6806d99ff406cb7df363c4fa
+                    title: '1'
+                    description: '1'
+                    videoUrl: 'https://res.cloudinary.com/dwpc6ln1q/video/upload/v1745279405/lecture_videos/lecture_video_68041e2e624f11005b869cdc_1.mp4'
+                    playbackUrl: 'https://res.cloudinary.com/dwpc6ln1q/video/upload/sp_auto/v1745279405/lecture_videos/lecture_video_68041e2e624f11005b869cdc_1.m3u8'
+                    thumbnailUrl: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1745279400/lecture_pictures/lecture_thumbnail_68041e2e624f11005b869cdc_1.jpg'
+                    courseId: 68041e2e624f11005b869cdc
+                    lectureNumber: 1
+                    instructorId: 67e26bba0d297baab9da4923
+                    rates:
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                    rating: 0
+                    createdAt: '2025-04-21T23:50:05.775Z'
+                  - lectureId: 6806e54cf406cb7df363c71b
+                    title: '2'
+                    description: '2'
+                    videoUrl: 'https://res.cloudinary.com/dwpc6ln1q/video/upload/v1745282388/lecture_videos/lecture_video_68041e2e624f11005b869cdc_2.mp4'
+                    playbackUrl: 'https://res.cloudinary.com/dwpc6ln1q/video/upload/sp_auto/v1745282388/lecture_videos/lecture_video_68041e2e624f11005b869cdc_2.m3u8'
+                    thumbnailUrl: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1745282383/lecture_pictures/lecture_thumbnail_68041e2e624f11005b869cdc_2.jpg'
+                    courseId: 68041e2e624f11005b869cdc
+                    lectureNumber: 2
+                    instructorId: 67e26bba0d297baab9da4923
+                    rates:
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                    rating: 0
+                    createdAt: '2025-04-22T00:39:48.225Z'
+                  - lectureId: 68086a1540b416b8ab219fc1
+                    title: '3'
+                    description: '3'
+                    videoUrl: 'https://res.cloudinary.com/dwpc6ln1q/video/upload/v1745381917/lecture_videos/lecture_video_68041e2e624f11005b869cdc_3.mp4'
+                    playbackUrl: 'https://res.cloudinary.com/dwpc6ln1q/video/upload/sp_auto/v1745381917/lecture_videos/lecture_video_68041e2e624f11005b869cdc_3.m3u8'
+                    thumbnailUrl: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1745381913/lecture_pictures/lecture_thumbnail_68041e2e624f11005b869cdc_3.jpg'
+                    courseId: 68041e2e624f11005b869cdc
+                    lectureNumber: 3
+                    instructorId: 67e26bba0d297baab9da4923
+                    rates:
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                    rating: 0
+                    createdAt: '2025-04-23T04:18:37.604Z'
+                  - lectureId: 68086b7fa212c9d1572351b5
+                    title: qwdqwdqwd111
+                    description: qwdqwdqwdqwd
+                    videoUrl: 'https://res.cloudinary.com/dwpc6ln1q/video/upload/v1745382279/lecture_videos/lecture_video_68041e2e624f11005b869cdc_4.mp4'
+                    playbackUrl: 'https://res.cloudinary.com/dwpc6ln1q/video/upload/sp_auto/v1745382279/lecture_videos/lecture_video_68041e2e624f11005b869cdc_4.m3u8'
+                    thumbnailUrl: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1745382274/lecture_pictures/lecture_thumbnail_68041e2e624f11005b869cdc_4.jpg'
+                    courseId: 68041e2e624f11005b869cdc
+                    lectureNumber: 4
+                    instructorId: 67e26bba0d297baab9da4923
+                    rates:
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                    rating: 0
+                    createdAt: '2025-04-23T04:24:39.577Z'
+                  - lectureId: 68086c60a212c9d1572351cd
+                    title: '1212'
+                    description: '1212'
+                    videoUrl: 'https://res.cloudinary.com/dwpc6ln1q/video/upload/v1745382511/lecture_videos/lecture_video_68041e2e624f11005b869cdc_5.mp4'
+                    playbackUrl: 'https://res.cloudinary.com/dwpc6ln1q/video/upload/sp_auto/v1745382511/lecture_videos/lecture_video_68041e2e624f11005b869cdc_5.m3u8'
+                    thumbnailUrl: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1745382506/lecture_pictures/lecture_thumbnail_68041e2e624f11005b869cdc_5.jpg'
+                    courseId: 68041e2e624f11005b869cdc
+                    lectureNumber: 5
+                    instructorId: 67e26bba0d297baab9da4923
+                    rates:
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                    rating: 0
+                    createdAt: '2025-04-23T04:28:31.480Z'
+                  - lectureId: 68086e62a212c9d1572351f3
+                    title: '31'
+                    description: '31'
+                    videoUrl: 'https://res.cloudinary.com/dwpc6ln1q/video/upload/v1745383018/lecture_videos/lecture_video_68041e2e624f11005b869cdc_6.mp4'
+                    playbackUrl: 'https://res.cloudinary.com/dwpc6ln1q/video/upload/sp_auto/v1745383018/lecture_videos/lecture_video_68041e2e624f11005b869cdc_6.m3u8'
+                    thumbnailUrl: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1745383014/lecture_pictures/lecture_thumbnail_68041e2e624f11005b869cdc_6.jpg'
+                    courseId: 68041e2e624f11005b869cdc
+                    lectureNumber: 6
+                    instructorId: 67e26bba0d297baab9da4923
+                    rates:
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                    rating: 0
+                    createdAt: '2025-04-23T04:36:58.677Z'
+                  - lectureId: 68093927addc440f38d8159a
+                    title: '4556786786'
+                    description: '786786786786786786'
+                    videoUrl: 'https://res.cloudinary.com/dwpc6ln1q/video/upload/v1745434927/lecture_videos/lecture_video_68041e2e624f11005b869cdc_7.mp4'
+                    playbackUrl: 'https://res.cloudinary.com/dwpc6ln1q/video/upload/sp_auto/v1745434927/lecture_videos/lecture_video_68041e2e624f11005b869cdc_7.m3u8'
+                    thumbnailUrl: 'https://res.cloudinary.com/dwpc6ln1q/image/upload/v1745434922/lecture_pictures/lecture_thumbnail_68041e2e624f11005b869cdc_7.jpg'
+                    courseId: 68041e2e624f11005b869cdc
+                    lectureNumber: 7
+                    instructorId: 67e26bba0d297baab9da4923
+                    rates:
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                    rating: 0
+                    createdAt: '2025-04-23T19:02:07.608Z'
+                nbHits: 7
 paths:
-    /auth/login:
-        post:
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            properties:
-                                email:
-                                    format: email
-                                    type: string
-                                password:
-                                    type: string
-                            type: object
-                required: true
-            responses:
-                "200":
-                    content:
-                        application/json:
-                            example:
-                                accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-                                user:
-                                    email: example@gmail.com
-                                    isEmailVerified: false
-                                    isPhoneVerified: false
-                                    name: FirstName LastName
-                                    phone: "+201000000000"
-                                    userId: 67224b4a633c0c0003c88a45
-                                    userProfileImage: https://example.com/profile.jpg
-                            schema:
-                                properties:
-                                    accessToken:
-                                        type: string
-                                    user:
-                                        properties:
-                                            email:
-                                                type: string
-                                            isEmailVerified:
-                                                type: boolean
-                                            isPhoneVerified:
-                                                type: boolean
-                                            name:
-                                                type: string
-                                            phone:
-                                                type: string
-                                            userId:
-                                                type: string
-                                            userProfileImage:
-                                                type: string
-                                        type: object
-                                type: object
-                    description: Successful login
-                "400":
-                    content:
-                        application/json:
-                            example:
-                                msg: Please provide email and password
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                type: object
-                    description: Email or password missing
-                "401":
-                    content:
-                        application/json:
-                            example:
-                                msg: Invalid Credentials
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                type: object
-                    description: Invalid credentials
-            summary: Log in a user
-            tags:
-                - User Authentication
-    /auth/register:
-        post:
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            properties:
-                                email:
-                                    format: email
-                                    type: string
-                                name:
-                                    type: string
-                                password:
-                                    type: string
-                                phone:
-                                    type: string
-                            type: object
-                required: true
-            responses:
-                "201":
-                    content:
-                        application/json:
-                            example:
-                                accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-                                user:
-                                    email: example@gmail.com
-                                    isEmailVerified: false
-                                    isPhoneVerified: false
-                                    name: FirstName LastName
-                                    phone: "+201000000000"
-                                    userId: 67224b4a633c0c0003c88a45
-                                    userProfileImage: https://example.com/profile.jpg
-                            schema:
-                                properties:
-                                    accessToken:
-                                        type: string
-                                    user:
-                                        properties:
-                                            email:
-                                                type: string
-                                            isEmailVerified:
-                                                type: boolean
-                                            isPhoneVerified:
-                                                type: boolean
-                                            name:
-                                                type: string
-                                            phone:
-                                                type: string
-                                            userId:
-                                                type: string
-                                            userProfileImage:
-                                                type: string
-                                        type: object
-                                type: object
-                    description: User registered successfully
-                "400":
-                    content:
-                        application/json:
-                            example:
-                                msg: Email, password, and phone are required
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                type: object
-                    description: Missing required fields
-            summary: Register a new user
-            tags:
-                - User Authentication
-    /auth/reset-password:
-        post:
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            properties:
-                                code:
-                                    type: integer
-                                email:
-                                    type: string
-                                newPassword:
-                                    type: string
-                            type: object
-                required: true
-            responses:
-                "200":
-                    content:
-                        application/json:
-                            example:
-                                msg: Password reset successfully
-                                success: true
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                    success:
-                                        type: boolean
-                                type: object
-                    description: Password reset successfully
-                "400":
-                    content:
-                        application/json:
-                            example:
-                                msg: Invalid code
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                type: object
-                    description: Invalid code or missing fields
-                "404":
-                    content:
-                        application/json:
-                            example:
-                                msg: No user with email petxtv@gmail.com
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                type: object
-                    description: User with email not found
-            summary: Reset the user's password
-            tags:
-                - User Authentication
-    /auth/send-reset-code:
-        post:
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            properties:
-                                email:
-                                    type: string
-                            type: object
-                required: true
-            responses:
-                "200":
-                    content:
-                        application/json:
-                            example:
-                                msg: Reset password code sent to your email
-                                success: true
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                    success:
-                                        type: boolean
-                                type: object
-                    description: Reset code sent successfully
-                "400":
-                    content:
-                        application/json:
-                            example:
-                                msg: Please provide email
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                type: object
-                    description: Email is required
-                "404":
-                    content:
-                        application/json:
-                            example:
-                                msg: No user with email example@gmail.com
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                type: object
-                    description: User with email not found
-            summary: Send a password reset code to the user's email
-            tags:
-                - User Authentication
-    /user/data:
-        get:
-            responses:
-                "200":
-                    content:
-                        application/json:
-                            example:
-                                email: example@gmail.com
-                                isEmailVerified: false
-                                isPhoneVerified: false
-                                name: FirstName LastName
-                                phone: "+201000000000"
-                                userId: 67224b4a633c0c0003c88a45
-                                userProfileImage: https://example.com/profile.jpg
-                            schema:
-                                properties:
-                                    email:
-                                        type: string
-                                    isEmailVerified:
-                                        type: boolean
-                                    isPhoneVerified:
-                                        type: boolean
-                                    name:
-                                        type: string
-                                    phone:
-                                        type: string
-                                    userId:
-                                        type: string
-                                    userProfileImage:
-                                        type: string
-                                type: object
-                    description: get user data successfully
-            security:
-                - BearerAuth: []
-            summary: Get user data
-            tags:
-                - User Data
-        post:
-            requestBody:
-                content:
-                    multipart/form-data:
-                        schema:
-                            properties:
-                                currentPassword:
-                                    default: ""
-                                    type: string
-                                email:
-                                    default: ""
-                                    type: string
-                                name:
-                                    default: ""
-                                    type: string
-                                newPassword:
-                                    default: ""
-                                    type: string
-                                phone:
-                                    default: ""
-                                    type: string
-                                profilePicture:
-                                    description: The image file to upload.
-                                    format: binary
-                                    type: string
-                            type: object
-                required: false
-            responses:
-                "200":
-                    content:
-                        application/json:
-                            example:
-                                email: example@gmail.com
-                                isEmailVerified: false
-                                isPhoneVerified: false
-                                name: FirstName LastName
-                                phone: "+201000000000"
-                                userId: 67224b4a633c0c0003c88a45
-                                userProfileImage: https://example.com/profile.jpg
-                            schema:
-                                properties:
-                                    email:
-                                        type: string
-                                    isEmailVerified:
-                                        type: boolean
-                                    isPhoneVerified:
-                                        type: boolean
-                                    name:
-                                        type: string
-                                    phone:
-                                        type: string
-                                    userId:
-                                        type: string
-                                    userProfileImage:
-                                        type: string
-                                type: object
-                    description: Update User Data
-                "401":
-                    content:
-                        application/json:
-                            example:
-                                msg: Current password is incorrect
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                type: object
-                    description: Error when no current password when changing password or email or
-            security:
-                - BearerAuth: []
-            summary: Update User Data
-            tags:
-                - User Data
-    /user/uploaded-courses:
-        get:
-            description: Retrieve a list of courses uploaded by the authenticated user.
-            responses:
-                "200":
-                    content:
-                        application/json:
-                            example:
-                                courses:
-                                    - category: engineering
-                                      createdAt: "2024-11-22T02:40:07.778Z"
-                                      description: description
-                                      id: 673fef0698b338904809d4ca
-                                      isFav: false
-                                      picture: https://example.com/example.jpg
-                                      price: "70"
-                                      rates:
-                                          - 0
-                                          - 0
-                                          - 0
-                                          - 0
-                                          - 0
-                                      rating: 0
-                                      title: title
-                                nbHits: 1
-                    description: Successfully retrieved the uploaded courses.
-            security:
-                - BearerAuth: []
-            summary: Get uploaded courses
-            tags:
-                - User Data
-    /verify/email:
-        post:
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            properties:
-                                code:
-                                    type: integer
-                            type: object
-                required: true
-            responses:
-                "200":
-                    content:
-                        application/json:
-                            example:
-                                msg: Email verified successfully
-                                success: true
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                    success:
-                                        type: boolean
-                                type: object
-                    description: Email verified successfully
-                "400":
-                    content:
-                        application/json:
-                            example:
-                                msg: Invalid verification code
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                type: object
-                    description: Invalid or missing verification code
-            security:
-                - BearerAuth: []
-            summary: Verify a user's email with a code
-            tags:
-                - User Verification
-    /verify/send/email:
-        post:
-            responses:
-                "200":
-                    content:
-                        application/json:
-                            example:
-                                msg: Verification code sent successfully
-                                success: true
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                    success:
-                                        type: boolean
-                                type: object
-                    description: Verification code sent successfully
-                "400":
-                    content:
-                        application/json:
-                            example:
-                                msg: Email is already verified
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                type: object
-                    description: Email is already verified
-                "500":
-                    content:
-                        application/json:
-                            example:
-                                msg: Failed to send verification code
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                type: object
-                    description: Error sending verification code
-            security:
-                - BearerAuth: []
-            summary: Send an email verification code
-            tags:
-                - User Verification
-    /courses:
-        get:
-            parameters:
-                - description: Filter by title
-                  in: query
-                  name: title
-                  required: false
-                  schema:
-                      type: string
-                - description: Filter by description
-                  in: query
-                  name: description
-                  required: false
-                  schema:
-                      type: string
-                - description: Filter by category
-                  in: query
-                  name: category
-                  required: false
-                  schema:
-                      type: string
-                - description: >-
-                      get all data that (price and rating only) < ,     > ,     = ,     <=
-                      or >= certin number
-                  in: query
-                  name: numericFilters
-                  required: false
-                  schema:
-                      type: string
-                - description: sort data by certin items
-                  in: query
-                  name: sort
-                  required: false
-                  schema:
-                      type: string
-                - description: get only these fields
-                  in: query
-                  name: fields
-                  required: false
-                  schema:
-                      type: string
-                - description: get page
-                  in: query
-                  name: page
-                  required: false
-                  schema:
-                      type: number
-                - description: limit results
-                  in: query
-                  name: limit
-                  required: false
-                  schema:
-                      type: number
-            responses:
-                "200":
-                    content:
-                        application/json:
-                            example:
-                                courses:
-                                    - _id: "12345"
-                                      category: programming
-                                      createdAt: "2024-11-21T18:47:09.657Z"
-                                      description: Introduction to Programming
-                                      instructorId: wafawf
-                                      isFav: false
-                                      picture: https://example.com/wef.jpg
-                                      price: 10
-                                      rates:
-                                          - 0
-                                          - 0
-                                          - 0
-                                          - 0
-                                          - 0
-                                      rating: 0
-                                      title: Introduction to Programming
-                                nbHits: 1
-                            schema:
-                                properties:
-                                    courses:
-                                        items:
-                                            properties:
-                                                _id:
-                                                    type: string
-                                                category:
-                                                    type: string
-                                                createdAt:
-                                                    type: string
-                                                description:
-                                                    type: string
-                                                instructorId:
-                                                    type: string
-                                                isFav:
-                                                    description: Favorite status of the course
-                                                    type: boolean
-                                                picture:
-                                                    type: string
-                                                price:
-                                                    type: string
-                                                rates:
-                                                    type: array
-                                                rating:
-                                                    type: number
-                                                title:
-                                                    type: string
-                                            type: object
-                                        type: array
-                                    nbHits:
-                                        example: 100
-                                        type: integer
-                                type: object
-                    description: Successfully retrieved the courses
-            security:
-                - BearerAuth: []
-            summary: Get all courses data
-            tags:
-                - Courses Data
-        post:
-            requestBody:
-                content:
-                    multipart/form-data:
-                        schema:
-                            properties:
-                                category:
-                                    type: string
-                                coursePicture:
-                                    description: The image file to upload.
-                                    format: binary
-                                    type: string
-                                courseOverview:
-                                    description: the course overview.
-                                    format: binary
-                                    type: string
-                                description:
-                                    type: string
-                                price:
-                                    type: string
-                                title:
-                                    type: string
-                            type: object
-                required: true
-            responses:
-                "201":
-                    content:
-                        application/json:
-                            example:
-                                category: graphic design
-                                description: photoshop course
-                                id: 673f80618fd93e372cc54de5
-                                picture: https://example.com/wef.jpg
-                                overview: https://example.com/wef.mp4
-                                price: "20"
-                                rates:
-                                    - 0
-                                    - 0
-                                    - 0
-                                    - 0
-                                    - 0
-                                rating: 0
-                                title: photoshop
-                            schema:
-                                properties:
-                                    category:
-                                        type: string
-                                    description:
-                                        type: string
-                                    id:
-                                        type: string
-                                    picture:
-                                        type: string
-                                    overview:
-                                        type: string
-                                    price:
-                                        type: string
-                                    rates:
-                                        type: array
-                                    rating:
-                                        type: number
-                                    title:
-                                        type: string
-                                type: object
-                    description: Course created successfully
-                "400":
-                    content:
-                        application/json:
-                            example:
-                                msg: >-
-                                    Please provide title, description, price, category and course
-                                    picture
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                type: object
-                    description: Missing required fields
-            security:
-                - BearerAuth: []
-            summary: Create a new course
-            tags:
-                - Courses Data
-        patch:
-            requestBody:
-                content:
-                    multipart/form-data:
-                        schema:
-                            properties:
-                                courseId:
-                                    type: string
-                                category:
-                                    type: string
-                                coursePicture:
-                                    description: The image file to upload.
-                                    format: binary
-                                    type: string
-                                courseOverview:
-                                    description: the course overview.
-                                    format: binary
-                                    type: string
-                                description:
-                                    type: string
-                                price:
-                                    type: string
-                                title:
-                                    type: string
-                            type: object
-                required: true
-            responses:
-                "201":
-                    content:
-                        application/json:
-                            example:
-                                category: graphic design
-                                description: photoshop course
-                                id: 673f80618fd93e372cc54de5
-                                picture: https://example.com/wef.jpg
-                                overview: https://example.com/wef.mp4
-                                price: "20"
-                                rates:
-                                    - 0
-                                    - 0
-                                    - 0
-                                    - 0
-                                    - 0
-                                rating: 0
-                                title: photoshop
-                            schema:
-                                properties:
-                                    category:
-                                        type: string
-                                    description:
-                                        type: string
-                                    id:
-                                        type: string
-                                    picture:
-                                        type: string
-                                    overview:
-                                        type: string
-                                    price:
-                                        type: string
-                                    rates:
-                                        type: array
-                                    rating:
-                                        type: number
-                                    title:
-                                        type: string
-                                type: object
-                    description: Course updated successfully
-                "400":
-                    content:
-                        application/json:
-                            example:
-                                msg: >-
-                                    Please provide title, description, price, category and course
-                                    picture
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                type: object
-                    description: Missing required fields
-            security:
-                - BearerAuth: []
-            summary: update course data
-            tags:
-                - Courses Data
-    /courses/fav:
-        get:
-            responses:
-                "200":
-                    content:
-                        application/json:
-                            example:
-                                courses:
-                                    - _id: "12345"
-                                      category: programming
-                                      createdAt: "2024-11-21T18:47:09.657Z"
-                                      description: Introduction to Programming
-                                      instructorId: wafawf
-                                      isFav: false
-                                      picture: https://example.com/wef.jpg
-                                      price: 10
-                                      rates:
-                                          - 0
-                                          - 0
-                                          - 0
-                                          - 0
-                                          - 0
-                                      rating: 0
-                                      title: Introduction to Programming
-                                nbHits: 1
-                            schema:
-                                properties:
-                                    courses:
-                                        items:
-                                            properties:
-                                                _id:
-                                                    type: string
-                                                category:
-                                                    type: string
-                                                createdAt:
-                                                    type: string
-                                                description:
-                                                    type: string
-                                                instructorId:
-                                                    type: string
-                                                isFav:
-                                                    description: Favorite status of the course
-                                                    type: boolean
-                                                picture:
-                                                    type: string
-                                                price:
-                                                    type: string
-                                                rates:
-                                                    type: array
-                                                rating:
-                                                    type: number
-                                                title:
-                                                    type: string
-                                            type: object
-                                        type: array
-                                type: object
-                    description: Successfully retrieved the course
-            security:
-                - BearerAuth: []
-            summary: get favourite courses
-            tags:
-                - Courses Data
-    /courses/fav/{courseId}:
-        delete:
-            parameters:
-                - in: path
-                  name: courseId
-                  required: true
-                  schema:
-                      description: The ID of the course to retrieve
-                      type: string
-            responses:
-                "200":
-                    content:
-                        application/json:
-                            example:
-                                msg: Course added to fav
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                type: object
-                    description: Successfully retrieved the course
-                "400":
-                    content:
-                        application/json:
-                            example:
-                                msg: Please provide valid course id
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                type: object
-                    description: course id is incorrect or missing
-            security:
-                - BearerAuth: []
-            summary: delete course from fav
-            tags:
-                - Courses Data
-        post:
-            parameters:
-                - in: path
-                  name: courseId
-                  required: true
-                  schema:
-                      description: The ID of the course to retrieve
-                      type: string
-            responses:
-                "200":
-                    content:
-                        application/json:
-                            example:
-                                msg: Course added to fav
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                type: object
-                    description: Successfully retrieved the course
-                "400":
-                    content:
-                        application/json:
-                            example:
-                                msg: Please provide valid course id
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                type: object
-                    description: course id is incorrect or missing
-            security:
-                - BearerAuth: []
-            summary: add course to fav
-            tags:
-                - Courses Data
-    /courses/{courseId}:
-        get:
-            parameters:
-                - in: path
-                  name: courseId
-                  required: true
-                  schema:
-                      description: The ID of the course to retrieve
-                      type: string
-            responses:
-                "200":
-                    content:
-                        application/json:
-                            example:
-                                course:
-                                    _id: 673f80618fd93e372cc54we5
-                                    category: graphic design
-                                    createdAt: "2024-11-21T18:48:02.207Z"
-                                    description: photoshop course
-                                    instructorId: 673e45b7c8256w20449d5470
-                                    isFav: false
-                                    picture: https://example.com/example.jpg
-                                    price: "20"
-                                    rates:
-                                        - 0
-                                        - 0
-                                        - 0
-                                        - 0
-                                        - 0
-                                    rating: 0
-                                    title: photoshop
-                            schema:
-                                properties:
-                                    course:
-                                        properties:
-                                            _id:
-                                                description: Course ID
-                                                type: string
-                                            category:
-                                                description: Category of the course
-                                                type: string
-                                            createdAt:
-                                                description: Creation date of the course
-                                                format: date-time
-                                                type: string
-                                            description:
-                                                description: Description of the course
-                                                type: string
-                                            instructorId:
-                                                description: Instructor ID
-                                                type: string
-                                            isFav:
-                                                description: Favorite status of the course
-                                                type: boolean
-                                            picture:
-                                                description: URL to the course picture
-                                                format: uri
-                                                type: string
-                                            price:
-                                                description: Price of the course
-                                                type: string
-                                            rates:
-                                                description: Array of ratings
-                                                items:
-                                                    type: integer
-                                                type: array
-                                            rating:
-                                                description: Calculated average rating
-                                                type: integer
-                                            title:
-                                                description: Title of the course
-                                                type: string
-                                        type: object
-                                type: object
-                    description: Successfully retrieved the course
-                "400":
-                    content:
-                        application/json:
-                            example:
-                                msg: Please provide valid course id
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                type: object
-                    description: Invalid or missing course ID
-                "404":
-                    content:
-                        application/json:
-                            example:
-                                msg: Course not found
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                type: object
-                    description: Course not found
-            security:
-                - BearerAuth: []
-            summary: Get a course by ID
-            tags:
-                - Courses Data
-    /lectures:
-        post:
-            description: >-
-                Retrieve a list of lectures for a specified course. Requires
-                authentication and course enrollment.
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            properties:
-                                courseId:
-                                    type: string
-                            type: object
-                required: true
-            security:
-                - BearerAuth: []
-            responses:
-                "200":
-                    content:
-                        application/json:
-                            example:
-                                lectures:
-                                    - courseId: 673f9165aab21d9aa0fb6b99
-                                      createdAt: "2024-11-23T03:45:41.855Z"
-                                      description: Lecture Description
-                                      instructorId: 673f9165aab21d9aa0fb6b99
-                                      lectureId: 673f9165aab21d9aa0fb6b99
-                                      lectureNumber: 1
-                                      rates:
-                                          - 0
-                                          - 0
-                                          - 0
-                                          - 0
-                                          - 0
-                                      rating: 0
-                                      thumbnailUrl: https://example.com/thumbnail.jpg
-                                      title: Sample Lecture
-                                      videoUrl: https://example.com/video.mp4
-                                nbHits: 1
-                    description: List of lectures
-                "400":
-                    description: Invalid course ID
-                "401":
-                    description: Unauthorized access
-            summary: Get all lectures for a course
-            tags:
-                - Lectures
-    /lectures/create:
-        post:
-            description: create new lecture.
-            requestBody:
-                content:
-                    multipart/form-data:
-                        schema:
-                            properties:
-                                courseId:
-                                    default: ""
-                                    type: string
-                                video:
-                                    description: video to upload
-                                    format: binary
-                                    type: string
-                                title:
-                                    default: ""
-                                    type: string
-                                description:
-                                    default: ""
-                                    type: string
-                                thumbnail:
-                                    description: The thumbnail file to upload.
-                                    format: binary
-                                    type: string
-                            type: object
-                required: true
-            security:
-                - BearerAuth: []
-            responses:
-                "200":
-                    content:
-                        application/json:
-                            example:
-                                lectures:
-                                    - courseId: 673f9165aab21d9aa0fb6b99
-                                      createdAt: "2024-11-23T03:45:41.855Z"
-                                      description: Lecture Description
-                                      instructorId: 673f9165aab21d9aa0fb6b99
-                                      lectureId: 673f9165aab21d9aa0fb6b99
-                                      lectureNumber: 1
-                                      rates:
-                                          - 0
-                                          - 0
-                                          - 0
-                                          - 0
-                                          - 0
-                                      rating: 0
-                                      thumbnailUrl: https://example.com/thumbnail.jpg
-                                      title: Sample Lecture
-                                      videoUrl: https://example.com/video.mp4
-                                nbHits: 1
-                    description: List of lectures
-                "400":
-                    description: Invalid course ID
-                "401":
-                    description: Unauthorized access
-            summary: create new lecture.
-            tags:
-                - Lectures
-    /lectures/{lectureId}:
-        get:
-            parameters:
-                - in: path
-                  name: lectureId
-                  required: true
-                  schema:
-                      description: The ID of the course to retrieve
-                      type: string
-            description: get lecture by id.
-            security:
-                - BearerAuth: []
-            responses:
-                "200":
-                    content:
-                        application/json:
-                            example:
-                                lectures:
-                                    - courseId: 673f9165aab21d9aa0fb6b99
-                                      createdAt: "2024-11-23T03:45:41.855Z"
-                                      description: Lecture Description
-                                      instructorId: 673f9165aab21d9aa0fb6b99
-                                      lectureId: 673f9165aab21d9aa0fb6b99
-                                      lectureNumber: 1
-                                      rates:
-                                          - 0
-                                          - 0
-                                          - 0
-                                          - 0
-                                          - 0
-                                      rating: 0
-                                      thumbnailUrl: https://example.com/thumbnail.jpg
-                                      title: Sample Lecture
-                                      videoUrl: https://example.com/video.mp4
-                                nbHits: 1
-                    description: List of lectures
-                "400":
-                    description: Invalid course ID
-                "401":
-                    description: Unauthorized access
-            summary: get lecture by id.
-            tags:
-                - Lectures
-    /payments/payment-sheet:
-        post:
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            properties:
-                                courseId:
-                                    type: string
-                                coupon:
-                                    type: string
-                            type: object
-                        example:
-                            courseId: course id
-                            coupon: coupon
-                required: true
-            responses:
-                "200":
-                    content:
-                        application/json:
-                            example:
-                                paymentIntent: pi_...............
-                                ephemeralKey: ek_...............
-                                customer: cus_............
-                                publishableKey: pk_..............
-                    description: Successful request
-                "400":
-                    content:
-                        application/json:
-                            example:
-                                msg: Please provide valid course id
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                type: object
-                    description: Course id missing
-                "404":
-                    content:
-                        application/json:
-                            example:
-                                msg: There is no course with this course id
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                type: object
-                    description: course not found
-            security:
-                - BearerAuth: []
-            summary: Create payment sheet
-            tags:
-                - Payments
-    /coupons/create:
-        post:
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            properties:
-                                coupon:
-                                    type: string
-                                courseId:
-                                    type: string
-                                discountPercentage:
-                                    type: number
-                                userLimit:
-                                    type: string
-                                expiryDate:
-                                    type: string
-                            type: object
-                        example:
-                            coupon: coupon
-                            courseId: courseId
-                            discountPercentage: 50
-                            userLimit: 50
-                            expiryDate: 5/5/2025
-                required: true
-            responses:
-                "200":
-                    content:
-                        application/json:
-                            example:
-                                success: true
-                                data:
-                                    id: 68065c6c8eded03db15f4238
-                                    coupon: coupon
-                                    courseId: courseId
-                                    discountPercentage: 50
-                                    userLimit: 50
-                                    expiryDate: "2025-05-04T21:00:00.000Z"
-                    description: Successful request
-                "400":
-                    content:
-                        application/json:
-                            example:
-                                msg: >-
-                                    Please provide valid course id or Please provide Coupon,
-                                    CourseId, Discount Percentage, User Limit and Expiry Date
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                type: object
-                    description: >-
-                        Coupon, CourseId, Discount Percentage, User Limit and Expiry Date
-                        missing
-                "404":
-                    content:
-                        application/json:
-                            example:
-                                msg: There is no course with this course id
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                type: object
-                    description: course not found
-            security:
-                - BearerAuth: []
-            summary: Create coupon
-            tags:
-                - Coupons
-    /coupons/get-coupon-data:
-        post:
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            properties:
-                                coupon:
-                                    type: string
-                                courseId:
-                                    type: string
-                            type: object
-                        example:
-                            coupon: coupon
-                            courseId: courseId
-                required: true
-            responses:
-                "200":
-                    content:
-                        application/json:
-                            example:
-                                success: true
-                                data:
-                                    id: 68065c6c8eded03db15f4238
-                                    coupon: coupon
-                                    courseId: courseId
-                                    discountPercentage: 50
-                                    userLimit: 50
-                                    expiryDate: "2025-05-04T21:00:00.000Z"
-                    description: Successful request
-                "400":
-                    content:
-                        application/json:
-                            example:
-                                msg: >-
-                                    Please provide valid course id or Please provide Coupon,
-                                    CourseId, Discount Percentage, User Limit and Expiry Date
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                type: object
-                    description: >-
-                        Coupon, CourseId, Discount Percentage, User Limit and Expiry Date
-                        missing
-                "404":
-                    content:
-                        application/json:
-                            example:
-                                msg: There is no course with this course id
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                type: object
-                    description: course not found
-            security:
-                - BearerAuth: []
-            summary: Get coupon data
-            tags:
-                - Coupons
-    /coupons/delete:
-        delete:
-            requestBody:
-                content:
-                    application/json:
-                        schema:
-                            properties:
-                                coupon:
-                                    type: string
-                                courseId:
-                                    type: string
-                            type: object
-                        example:
-                            coupon: coupon
-                            courseId: courseId
-                required: true
-            responses:
-                "200":
-                    content:
-                        application/json:
-                            example:
-                                success: true
-                                data:
-                                    id: 68065c6c8eded03db15f4238
-                                    coupon: coupon
-                                    courseId: courseId
-                                    discountPercentage: 50
-                                    userLimit: 50
-                                    expiryDate: "2025-05-04T21:00:00.000Z"
-                    description: Successful request
-                "400":
-                    content:
-                        application/json:
-                            example:
-                                msg: >-
-                                    Please provide valid course id or Please provide Coupon,
-                                    CourseId, Discount Percentage, User Limit and Expiry Date
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                type: object
-                    description: >-
-                        Coupon, CourseId, Discount Percentage, User Limit and Expiry Date
-                        missing
-                "404":
-                    content:
-                        application/json:
-                            example:
-                                msg: There is no course with this course id
-                            schema:
-                                properties:
-                                    msg:
-                                        type: string
-                                type: object
-                    description: course not found
-            security:
-                - BearerAuth: []
-            summary: delete coupon
-            tags:
-                - Coupons
+  /auth/login:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  format: email
+                  type: string
+                password:
+                  type: string
+              type: object
+        required: true
+        description: ''
+      responses:
+        '200':
+          $ref: '#/components/responses/auth'
+        '400':
+          content:
+            application/json:
+              example:
+                msg: Please provide email and password
+              schema:
+                properties:
+                  msg:
+                    type: string
+                type: object
+          description: Email or password missing
+        '401':
+          content:
+            application/json:
+              example:
+                msg: Invalid Credentials
+              schema:
+                properties:
+                  msg:
+                    type: string
+                type: object
+          description: Invalid credentials
+      summary: Log in a user
+      tags:
+        - User Authentication
+    servers: []
+  /auth/register:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  format: email
+                  type: string
+                name:
+                  type: string
+                password:
+                  type: string
+                phone:
+                  type: string
+              type: object
+        required: true
+      responses:
+        '201':
+          $ref: '#/components/responses/auth'
+        '400':
+          content:
+            application/json:
+              example:
+                msg: 'Email, password, and phone are required'
+              schema:
+                properties:
+                  msg:
+                    type: string
+                type: object
+          description: Missing required fields
+      summary: Register a new user
+      tags:
+        - User Authentication
+  /auth/reset-password:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                code:
+                  type: integer
+                email:
+                  type: string
+                newPassword:
+                  type: string
+              type: object
+        required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/sendResetCode'
+        '400':
+          content:
+            application/json:
+              example:
+                msg: Invalid code
+              schema:
+                properties:
+                  msg:
+                    type: string
+                type: object
+          description: Invalid code or missing fields
+        '404':
+          content:
+            application/json:
+              example:
+                msg: No user with email petxtv@gmail.com
+              schema:
+                properties:
+                  msg:
+                    type: string
+                type: object
+          description: User with email not found
+      summary: Reset the user's password
+      tags:
+        - User Authentication
+  /auth/send-reset-code:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+              type: object
+        required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/sendResetCode'
+        '400':
+          content:
+            application/json:
+              example:
+                msg: Please provide email
+              schema:
+                properties:
+                  msg:
+                    type: string
+                type: object
+          description: Email is required
+        '404':
+          content:
+            application/json:
+              example:
+                msg: No user with email example@gmail.com
+              schema:
+                properties:
+                  msg:
+                    type: string
+                type: object
+          description: User with email not found
+      summary: Send a password reset code to the user's email
+      tags:
+        - User Authentication
+  /user/data:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                email: example@gmail.com
+                isEmailVerified: false
+                isPhoneVerified: false
+                name: FirstName LastName
+                phone: '+201000000000'
+                userId: 67224b4a633c0c0003c88a45
+                userProfileImage: 'https://example.com/profile.jpg'
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    x-stoplight:
+                      id: aoaxcr602qlao
+                  user:
+                    $ref: '#/components/schemas/User'
+          description: get user data successfully
+      summary: Get user data
+      tags:
+        - User Data
+      security:
+        - accessToken: []
+    post:
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                currentPassword:
+                  default: ''
+                  type: string
+                email:
+                  default: ''
+                  type: string
+                name:
+                  default: ''
+                  type: string
+                newPassword:
+                  default: ''
+                  type: string
+                phone:
+                  default: ''
+                  type: string
+                profilePicture:
+                  description: The image file to upload.
+                  format: binary
+                  type: string
+              type: object
+        required: false
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    x-stoplight:
+                      id: 4gr0743504fzy
+                  user:
+                    $ref: '#/components/schemas/User'
+          description: Update User Data
+        '401':
+          content:
+            application/json:
+              example:
+                msg: Current password is incorrect
+              schema:
+                properties:
+                  msg:
+                    type: string
+                type: object
+          description: Error when no current password when changing password or email or
+      summary: Update User Data
+      tags:
+        - User Data
+      security:
+        - accessToken: []
+  /user/uploaded-courses:
+    get:
+      description: Retrieve a list of courses uploaded by the authenticated user.
+      responses:
+        '200':
+          $ref: '#/components/responses/getCourses'
+      summary: Get uploaded courses
+      tags:
+        - User Data
+      security:
+        - accessToken: []
+  /verify/email:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                code:
+                  type: integer
+              type: object
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                msg: Email verified successfully
+                success: true
+              schema:
+                properties:
+                  msg:
+                    type: string
+                  success:
+                    type: boolean
+                type: object
+          description: Email verified successfully
+        '400':
+          content:
+            application/json:
+              example:
+                msg: Invalid verification code
+              schema:
+                properties:
+                  msg:
+                    type: string
+                type: object
+          description: Invalid or missing verification code
+      security:
+        - accessToken: []
+      summary: Verify a user's email with a code
+      tags:
+        - User Verification
+  /verify/send/email:
+    post:
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                msg: Verification code sent successfully
+                success: true
+              schema:
+                properties:
+                  msg:
+                    type: string
+                  success:
+                    type: boolean
+                type: object
+          description: Verification code sent successfully
+        '400':
+          content:
+            application/json:
+              example:
+                msg: Email is already verified
+              schema:
+                properties:
+                  msg:
+                    type: string
+                type: object
+          description: Email is already verified
+        '500':
+          content:
+            application/json:
+              example:
+                msg: Failed to send verification code
+              schema:
+                properties:
+                  msg:
+                    type: string
+                type: object
+          description: Error sending verification code
+      security:
+        - accessToken: []
+      summary: Send an email verification code
+      tags:
+        - User Verification
+  /courses:
+    get:
+      parameters:
+        - description: Filter by title
+          in: query
+          name: title
+          required: false
+          schema:
+            type: string
+        - description: Filter by description
+          in: query
+          name: description
+          required: false
+          schema:
+            type: string
+        - description: Filter by category
+          in: query
+          name: category
+          required: false
+          schema:
+            type: string
+        - description: 'get all data that (price and rating only) < ,     > ,     = ,     <= or >= certin number'
+          in: query
+          name: numericFilters
+          required: false
+          schema:
+            type: string
+        - description: sort data by certin items
+          in: query
+          name: sort
+          required: false
+          schema:
+            type: string
+        - description: get only these fields
+          in: query
+          name: fields
+          required: false
+          schema:
+            type: string
+        - description: get page
+          in: query
+          name: page
+          required: false
+          schema:
+            type: number
+        - description: limit results
+          in: query
+          name: limit
+          required: false
+          schema:
+            type: number
+      responses:
+        '200':
+          $ref: '#/components/responses/getCourses'
+      security:
+        - accessToken: []
+      summary: Get all courses data
+      tags:
+        - Courses Data
+    post:
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                category:
+                  type: string
+                coursePicture:
+                  description: The image file to upload.
+                  format: binary
+                  type: string
+                courseOverview:
+                  description: the course overview.
+                  format: binary
+                  type: string
+                description:
+                  type: string
+                price:
+                  type: string
+                title:
+                  type: string
+              type: object
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              example:
+                category: graphic design
+                description: photoshop course
+                id: 673f80618fd93e372cc54de5
+                picture: 'https://example.com/wef.jpg'
+                overview: 'https://example.com/wef.mp4'
+                price: '20'
+                rates:
+                  - 0
+                  - 0
+                  - 0
+                  - 0
+                  - 0
+                rating: 0
+                title: photoshop
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: Course created successfully
+        '400':
+          content:
+            application/json:
+              example:
+                msg: 'Please provide title, description, price, category and course picture'
+              schema:
+                properties:
+                  msg:
+                    type: string
+                type: object
+          description: Missing required fields
+      security:
+        - accessToken: []
+      summary: Create a new course
+      tags:
+        - Courses Data
+    patch:
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                courseId:
+                  type: string
+                category:
+                  type: string
+                coursePicture:
+                  description: The image file to upload.
+                  format: binary
+                  type: string
+                courseOverview:
+                  description: the course overview.
+                  format: binary
+                  type: string
+                description:
+                  type: string
+                price:
+                  type: string
+                title:
+                  type: string
+              type: object
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              example:
+                category: graphic design
+                description: photoshop course
+                id: 673f80618fd93e372cc54de5
+                picture: 'https://example.com/wef.jpg'
+                overview: 'https://example.com/wef.mp4'
+                price: '20'
+                rates:
+                  - 0
+                  - 0
+                  - 0
+                  - 0
+                  - 0
+                rating: 0
+                title: photoshop
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: Course updated successfully
+        '400':
+          content:
+            application/json:
+              example:
+                msg: 'Please provide title, description, price, category and course picture'
+              schema:
+                properties:
+                  msg:
+                    type: string
+                type: object
+          description: Missing required fields
+      security:
+        - accessToken: []
+      summary: update course data
+      tags:
+        - Courses Data
+  /courses/fav:
+    get:
+      responses:
+        '200':
+          $ref: '#/components/responses/getCourses'
+      security:
+        - accessToken: []
+      summary: get favourite courses
+      tags:
+        - Courses Data
+  '/courses/fav/{courseId}':
+    delete:
+      parameters:
+        - in: path
+          name: courseId
+          required: true
+          schema:
+            description: The ID of the course to retrieve
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/sendResetCode'
+        '400':
+          content:
+            application/json:
+              example:
+                msg: Please provide valid course id
+              schema:
+                properties:
+                  msg:
+                    type: string
+                type: object
+          description: course id is incorrect or missing
+      security:
+        - accessToken: []
+      summary: delete course from fav
+      tags:
+        - Courses Data
+    post:
+      responses:
+        '200':
+          $ref: '#/components/responses/sendResetCode'
+        '400':
+          content:
+            application/json:
+              example:
+                msg: Please provide valid course id
+              schema:
+                properties:
+                  msg:
+                    type: string
+                type: object
+          description: course id is incorrect or missing
+      security:
+        - accessToken: []
+      summary: add course to fav
+      tags:
+        - Courses Data
+    parameters:
+      - schema:
+          type: string
+        name: courseId
+        in: path
+        required: true
+  '/courses/{courseId}':
+    get:
+      parameters:
+        - in: path
+          name: courseId
+          required: true
+          schema:
+            description: The ID of the course to retrieve
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                course:
+                  _id: 673f80618fd93e372cc54we5
+                  category: graphic design
+                  createdAt: '2024-11-21T18:48:02.207Z'
+                  description: photoshop course
+                  instructorId: 673e45b7c8256w20449d5470
+                  isFav: false
+                  picture: 'https://example.com/example.jpg'
+                  price: '20'
+                  rates:
+                    - 0
+                    - 0
+                    - 0
+                    - 0
+                    - 0
+                  rating: 0
+                  title: photoshop
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    x-stoplight:
+                      id: fd3kmhvjr34vq
+                  course:
+                    $ref: '#/components/schemas/Course'
+          description: Successfully retrieved the course
+        '400':
+          content:
+            application/json:
+              example:
+                msg: Please provide valid course id
+              schema:
+                properties:
+                  msg:
+                    type: string
+                type: object
+          description: Invalid or missing course ID
+        '404':
+          content:
+            application/json:
+              example:
+                msg: Course not found
+              schema:
+                properties:
+                  msg:
+                    type: string
+                type: object
+          description: Course not found
+      security:
+        - accessToken: []
+      summary: Get a course by ID
+      tags:
+        - Courses Data
+  /lectures:
+    post:
+      description: Retrieve a list of lectures for a specified course. Requires authentication and course enrollment.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                courseId:
+                  type: string
+              type: object
+        required: true
+      security:
+        - accessToken: []
+      responses:
+        '200':
+          $ref: '#/components/responses/getLectures'
+        '400':
+          description: Invalid course ID
+        '401':
+          description: Unauthorized access
+      summary: Get all lectures for a course
+      tags:
+        - Lectures
+  /lectures/create:
+    post:
+      description: create new lecture.
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                courseId:
+                  default: ''
+                  type: string
+                video:
+                  description: video to upload
+                  format: binary
+                  type: string
+                title:
+                  default: ''
+                  type: string
+                description:
+                  default: ''
+                  type: string
+                thumbnail:
+                  description: The thumbnail file to upload.
+                  format: binary
+                  type: string
+              type: object
+        required: true
+      security:
+        - accessToken: []
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                lectures:
+                  - courseId: 673f9165aab21d9aa0fb6b99
+                    createdAt: '2024-11-23T03:45:41.855Z'
+                    description: Lecture Description
+                    instructorId: 673f9165aab21d9aa0fb6b99
+                    lectureId: 673f9165aab21d9aa0fb6b99
+                    lectureNumber: 1
+                    rates:
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                    rating: 0
+                    thumbnailUrl: 'https://example.com/thumbnail.jpg'
+                    title: Sample Lecture
+                    videoUrl: 'https://example.com/video.mp4'
+                nbHits: 1
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    x-stoplight:
+                      id: 6e7aqjzutsom1
+                  lecture:
+                    $ref: '#/components/schemas/Lecture'
+          description: List of lectures
+        '400':
+          description: Invalid course ID
+        '401':
+          description: Unauthorized access
+      summary: create new lecture.
+      tags:
+        - Lectures
+  '/lectures/{lectureId}':
+    get:
+      parameters:
+        - in: path
+          name: lectureId
+          required: true
+          schema:
+            description: The ID of the course to retrieve
+            type: string
+      description: get lecture by id.
+      security:
+        - accessToken: []
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                lectures:
+                  - courseId: 673f9165aab21d9aa0fb6b99
+                    createdAt: '2024-11-23T03:45:41.855Z'
+                    description: Lecture Description
+                    instructorId: 673f9165aab21d9aa0fb6b99
+                    lectureId: 673f9165aab21d9aa0fb6b99
+                    lectureNumber: 1
+                    rates:
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                      - 0
+                    rating: 0
+                    thumbnailUrl: 'https://example.com/thumbnail.jpg'
+                    title: Sample Lecture
+                    videoUrl: 'https://example.com/video.mp4'
+                nbHits: 1
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    x-stoplight:
+                      id: ydz9cwxkzvcrl
+                  lecture:
+                    $ref: '#/components/schemas/Lecture'
+          description: List of lectures
+        '400':
+          description: Invalid course ID
+        '401':
+          description: Unauthorized access
+      summary: get lecture by id.
+      tags:
+        - Lectures
+  /payments/payment-sheet:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                courseId:
+                  type: string
+                coupon:
+                  type: string
+              type: object
+            example:
+              courseId: course id
+              coupon: coupon
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                paymentIntent: pi_...............
+                ephemeralKey: ek_...............
+                customer: cus_............
+                publishableKey: pk_..............
+              schema:
+                type: object
+                properties:
+                  paymentIntent:
+                    type: string
+                  ephemeralKey:
+                    type: string
+                  customer:
+                    type: string
+                  publishableKey:
+                    type: string
+                x-examples:
+                  Example 1:
+                    paymentIntent: pi_3RHxaRL4WWG91UTa1UkYaRYp_secret_neiN0GghsXqwWhdRP3caAXQ5k
+                    ephemeralKey: ek_test_YWNjdF8xSmNsNmFMNFdXRzkxVVRhLDBNTTk3enpLQ01lT0NPVmpvd0d2SGZiWW14T1Q4cmE_00fEoO0PXM
+                    customer: cus_SAQpTrr8opSmuA
+                    publishableKey: pk_test_51Jcl6aL4WWG91UTaV2w8BKmr53Dwr9DQtiYS7juSVpPwd2Ju0ataUiqWQ1jI4uwUarHt2FaQOJcK5tbuIN0WiOz500h7K2LWqk
+          description: Successful request
+        '400':
+          content:
+            application/json:
+              example:
+                msg: Please provide valid course id
+              schema:
+                properties:
+                  msg:
+                    type: string
+                type: object
+          description: Course id missing
+        '404':
+          content:
+            application/json:
+              example:
+                msg: There is no course with this course id
+              schema:
+                properties:
+                  msg:
+                    type: string
+                type: object
+          description: course not found
+      security:
+        - accessToken: []
+      summary: Create payment sheet
+      tags:
+        - Payments
+  /coupons/create:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                coupon:
+                  type: string
+                courseId:
+                  type: string
+                discountPercentage:
+                  type: number
+                userLimit:
+                  type: string
+                expiryDate:
+                  type: string
+              type: object
+            example:
+              coupon: coupon
+              courseId: courseId
+              discountPercentage: 50
+              userLimit: 50
+              expiryDate: 5/5/2025
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  id: 68065c6c8eded03db15f4238
+                  coupon: coupon
+                  courseId: courseId
+                  discountPercentage: 50
+                  userLimit: 50
+                  expiryDate: '2025-05-04T21:00:00.000Z'
+              schema:
+                type: object
+                x-examples:
+                  Example 1:
+                    success: true
+                    data:
+                      id: 680c31ac04de6e350cb152ae
+                      coupon: awfawfawf
+                      courseId: 68041e2e624f11005b869cdc
+                      discountPercentage: 50
+                      userLimit: 245
+                      expiryDate: '2021-02-01T22:00:00.000Z'
+                      numberOfUses: 0
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Coupon'
+          description: Successful request
+        '400':
+          content:
+            application/json:
+              example:
+                msg: 'Please provide valid course id or Please provide Coupon, CourseId, Discount Percentage, User Limit and Expiry Date'
+              schema:
+                properties:
+                  msg:
+                    type: string
+                type: object
+          description: 'Coupon, CourseId, Discount Percentage, User Limit and Expiry Date missing'
+        '404':
+          content:
+            application/json:
+              example:
+                msg: There is no course with this course id
+              schema:
+                properties:
+                  msg:
+                    type: string
+                type: object
+          description: course not found
+      security:
+        - accessToken: []
+      summary: Create coupon
+      tags:
+        - Coupons
+  /coupons/get-coupon-data:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                coupon:
+                  type: string
+                courseId:
+                  type: string
+              type: object
+            example:
+              coupon: coupon
+              courseId: courseId
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  id: 68065c6c8eded03db15f4238
+                  coupon: coupon
+                  courseId: courseId
+                  discountPercentage: 50
+                  userLimit: 50
+                  expiryDate: '2025-05-04T21:00:00.000Z'
+              schema:
+                type: object
+                x-examples:
+                  Example 1:
+                    success: true
+                    data:
+                      id: 680c37ed04de6e350cb152d7
+                      coupon: awfawfawf1
+                      courseId: 68041e2e624f11005b869cdc
+                      discountPercentage: 50
+                      userLimit: 245
+                      expiryDate: '2028-02-01T22:00:00.000Z'
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Coupon'
+          description: Successful request
+        '400':
+          content:
+            application/json:
+              example:
+                msg: 'Please provide valid course id or Please provide Coupon, CourseId, Discount Percentage, User Limit and Expiry Date'
+              schema:
+                properties:
+                  msg:
+                    type: string
+                type: object
+          description: 'Coupon, CourseId, Discount Percentage, User Limit and Expiry Date missing'
+        '404':
+          content:
+            application/json:
+              example:
+                msg: There is no course with this course id
+              schema:
+                properties:
+                  msg:
+                    type: string
+                type: object
+          description: course not found
+      security:
+        - accessToken: []
+      summary: Get coupon data
+      tags:
+        - Coupons
+  /coupons/delete:
+    delete:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                coupon:
+                  type: string
+                courseId:
+                  type: string
+              type: object
+            example:
+              coupon: coupon
+              courseId: courseId
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                success: true
+                data:
+                  id: 68065c6c8eded03db15f4238
+                  coupon: coupon
+                  courseId: courseId
+                  discountPercentage: 50
+                  userLimit: 50
+                  expiryDate: '2025-05-04T21:00:00.000Z'
+              schema:
+                type: object
+                x-examples:
+                  Example 1:
+                    success: true
+                    data:
+                      id: 680c37ed04de6e350cb152d7
+                      coupon: awfawfawf1
+                      courseId: 68041e2e624f11005b869cdc
+                      discountPercentage: 50
+                      userLimit: 245
+                      expiryDate: '2028-02-01T22:00:00.000Z'
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Coupon'
+          description: Successful request
+        '400':
+          content:
+            application/json:
+              example:
+                msg: 'Please provide valid course id or Please provide Coupon, CourseId, Discount Percentage, User Limit and Expiry Date'
+              schema:
+                properties:
+                  msg:
+                    type: string
+                type: object
+          description: 'Coupon, CourseId, Discount Percentage, User Limit and Expiry Date missing'
+        '404':
+          content:
+            application/json:
+              example:
+                msg: There is no course with this course id
+              schema:
+                properties:
+                  msg:
+                    type: string
+                type: object
+          description: course not found
+      security:
+        - accessToken: []
+      summary: delete coupon
+      tags:
+        - Coupons
+  /notes:
+    post:
+      summary: create note
+      tags: ["Notes"]
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                x-examples:
+                  Example 1:
+                    success: true
+                    note:
+                      id: 680c31f104de6e350cb152b3
+                      note: wieofjwoiefjwef
+                      lectureId: 680c313e04de6e350cb152a7
+                      videoSeconds: 112
+                properties:
+                  success:
+                    type: boolean
+                  note:
+                    $ref: '#/components/schemas/Note'
+      operationId: awfawf
+      security:
+        - accessToken: []
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                note:
+                  type: string
+                lectureId:
+                  type: string
+                videoSeconds:
+                  type: string
+              x-examples:
+                Example 1:
+                  note: wieofjwoiefjwef
+                  lectureId: 680c313e04de6e350cb152a7
+                  videoSeconds: '112'
+      description: ''
+  '/notes/{noteId}':
+    parameters:
+      - schema:
+          type: string
+        name: noteId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: noteId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: noteId
+        in: path
+        required: true
+    patch:
+      summary: update note data
+      tags: ["Notes"]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    x-stoplight:
+                      id: 6101vflzs47cg
+                  note:
+                    $ref: '#/components/schemas/Note'
+      operationId: patch-notes-noteId
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                note:
+                  type: string
+              x-examples:
+                Example 1:
+                  note: ascasc
+      security:
+        - accessToken: []
+    delete:
+      summary: delete note
+      tags: ["Notes"]
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    x-stoplight:
+                      id: n1wb264viqnob
+                  note:
+                    $ref: '#/components/schemas/Note'
+      operationId: delete-notes-noteId
+      security:
+        - accessToken: []

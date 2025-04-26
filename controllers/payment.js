@@ -10,12 +10,12 @@ const createPaymentSheet = async (req, res) => {
     const user = req.user;
     const { courseId, coupon } = req.body;
     if (!courseId || !isValidObjectId(courseId)) {
-        throw new BadRequestError("Please provide valid course id.");
+        throw new BadRequestError("Please provide valid course id");
     }
 
     const course = await Course.findById(courseId);
     if (!course) {
-        throw new NotFoundError("There is no course with this course id.");
+        throw new NotFoundError("No course with this id");
     }
 
     if (user.enrolledCourses.includes(courseId)) {
