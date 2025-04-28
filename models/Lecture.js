@@ -43,6 +43,10 @@ const lectureSchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
+        duration: {
+            type: Number,
+            required: [true, "Please provide vide duration"],
+        },
     },
     {
         timestamps: true,
@@ -62,6 +66,7 @@ lectureSchema.methods.getData = function () {
         instructorId: this.instructorId,
         rates: this.rates,
         rating: this.rating,
+        duration: this.duration,
         createdAt: this.createdAt,
     };
 };

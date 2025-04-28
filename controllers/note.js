@@ -12,22 +12,20 @@ const createNote = async (req, res) => {
     const user = req.user;
     const { note, lectureId, videoSeconds } = req.body;
 
-    if (
-        !note ||
-        !lectureId ||
-        !isValidObjectId(lectureId) ||
-        !videoSeconds ||
-        isNaN(videoSeconds)
-    ) {
+    if (!lectureId || !isValidObjectId(lectureId)) {
+        throw new BadRequestError("Please provide valid lecture id");
+    }
+
+    if (!note || !videoSeconds || isNaN(videoSeconds)) {
         throw new BadRequestError(
-            "Please provide valide lecture id, note and valid video seconds"
+            "Please provide note and valid video seconds"
         );
     }
 
     const fetchedNote = await Note.findOne({
+        lectureId,
         videoSeconds: parseInt(videoSeconds),
     });
-
     if (fetchedNote) {
         throw new BadRequestError(
             "You can add only one note for the same video second"
@@ -35,22 +33,29 @@ const createNote = async (req, res) => {
     }
 
     const lecture = await Lecture.findOne({ _id: lectureId });
-
     if (!lecture) {
         throw new NotFoundError(`No lecture with this id`);
     }
 
-    // Create the note
-    const newNote = await Note.create({
-        note,
-        lectureId,
-        videoSeconds,
-        studentId: user._id,
-    });
+    const { lectureId: _, ...newNote } = (
+        await Note.create({
+            note,
+            lectureId,
+            videoSeconds: parseInt(videoSeconds),
+            studentId: user._id,
+        })
+    ).getData();
 
     res.status(201).json({
         success: true,
-        note: newNote.getData(),
+        note: {
+            ...newNote,
+            lecture: {
+                _id: lecture._id,
+                title: lecture.title,
+                lectureNumber: lecture.lectureNumber,
+            },
+        },
     }); // Return the created note
 };
 
@@ -115,8 +120,41 @@ const deleteNote = async (req, res) => {
         note: deletedNote.getData(),
     });
 };
+
+const getLectureNotes = async (req, res) => {
+    const user = req.user;
+    const { lectureId } = req.params;
+    if (!lectureId || !isValidObjectId(lectureId)) {
+        throw new BadRequestError("Please provide valid lecture id");
+    }
+
+    const fetchedLecture = await Lecture.find({ _id: lectureId });
+
+    if (!fetchedLecture) {
+        throw new BadRequestError("No lecture with this id");
+    }
+
+    const notes = (
+        await Note.find({
+            lectureId,
+            studentId: user._id.toString(),
+        }).populate("lectureId", "title lectureNumber")
+    ).map((n) => {
+        const { lectureId, ...rest } = {
+            ...n.getData(),
+            lecture: n.lectureId,
+        };
+        return rest;
+    });
+
+    res.status(StatusCodes.OK).json({
+        success: true,
+        notes,
+    });
+};
 module.exports = {
     createNote,
     editNote,
     deleteNote,
+    getLectureNotes,
 };

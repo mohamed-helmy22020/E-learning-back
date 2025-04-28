@@ -275,7 +275,6 @@ const getCourseById = async (req, res) => {
         id: l._id,
         title: l.title,
     }));
-    console.log(lectures);
     const { instructorId, ...courseData } = {
         ...course.getData(),
         instructorDetails: course.instructorId,
