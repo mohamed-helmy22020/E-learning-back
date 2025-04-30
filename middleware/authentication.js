@@ -3,9 +3,14 @@ const jwt = require("jsonwebtoken");
 const { UnauthenticatedError } = require("../errors");
 
 const auth = async (req, res, next) => {
+    const isHandshake = req._query.sid === undefined;
+    if (!isHandshake) {
+        return next();
+    }
+
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        throw new UnauthenticatedError("You are not authenticated");
+        return next(new UnauthenticatedError("You are not authenticated"));
     }
     const token = authHeader.split(" ")[1];
     try {
@@ -14,7 +19,7 @@ const auth = async (req, res, next) => {
         req.user = user;
         next();
     } catch (error) {
-        throw new UnauthenticatedError("You are not authenticated");
+        return next(new UnauthenticatedError("You are not authenticated"));
     }
 };
 
