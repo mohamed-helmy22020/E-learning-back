@@ -39,6 +39,8 @@ messageSchema.methods.getData = function () {
         to: this.to,
         text: this.text,
         seen: this.seen,
+        createdAt: this.createdAt,
+        updatedAt: this.updatedAt,
     };
 };
 module.exports = mongoose.model("Message", messageSchema);

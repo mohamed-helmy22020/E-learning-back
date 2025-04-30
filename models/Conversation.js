@@ -23,6 +23,8 @@ conversationSchema.methods.getData = function () {
         id: this._id,
         participants: this.participants,
         lastMessage: this.lastMessage,
+        createdAt: this.createdAt,
+        updatedAt: this.updatedAt,
     };
 };
 module.exports = mongoose.model("Conversation", conversationSchema);

@@ -45,11 +45,11 @@ module.exports = (io) => {
                 .emit("getConversations", conversations);
         });
 
-        socket.on("getConversationMessages", async (conversationId) => {
+        socket.on("getConversationMessages", async (userId) => {
             try {
                 const conversationMessages = await getConversationMessages(
                     socket,
-                    conversationId
+                    userId
                 );
 
                 chatNamespace

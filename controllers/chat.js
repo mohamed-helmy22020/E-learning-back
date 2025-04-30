@@ -25,12 +25,12 @@ const getPrivateConversation = async (userIdA, userIdB) => {
             $size: 2,
             $all: [id1, id2],
         },
-    });
+    }).populate("lastMessage", "from to text seen");
 
     if (!conversation) {
         conversation = await Conversation.create({
             participants: [id1, id2],
-        });
+        }).populate("lastMessage", "from to text seen");
     }
 
     return conversation;
@@ -67,12 +67,10 @@ const sendMessage = async (socket, io, to, text) => {
     chatNamespace.to(`user:${to}`).emit("receiveMessage", message.getData());
 };
 
-const getConversationMessages = async (socket, conversationId) => {
+const getConversationMessages = async (socket, userId) => {
     const user = socket.request.user;
-    const conversation = await Conversation.findById(conversationId).populate(
-        "lastMessage",
-        "seen from"
-    );
+    const conversation = await getPrivateConversation(user._id, userId);
+
     if (!conversation.participants.includes(user._id)) {
         throw new UnauthenticatedError(
             "You can only get your conversations messages"
@@ -83,11 +81,11 @@ const getConversationMessages = async (socket, conversationId) => {
         conversation.lastMessage.from.toString() !== user._id.toString()
     ) {
         conversation.lastMessage.seen = true;
-        conversation.lastMessage.save();
+        await conversation.lastMessage.save();
     }
     const conversationMessages = (
         await Message.find({
-            conversationId,
+            conversationId: conversation._id,
         })
     ).map((c) => c.getData());
     return conversationMessages;
