@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const { UnauthenticatedError } = require("../errors");
 
 const auth = async (req, res, next) => {
-    const isHandshake = req._query.sid === undefined;
+    const isHandshake = req._query?.sid === undefined;
     if (!isHandshake) {
         return next();
     }
