@@ -1,12 +1,20 @@
 require("dotenv").config();
 require("express-async-errors");
 const express = require("express");
+const http = require("http");
 const app = express();
+const { Server } = require("socket.io");
+const httpServer = http.createServer(app);
 const swaggerUi = require("swagger-ui-express");
 const yaml = require("yamljs");
 const path = require("path"); // Import path module
 const CSS_URL =
     "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css";
+const io = new Server(httpServer, {
+    cors: {
+        origin: "http://localhost:3000",
+    },
+});
 
 // error handler
 const notFoundMiddleware = require("./middleware/not-found");
@@ -36,6 +44,9 @@ const lecturesRouter = require("./routes/lecture");
 const paymentsRouter = require("./routes/payment");
 const couponsRouter = require("./routes/coupon");
 const notesRouter = require("./routes/note");
+
+//sockets
+const registerSockets = require("./sockets");
 
 // extra packages
 app.set("trust proxy", 1);
@@ -79,12 +90,20 @@ app.use(
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
+io.engine.use(authenticateUser);
+
 const port = process.env.PORT || 5000;
+
 const start = async () => {
     try {
         await connectDB(process.env.MONGO_URI);
 
-        app.listen(port, () => {
+        // Load socket namespaces
+
+        registerSockets(io);
+
+        httpServer.listen(port, () => {
+            console.log("=============================================");
             console.log(`Server is listening on http://localhost:${port}/`);
             console.log(
                 "Swagger docs available at http://localhost:5000/api-docs"
