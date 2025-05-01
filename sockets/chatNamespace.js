@@ -42,7 +42,7 @@ module.exports = (io) => {
             console.log(conversations);
             chatNamespace
                 .to(`user:${user._id.toString()}`)
-                .emit("getConversations", conversations);
+                .emit("getConversations", { success: true, conversations });
         });
 
         socket.on("getConversationMessages", async (userId) => {

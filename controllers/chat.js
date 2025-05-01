@@ -12,7 +12,19 @@ const getInstructorsList = async (socket) => {
             },
             { instructorId: 1, _id: 0 }
         ).populate("instructorId", "name userProfileImage email")
-    ).map((c) => c.instructorId);
+    )
+        .map((c) => c.instructorId)
+        .reduce(
+            (acc, instructor) => {
+                if (!acc.map.has(instructor._id)) {
+                    acc.map.set(instructor._id, instructor);
+                    acc.result.push(instructor);
+                }
+                return acc;
+            },
+            { map: new Map(), result: [] }
+        ).result;
+
     socket.request.instructors = enrolledCoursesInstructors;
     return { success: true, instructors: enrolledCoursesInstructors };
 };
@@ -44,8 +56,12 @@ const getAllConversations = async (socket) => {
             participants: user._id,
         })
             .populate("participants", "name userProfileImage")
-            .populate("lastMessage", "from to text seen")
-    ).map((c) => c.getData());
+            .populate("lastMessage", "from to text seen createdAt updatedAt")
+    )
+        .map((c) => c.getData())
+        .map((c) => {
+            return { ...c, lastMessage: c.lastMessage.getData() };
+        });
     return conversations;
 };
 
