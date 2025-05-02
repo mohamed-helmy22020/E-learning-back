@@ -60,7 +60,7 @@ const getAllConversations = async (socket) => {
     )
         .map((c) => c.getData())
         .map((c) => {
-            return { ...c, lastMessage: c.lastMessage.getData() };
+            return { ...c, lastMessage: c.lastMessage?.getData() };
         });
     return conversations;
 };
