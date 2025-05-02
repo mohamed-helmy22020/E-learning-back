@@ -39,7 +39,6 @@ module.exports = (io) => {
 
         socket.on("getConversations", async () => {
             const conversations = await getAllConversations(socket);
-            console.log(conversations);
             chatNamespace
                 .to(`user:${user._id.toString()}`)
                 .emit("getConversations", { success: true, conversations });

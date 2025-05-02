@@ -2,6 +2,7 @@ const { BadRequestError, UnauthenticatedError } = require("../errors");
 const Conversation = require("../models/Conversation");
 const Course = require("../models/Course");
 const Message = require("../models/Message");
+const User = require("../models/User");
 
 const getInstructorsList = async (socket) => {
     const user = socket.request.user;
@@ -40,9 +41,11 @@ const getPrivateConversation = async (userIdA, userIdB) => {
     }).populate("lastMessage", "from to text seen");
 
     if (!conversation) {
-        conversation = await Conversation.create({
-            participants: [id1, id2],
-        }).populate("lastMessage", "from to text seen");
+        conversation = (
+            await Conversation.create({
+                participants: [id1, id2],
+            })
+        ).populate("lastMessage", "from to text seen");
     }
 
     return conversation;
@@ -68,7 +71,10 @@ const getAllConversations = async (socket) => {
 const sendMessage = async (socket, io, to, text) => {
     const user = socket.request.user;
     const chatNamespace = io.of("/api/chat");
-
+    const otherSide = await User.findById(to);
+    if (!otherSide) {
+        throw new BadRequestError("No user with this id");
+    }
     const conversation = await getPrivateConversation(user._id, to);
     const messageData = {
         conversationId: conversation._id,
@@ -95,6 +101,10 @@ const sendMessage = async (socket, io, to, text) => {
 
 const getConversationMessages = async (socket, userId) => {
     const user = socket.request.user;
+    const otherSide = await User.findById(userId);
+    if (!otherSide) {
+        throw new BadRequestError("No user with this id");
+    }
     const conversation = await getPrivateConversation(user._id, userId);
 
     if (!conversation.participants.includes(user._id)) {
@@ -103,8 +113,9 @@ const getConversationMessages = async (socket, userId) => {
         );
     }
     if (
-        !conversation.lastMessage.seen &&
-        conversation.lastMessage.from.toString() !== user._id.toString()
+        conversation.lastMessage &&
+        !conversation.lastMessage?.seen &&
+        conversation.lastMessage?.from.toString() !== user._id.toString()
     ) {
         conversation.lastMessage.seen = true;
         await conversation.lastMessage.save();
