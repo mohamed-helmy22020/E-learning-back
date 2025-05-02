@@ -80,7 +80,14 @@ const sendMessage = async (socket, io, to, text) => {
 
     conversation.lastMessage = message._id;
     await conversation.save();
-    chatNamespace.to(`user:${to}`).emit("receiveMessage", message.getData());
+    chatNamespace
+        .to(`user:${to}`)
+        .to(`user:${user._id.toString()}`)
+        .emit("receiveMessage", {
+            success: true,
+            message: message.getData(),
+            conversation: conversation.getData(),
+        });
 };
 
 const getConversationMessages = async (socket, userId) => {
