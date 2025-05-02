@@ -86,7 +86,10 @@ const sendMessage = async (socket, io, to, text) => {
         .emit("receiveMessage", {
             success: true,
             message: message.getData(),
-            conversation: conversation.getData(),
+            conversation: {
+                ...conversation.getData(),
+                lastMessage: message.getData(),
+            },
         });
 };
 
