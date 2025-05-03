@@ -3,6 +3,7 @@ const {
     sendMessage,
     getConversationMessages,
     getInstructorsList,
+    getPrivateConversation,
 } = require("../controllers/chat");
 
 module.exports = (io) => {
@@ -42,6 +43,20 @@ module.exports = (io) => {
             chatNamespace
                 .to(`user:${user._id.toString()}`)
                 .emit("getConversations", { success: true, conversations });
+        });
+
+        socket.on("getConversation", async (otherSideId) => {
+            const userId = user._id;
+            const conversation = await getPrivateConversation(
+                otherSideId,
+                userId
+            );
+            chatNamespace
+                .to(`user:${user._id.toString()}`)
+                .emit("getConversation", {
+                    success: true,
+                    conversation: conversation.getData(),
+                });
         });
 
         socket.on("getConversationMessages", async (userId) => {

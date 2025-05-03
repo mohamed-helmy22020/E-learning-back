@@ -133,4 +133,5 @@ module.exports = {
     getAllConversations,
     sendMessage,
     getConversationMessages,
+    getPrivateConversation,
 };
