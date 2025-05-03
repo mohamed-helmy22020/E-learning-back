@@ -10,9 +10,13 @@ const { StatusCodes } = require("http-status-codes");
 const mongoose = require("mongoose");
 const {
     handleUploadPicFromBuffer,
-    cloudinary,
     handleUploadVideoFromBuffer,
 } = require("../config/cloudinary");
+const { getIO } = require("../config/socketManager");
+const User = require("../models/User");
+const Notification = require("../models/Notification");
+const io = getIO();
+const notificationNamespace = io.of("/api/notification");
 
 const getCourseLectures = async (req, res) => {
     const user = req.user;
@@ -118,6 +122,23 @@ const uploadLecture = async (req, res) => {
     const lecture = await Lecture.create(lectureData);
     course.lecturesCount++;
     course.save();
+
+    const students = await User.find({
+        enrolledCourses: course._id,
+    });
+
+    students.forEach(async (s) => {
+        const notification = await Notification.create({
+            recipient: s._id,
+            type: "new_lecture",
+            course: course._id,
+            lecture: lecture._id,
+        });
+        notificationNamespace
+            .to(`user:${s._id}`)
+            .emit("receiveNotification", notification.getData());
+    });
+    console.log({ students });
     res.status(StatusCodes.CREATED).json({
         success: true,
         lecture: lecture.getData(),
