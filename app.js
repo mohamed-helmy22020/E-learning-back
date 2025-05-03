@@ -10,12 +10,14 @@ const yaml = require("yamljs");
 const path = require("path"); // Import path module
 const CSS_URL =
     "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css";
+const { init: initSocketIO } = require("./config/socketManager");
+
 const io = new Server(httpServer, {
     cors: {
         origin: "http://localhost:3000",
     },
 });
-
+initSocketIO(io);
 // error handler
 const notFoundMiddleware = require("./middleware/not-found");
 const errorHandlerMiddleware = require("./middleware/error-handler");
@@ -44,6 +46,7 @@ const lecturesRouter = require("./routes/lecture");
 const paymentsRouter = require("./routes/payment");
 const couponsRouter = require("./routes/coupon");
 const notesRouter = require("./routes/note");
+const notificationsRouter = require("./routes/notification");
 
 //sockets
 const registerSockets = require("./sockets");
@@ -75,6 +78,7 @@ app.use("/api/lectures", authenticateUser, lecturesRouter);
 notesRouter;
 app.use("/api/coupons", authenticateUser, couponsRouter);
 app.use("/api/notes", authenticateUser, notesRouter);
+app.use("/api/notifications", authenticateUser, notificationsRouter);
 
 // Swagger documentation route
 app.use(

@@ -3,8 +3,12 @@ const { BadRequestError, NotFoundError } = require("../errors");
 const Course = require("../models/Course");
 const User = require("../models/User");
 const Coupon = require("../models/Coupon");
+const Notification = require("../models/Notification");
+const { getIO } = require("../config/socketManager");
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const io = getIO();
+const notificationNamespace = io.of("/api/notification");
 
 const createPaymentSheet = async (req, res) => {
     const user = req.user;
@@ -108,6 +112,7 @@ const handlePostPaymentEvents = async (req, res) => {
 
             const user = await User.findById(userId);
             const coupon = await Coupon.findById(couponId);
+            const course = await Course.findById(courseId);
             if (!user.enrolledCourses.includes(courseId)) {
                 user.enrolledCourses.push(courseId);
                 await user.save();
@@ -115,6 +120,26 @@ const handlePostPaymentEvents = async (req, res) => {
                     coupon.numberOfUses = coupon.numberOfUses + 1;
                     await coupon.save();
                 }
+
+                let notification = await Notification.findOne({
+                    recipient: course.instructorId,
+                    type: "course_purchased",
+                    course: course._id,
+                });
+                if (!notification) {
+                    notification = await Notification.create({
+                        recipient: course.instructorId,
+                        type: "course_purchased",
+                        course: course._id,
+                    });
+                }
+
+                notification.count += 1;
+                await notification.save();
+                notificationNamespace
+                    .to(`user:${course.instructorId}`)
+                    .emit("receiveNotification", notification.getData());
+                console.log("test is completed");
             }
 
             console.log(`Course purchased: ${courseId} by User: ${userId}`);
