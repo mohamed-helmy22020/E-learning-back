@@ -14,7 +14,7 @@ const getAllNotifications = async (req, res) => {
         await Notification.find({
             recipient: user._id,
         })
-            .populate("course", "title picture")
+            .populate("course", "title picture students")
             .populate("lecture", "title thumbnailUrl")
     ).map((n) => n.getData());
     return res.status(StatusCodes.OK).json({
