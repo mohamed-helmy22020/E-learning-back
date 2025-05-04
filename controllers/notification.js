@@ -9,15 +9,7 @@ const { isValidObjectId } = require("mongoose");
 
 const getAllNotifications = async (req, res) => {
     const user = req.user;
-    await Notification.updateMany(
-        {
-            recipient: user._id,
-            seen: false,
-        },
-        {
-            seen: true,
-        }
-    );
+
     const notifications = (
         await Notification.find({
             recipient: user._id,
