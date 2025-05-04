@@ -120,25 +120,36 @@ const handlePostPaymentEvents = async (req, res) => {
                     coupon.numberOfUses = coupon.numberOfUses + 1;
                     await coupon.save();
                 }
+                course.students += 1;
+                await course.save();
 
                 let notification = await Notification.findOne({
                     recipient: course.instructorId,
                     type: "course_purchased",
                     course: course._id,
-                });
+                }).populate("course", "title picture");
                 if (!notification) {
-                    notification = await Notification.create({
-                        recipient: course.instructorId,
-                        type: "course_purchased",
-                        course: course._id,
-                    });
+                    notification = (
+                        await Notification.create({
+                            recipient: course.instructorId,
+                            type: "course_purchased",
+                            course: course._id,
+                        })
+                    ).populate("course", "title picture");
                 }
 
                 notification.count += 1;
                 await notification.save();
                 notificationNamespace
                     .to(`user:${course.instructorId}`)
-                    .emit("receiveNotification", notification.getData());
+                    .emit("receiveNotification", {
+                        ...notification.getData(),
+                        course: {
+                            _id: course._id,
+                            title: course.title,
+                            picture: course.picture,
+                        },
+                    });
                 console.log("test is completed");
             }
 

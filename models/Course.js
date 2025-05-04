@@ -51,6 +51,10 @@ const courseSchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
+        students: {
+            type: Number,
+            default: 0,
+        },
     },
     { timestamps: true }
 );
@@ -70,6 +74,7 @@ courseSchema.methods.getData = function () {
         createdAt: this.createdAt,
         overview: this.overview,
         overviewPlaybackUrl: this.overviewPlaybackUrl,
+        students: this.students,
     };
 };
 

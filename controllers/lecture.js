@@ -134,11 +134,21 @@ const uploadLecture = async (req, res) => {
             course: course._id,
             lecture: lecture._id,
         });
-        notificationNamespace
-            .to(`user:${s._id}`)
-            .emit("receiveNotification", notification.getData());
+
+        notificationNamespace.to(`user:${s._id}`).emit("receiveNotification", {
+            ...notification.getData(),
+            course: {
+                _id: course._id,
+                title: course.title,
+                picture: course.picture,
+            },
+            lecture: {
+                _id: lecture._id,
+                title: lecture.title,
+                thumbnailUrl: lecture.thumbnailUrl,
+            },
+        });
     });
-    console.log({ students });
     res.status(StatusCodes.CREATED).json({
         success: true,
         lecture: lecture.getData(),

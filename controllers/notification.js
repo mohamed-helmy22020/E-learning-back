@@ -6,12 +6,15 @@ const {
     UnauthenticatedError,
 } = require("../errors");
 const { isValidObjectId } = require("mongoose");
+
 const getAllNotifications = async (req, res) => {
     const user = req.user;
     const notifications = (
         await Notification.find({
             recipient: user._id,
         })
+            .populate("course", "title picture")
+            .populate("lecture", "title thumbnailUrl")
     ).map((n) => n.getData());
     console.log(notifications);
     return res.status(StatusCodes.OK).json({
