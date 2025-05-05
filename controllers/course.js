@@ -317,7 +317,7 @@ const getUploadedCourseData = async (req, res) => {
     return res.status(StatusCodes.OK).json({
         success: true,
         course: courseData,
-        userRate,
+        userRate: userRate.vote,
     });
 };
 
