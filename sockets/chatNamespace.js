@@ -11,7 +11,9 @@ module.exports = (io) => {
 
     chatNamespace.on("connection", async (socket) => {
         const user = socket.request.user;
-
+        if (!user) {
+            socket.disconnect();
+        }
         socket.join(`user:${user._id.toString()}`);
 
         socket.on("instructorsList", async () => {
