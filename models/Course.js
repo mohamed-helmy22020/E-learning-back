@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const calculateAverageRate = require("../utils/averageRate");
 
 const courseSchema = new mongoose.Schema(
     {
@@ -79,6 +80,9 @@ courseSchema.methods.getData = function () {
 };
 
 courseSchema.pre("save", async function (next) {
+    if (this.isModified("rates")) {
+        this.rating = calculateAverageRate(this.rates);
+    }
     next();
 });
 

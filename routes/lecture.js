@@ -4,6 +4,7 @@ const {
     uploadLecture,
     getLectureById,
     updateLectureData,
+    updateLectureProgress,
 } = require("../controllers/lecture");
 const { lectureChecker } = require("../middleware/checkFiles");
 const router = express.Router();
@@ -22,6 +23,7 @@ router
     .patch(uploadLectureFiles, updateLectureData);
 
 router.route("/create").post(uploadLectureFiles, uploadLecture);
+router.route("/progress/:lectureId").post(updateLectureProgress);
 router.route("/:lectureId").get(getLectureById);
 
 module.exports = router;

@@ -269,12 +269,14 @@ const getCourseById = async (req, res) => {
             {
                 courseId,
             },
-            { title: 1, _id: 1 }
+            { title: 1, _id: 1, duration: 1 }
         )
     ).map((l) => ({
         id: l._id,
         title: l.title,
+        duration: l.duration,
     }));
+
     const { instructorId, ...courseData } = {
         ...course.getData(),
         instructorDetails: course.instructorId,
@@ -309,10 +311,13 @@ const getUploadedCourseData = async (req, res) => {
         instructorDetails: course.instructorId,
         isFav: user.favCourses.includes(courseId),
     };
-
+    const userRate = user.ratedCourses.find(
+        (r) => r.course.toString() === courseId
+    );
     return res.status(StatusCodes.OK).json({
         success: true,
         course: courseData,
+        userRate,
     });
 };
 
@@ -397,6 +402,56 @@ const getInstructorData = (req, res) => {
         });
 };
 
+const vote = async (req, res) => {
+    const user = req.user;
+    const { courseId } = req.params;
+    const { vote } = req.body;
+
+    if (!courseId || !mongoose.isValidObjectId(courseId)) {
+        throw new BadRequestError("Please provide course id");
+    }
+
+    if (!vote) {
+        throw new BadRequestError("Please provide the vote");
+    }
+
+    const course = await Course.findById(courseId);
+    if (!course) {
+        throw new NotFoundError("No course with this id");
+    }
+
+    if (!user.enrolledCourses.includes(courseId)) {
+        throw new UnauthenticatedError("You can only vote for your courses");
+    }
+
+    if (
+        user.ratedCourses.findIndex((c) => c.course.toString() === courseId) >
+        -1
+    ) {
+        throw new BadRequestError("You voted for this course");
+    }
+
+    if (vote > 5 || vote < 1) {
+        throw new BadRequestError("Vote should be between 1 and 5");
+    }
+
+    course.rates = course.rates.map((r, i) => {
+        if (i === vote - 1) {
+            return r + 1;
+        }
+        return r;
+    });
+    await course.save();
+    user.ratedCourses.push({
+        course: courseId,
+        vote,
+    });
+    await user.save();
+    res.status(StatusCodes.OK).json({
+        success: true,
+    });
+};
+
 module.exports = {
     createCourse,
     updateCourseData,
@@ -407,4 +462,5 @@ module.exports = {
     addCourseToFav,
     deleteCourseFromFav,
     getInstructorData,
+    vote,
 };

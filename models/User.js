@@ -53,6 +53,41 @@ const userSchema = new mongoose.Schema(
             ref: "Course",
             default: [],
         },
+        ratedCourses: [
+            {
+                course: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "Course",
+                    required: [true, "Course is required"],
+                },
+                vote: {
+                    type: Number,
+                    required: [true, "vote is required"],
+                },
+            },
+        ],
+        watchedLectures: [
+            {
+                course: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "Course",
+                    required: [true, "Course is required"],
+                },
+                lecture: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "Lecture",
+                    required: [true, "Lecture is required"],
+                },
+                duration: {
+                    type: Number,
+                    required: [true, "Duration is required"],
+                },
+                isDone: {
+                    type: Boolean,
+                    default: false,
+                },
+            },
+        ],
         stripeCustomerId: {
             type: String,
         },

@@ -41,11 +41,28 @@ const getCourseLectures = async (req, res) => {
         );
     }
 
-    const lectures = await Lecture.find({ courseId: courseId });
+    let lectures = await Lecture.find({ courseId: courseId });
+    console.log({ lectures });
+    console.log(user.watchedLectures);
+    lectures = lectures.map((l) => {
+        console.log(
+            user.watchedLectures.find((wl) => {
+                console.log(wl.lecture.toString());
+                console.log(l._id);
+                return wl.lecture.toString() === l._id.toString();
+            })
+        );
+        return {
+            ...l.getData(),
+            progress: user.watchedLectures.find(
+                (wl) => wl.lecture.toString() === l._id.toString()
+            ),
+        };
+    });
 
     res.status(StatusCodes.OK).json({
         success: true,
-        lectures: lectures.map((lecture) => lecture.getData()),
+        lectures,
         nbHits: lectures.length,
     });
 };
@@ -264,9 +281,62 @@ const getLectureById = async (req, res) => {
     });
 };
 
+const updateLectureProgress = async (req, res) => {
+    const user = req.user;
+    const { lectureId } = req.params;
+    const { duration } = req.body;
+
+    if (!lectureId || !isValidObjectId(lectureId)) {
+        throw new BadRequestError("Please provide valid lecture id");
+    }
+
+    const lecture = await Lecture.findById(lectureId);
+    if (!lecture) {
+        throw new NotFoundError("No lecture with this id");
+    }
+
+    if (!duration) {
+        throw new BadRequestError("Please Provide duration");
+    }
+
+    if (duration > lecture.duration || duration < 0) {
+        throw new BadRequestError("Duration is not valid");
+    }
+
+    const wlIndex = user.watchedLectures.findIndex(
+        (wl) => wl.lecture.toString() === lectureId
+    );
+    console.log({ wlIndex });
+    if (wlIndex > -1) {
+        if (duration > user.watchedLectures[wlIndex].duration) {
+            user.watchedLectures[wlIndex] = {
+                course: lecture.courseId,
+                lecture: lecture._id,
+                duration,
+                isDone: duration >= lecture.duration - 10,
+            };
+        }
+    } else {
+        user.watchedLectures.push({
+            course: lecture.courseId,
+            lecture: lecture._id,
+            duration,
+            isDone: duration >= lecture.duration - 10,
+        });
+    }
+
+    await user.save();
+    console.log(user.watchedLectures);
+
+    res.status(StatusCodes.OK).json({
+        success: true,
+    });
+};
+
 module.exports = {
     getCourseLectures,
     uploadLecture,
     getLectureById,
     updateLectureData,
+    updateLectureProgress,
 };

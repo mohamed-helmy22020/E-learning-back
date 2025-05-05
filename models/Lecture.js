@@ -35,14 +35,6 @@ const lectureSchema = new mongoose.Schema(
             ref: "User",
             required: [true, "Please provide instructor"],
         },
-        rates: {
-            type: [Number],
-            default: [0, 0, 0, 0, 0],
-        },
-        rating: {
-            type: Number,
-            default: 0,
-        },
         duration: {
             type: Number,
             required: [true, "Please provide vide duration"],
@@ -64,8 +56,6 @@ lectureSchema.methods.getData = function () {
         courseId: this.courseId,
         lectureNumber: this.lectureNumber,
         instructorId: this.instructorId,
-        rates: this.rates,
-        rating: this.rating,
         duration: this.duration,
         createdAt: this.createdAt,
     };
