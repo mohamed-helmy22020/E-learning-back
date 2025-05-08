@@ -452,6 +452,41 @@ const vote = async (req, res) => {
     });
 };
 
+const getCoursesProgress = async (req, res) => {
+    const user = req.user;
+    const courses = [];
+    const watchedLectures = user.watchedLectures.sort(
+        (a, b) =>
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+    );
+    await Promise.all(
+        watchedLectures.map(async (l) => {
+            console.log({ l });
+            const courseIndex = courses.findIndex((c) => c.id === l.course);
+            if (courseIndex > -1) {
+                console.log({ courseIndex });
+                if (l.isDone) courses[courseIndex].lecturesFinished += 1;
+            } else {
+                const { _id, ...course } = await Course.findById(
+                    l.course,
+                    "id title description picture lecturesCount"
+                ).map((c) => ({
+                    id: c._id,
+                    ...c._doc,
+                    lecturesFinished: l.isDone ? 1 : 0,
+                }));
+                console.log("test6");
+                console.log({ course });
+                courses.push(course);
+            }
+        })
+    );
+    res.status(StatusCodes.OK).json({
+        success: true,
+        courses: courses,
+    });
+};
+
 module.exports = {
     createCourse,
     updateCourseData,
@@ -463,4 +498,5 @@ module.exports = {
     deleteCourseFromFav,
     getInstructorData,
     vote,
+    getCoursesProgress,
 };

@@ -26,7 +26,6 @@ const getAllNotifications = async (req, res) => {
 const seeNotification = async (req, res) => {
     const user = req.user;
     const { notificationId } = req.params;
-    console.log({ notificationId });
     if (!notificationId || !isValidObjectId(notificationId)) {
         throw new BadRequestError("Please provide valid notification id");
     }
@@ -42,7 +41,6 @@ const seeNotification = async (req, res) => {
 
     notification.seen = true;
     notification.save();
-    console.log("test4");
     res.status(StatusCodes.OK).json({
         success: true,
     });

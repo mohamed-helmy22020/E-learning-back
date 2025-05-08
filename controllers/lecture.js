@@ -42,21 +42,17 @@ const getCourseLectures = async (req, res) => {
     }
 
     let lectures = await Lecture.find({ courseId: courseId });
-    console.log({ lectures });
-    console.log(user.watchedLectures);
     lectures = lectures.map((l) => {
-        console.log(
-            user.watchedLectures.find((wl) => {
-                console.log(wl.lecture.toString());
-                console.log(l._id);
-                return wl.lecture.toString() === l._id.toString();
-            })
-        );
         return {
             ...l.getData(),
             progress: user.watchedLectures.find(
                 (wl) => wl.lecture.toString() === l._id.toString()
-            ),
+            ) || {
+                course: course._id,
+                lecture: l._id,
+                duration: 0,
+                isDone: 0,
+            },
         };
     });
 
@@ -306,7 +302,6 @@ const updateLectureProgress = async (req, res) => {
     const wlIndex = user.watchedLectures.findIndex(
         (wl) => wl.lecture.toString() === lectureId
     );
-    console.log({ wlIndex });
     if (wlIndex > -1) {
         if (duration > user.watchedLectures[wlIndex].duration) {
             user.watchedLectures[wlIndex] = {
@@ -314,6 +309,7 @@ const updateLectureProgress = async (req, res) => {
                 lecture: lecture._id,
                 duration,
                 isDone: duration >= lecture.duration - 10,
+                updatedAt: new Date().toISOString(),
             };
         }
     } else {
@@ -324,9 +320,9 @@ const updateLectureProgress = async (req, res) => {
             isDone: duration >= lecture.duration - 10,
         });
     }
+    console.log({ wl: user.watchedLectures });
 
     await user.save();
-    console.log(user.watchedLectures);
 
     res.status(StatusCodes.OK).json({
         success: true,

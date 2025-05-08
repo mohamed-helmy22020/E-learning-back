@@ -18,6 +18,6 @@ router
     .post(upload.single("profilePicture"), updateUserData);
 
 router.route("/uploaded-courses").get(getUploadedCourses);
-//TODO: Add route to swagger
+
 router.route("/enrolled-courses").get(getEnrolledCourses);
 module.exports = router;
