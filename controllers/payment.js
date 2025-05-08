@@ -150,7 +150,6 @@ const handlePostPaymentEvents = async (req, res) => {
                             picture: course.picture,
                         },
                     });
-                console.log("test is completed");
             }
 
             console.log(`Course purchased: ${courseId} by User: ${userId}`);

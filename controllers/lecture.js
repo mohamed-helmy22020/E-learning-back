@@ -320,7 +320,6 @@ const updateLectureProgress = async (req, res) => {
             isDone: duration >= lecture.duration - 10,
         });
     }
-    console.log({ wl: user.watchedLectures });
 
     await user.save();
 

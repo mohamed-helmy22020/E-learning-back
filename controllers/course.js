@@ -305,19 +305,19 @@ const getUploadedCourseData = async (req, res) => {
     if (!course) {
         throw new NotFoundError("Course not found");
     }
-
+    const userRate = user.ratedCourses.find(
+        (r) => r.course.toString() === courseId
+    );
     const { instructorId, ...courseData } = {
         ...course.getData(),
         instructorDetails: course.instructorId,
         isFav: user.favCourses.includes(courseId),
+        userRate: userRate?.vote,
     };
-    const userRate = user.ratedCourses.find(
-        (r) => r.course.toString() === courseId
-    );
+
     return res.status(StatusCodes.OK).json({
         success: true,
         course: courseData,
-        userRate: userRate?.vote,
     });
 };
 
@@ -461,10 +461,8 @@ const getCoursesProgress = async (req, res) => {
     );
     await Promise.all(
         watchedLectures.map(async (l) => {
-            console.log({ l });
             const courseIndex = courses.findIndex((c) => c.id === l.course);
             if (courseIndex > -1) {
-                console.log({ courseIndex });
                 if (l.isDone) courses[courseIndex].lecturesFinished += 1;
             } else {
                 const { _id, ...course } = await Course.findById(
@@ -475,9 +473,6 @@ const getCoursesProgress = async (req, res) => {
                     ...c._doc,
                     lecturesFinished: l.isDone ? 1 : 0,
                 }));
-                console.log("test6");
-                console.log({ course });
-                courses.push(course);
             }
         })
     );

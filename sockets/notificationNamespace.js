@@ -9,7 +9,7 @@ module.exports = (io) => {
         socket.join(`user:${user._id.toString()}`);
 
         socket.on("disconnect", () => {
-            console.log("User disconnected from /chat");
+            console.log("User disconnected from /Notifications");
         });
     });
 };
