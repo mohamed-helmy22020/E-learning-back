@@ -26,12 +26,11 @@ This service is the API layer only. The user interface lives in a separate repos
 (Tailwind, shadcn/ui, `next-intl` for Arabic/English) that talks to this API over REST and
 Socket.IO.
 
-| | Repository |
-| --- | --- |
-| Backend (this repo) | [`mohamed-helmy22020/E-learning-back`](https://github.com/mohamed-helmy22020/E-learning-back) |
-| Frontend | [`mohamed-helmy22020/E-learning-front`](https://github.com/mohamed-helmy22020/E-learning-front) |
-| Deployed API | [elearning.vercel.app](https://elearning.vercel.app/api) |
-| Deployed web app | [e-learning-front-three.vercel.app](https://e-learning-front-three.vercel.app) |
+|                     | Repository                                                                                      |
+| ------------------- | ----------------------------------------------------------------------------------------------- |
+| Backend (this repo) | [`mohamed-helmy22020/E-learning-back`](https://github.com/mohamed-helmy22020/E-learning-back)   |
+| Frontend            | [`mohamed-helmy22020/E-learning-front`](https://github.com/mohamed-helmy22020/E-learning-front) |
+| Deployed web app    | [e-learning-front-three.vercel.app](https://e-learning-front-three.vercel.app)                  |
 
 > [!NOTE]
 > There is no `role` field. A user becomes an instructor simply by owning at least one course, and
@@ -105,20 +104,20 @@ npm install
 
 Create a `.env` file in the project root and fill in the values:
 
-| Variable | Required | Description |
-| --- | --- | --- |
-| `MONGO_URI` | yes | MongoDB connection string |
-| `ACCESS_TOKEN_SECRET` | yes | Secret used to sign and verify JWTs |
-| `SERVER_URL` | yes | Public base URL of this API, used for the Swagger server entry (e.g. `http://localhost:5000`) |
-| `JWT_EXPIRES_IN` | no | Reserved for token expiry — not yet applied to `createAccessToken()` |
-| `EMAIL_USER` | for email | Gmail address used as the SMTP sender |
-| `EMAIL_PASS` | for email | Gmail app password |
-| `CLOUDINARY_CLOUD_NAME` | for media | Cloudinary cloud name |
-| `CLOUDINARY_API_KEY` | for media | Cloudinary API key |
-| `CLOUDINARY_API_SECRET` | for media | Cloudinary API secret |
-| `STRIPE_SECRET_KEY` | for payments | Stripe secret key |
-| `STRIPE_PUBLISHABLE_KEY` | for payments | Stripe publishable key, consumed by the frontend |
-| `STRIPE_WEBHOOK_SECRET` | for payments | Signing secret for the `checkout.session.completed` event |
+| Variable                 | Required     | Description                                                                                   |
+| ------------------------ | ------------ | --------------------------------------------------------------------------------------------- |
+| `MONGO_URI`              | yes          | MongoDB connection string                                                                     |
+| `ACCESS_TOKEN_SECRET`    | yes          | Secret used to sign and verify JWTs                                                           |
+| `SERVER_URL`             | yes          | Public base URL of this API, used for the Swagger server entry (e.g. `http://localhost:5000`) |
+| `JWT_EXPIRES_IN`         | no           | Reserved for token expiry — not yet applied to `createAccessToken()`                          |
+| `EMAIL_USER`             | for email    | Gmail address used as the SMTP sender                                                         |
+| `EMAIL_PASS`             | for email    | Gmail app password                                                                            |
+| `CLOUDINARY_CLOUD_NAME`  | for media    | Cloudinary cloud name                                                                         |
+| `CLOUDINARY_API_KEY`     | for media    | Cloudinary API key                                                                            |
+| `CLOUDINARY_API_SECRET`  | for media    | Cloudinary API secret                                                                         |
+| `STRIPE_SECRET_KEY`      | for payments | Stripe secret key                                                                             |
+| `STRIPE_PUBLISHABLE_KEY` | for payments | Stripe publishable key, consumed by the frontend                                              |
+| `STRIPE_WEBHOOK_SECRET`  | for payments | Signing secret for the `checkout.session.completed` event                                     |
 
 > [!IMPORTANT]
 > `.env` is gitignored — never commit real credentials. On Vercel, add the same variables under
@@ -126,11 +125,11 @@ Create a `.env` file in the project root and fill in the values:
 
 ### Run
 
-| Command | Description |
-| --- | --- |
-| `npm run devStart` | Development server with nodemon (watches `.js` and `.yaml`) |
-| `npm start` | Production server |
-| `npm run vercelDev` | Reproduce the Vercel runtime locally on port 5000 |
+| Command             | Description                                                 |
+| ------------------- | ----------------------------------------------------------- |
+| `npm run devStart`  | Development server with nodemon (watches `.js` and `.yaml`) |
+| `npm start`         | Production server                                           |
+| `npm run vercelDev` | Reproduce the Vercel runtime locally on port 5000           |
 
 The server starts on `PORT` (default `5000`) and only begins listening once the database
 connection succeeds.
@@ -168,87 +167,87 @@ Errors are returned as `{ "msg": "..." }` with a matching HTTP status code.
 
 ### Auth — `/api/auth`
 
-| Method | Path | Description |
-| --- | --- | --- |
-| `POST` | `/auth/register` | Create an account, returns a user object and access token |
-| `POST` | `/auth/login` | Log in with email and password |
-| `POST` | `/auth/send-reset-code` | Email a password reset code |
-| `POST` | `/auth/reset-password` | Reset the password with a valid code |
+| Method | Path                    | Description                                               |
+| ------ | ----------------------- | --------------------------------------------------------- |
+| `POST` | `/auth/register`        | Create an account, returns a user object and access token |
+| `POST` | `/auth/login`           | Log in with email and password                            |
+| `POST` | `/auth/send-reset-code` | Email a password reset code                               |
+| `POST` | `/auth/reset-password`  | Reset the password with a valid code                      |
 
 ### Verification — `/api/verify`
 
-| Method | Path | Description |
-| --- | --- | --- |
+| Method | Path                 | Description                     |
+| ------ | -------------------- | ------------------------------- |
 | `POST` | `/verify/send/email` | Send an email verification code |
-| `POST` | `/verify/email` | Verify the email with the code |
+| `POST` | `/verify/email`      | Verify the email with the code  |
 
 ### User — `/api/user`
 
-| Method | Path | Description |
-| --- | --- | --- |
-| `GET` | `/user/data` | Current user profile |
-| `POST` | `/user/data` | Update profile — `multipart/form-data`, field `profilePicture` |
-| `GET` | `/user/uploaded-courses` | Courses owned by the user |
-| `GET` | `/user/enrolled-courses` | Courses the user has purchased |
+| Method | Path                     | Description                                                    |
+| ------ | ------------------------ | -------------------------------------------------------------- |
+| `GET`  | `/user/data`             | Current user profile                                           |
+| `POST` | `/user/data`             | Update profile — `multipart/form-data`, field `profilePicture` |
+| `GET`  | `/user/uploaded-courses` | Courses owned by the user                                      |
+| `GET`  | `/user/enrolled-courses` | Courses the user has purchased                                 |
 
 ### Courses — `/api/courses`
 
-| Method | Path | Description |
-| --- | --- | --- |
-| `GET` | `/courses` | List courses, filterable by category |
-| `POST` | `/courses` | Create a course — fields `coursePicture`, `courseOverview` |
-| `PATCH` | `/courses` | Update a course — same file fields |
-| `GET` | `/courses/:courseId` | Course details |
-| `GET` | `/courses/uploaded-course/:courseId` | Course with instructor-specific data |
-| `GET` | `/courses/instructor/:instructorId` | Courses by instructor |
-| `GET` | `/courses/fav` | Favourite courses |
-| `POST` | `/courses/fav/:courseId` | Add a course to favourites |
-| `DELETE` | `/courses/fav/:courseId` | Remove a course from favourites |
-| `POST` | `/courses/vote/:courseId` | Rate a course from 1 to 5 |
-| `GET` | `/courses/progress` | Progress summary for enrolled courses |
+| Method   | Path                                 | Description                                                |
+| -------- | ------------------------------------ | ---------------------------------------------------------- |
+| `GET`    | `/courses`                           | List courses, filterable by category                       |
+| `POST`   | `/courses`                           | Create a course — fields `coursePicture`, `courseOverview` |
+| `PATCH`  | `/courses`                           | Update a course — same file fields                         |
+| `GET`    | `/courses/:courseId`                 | Course details                                             |
+| `GET`    | `/courses/uploaded-course/:courseId` | Course with instructor-specific data                       |
+| `GET`    | `/courses/instructor/:instructorId`  | Courses by instructor                                      |
+| `GET`    | `/courses/fav`                       | Favourite courses                                          |
+| `POST`   | `/courses/fav/:courseId`             | Add a course to favourites                                 |
+| `DELETE` | `/courses/fav/:courseId`             | Remove a course from favourites                            |
+| `POST`   | `/courses/vote/:courseId`            | Rate a course from 1 to 5                                  |
+| `GET`    | `/courses/progress`                  | Progress summary for enrolled courses                      |
 
 ### Lectures — `/api/lectures`
 
-| Method | Path | Description |
-| --- | --- | --- |
-| `POST` | `/lectures` | Lectures of a course (body carries `courseId`) |
-| `POST` | `/lectures/create` | Create a lecture — fields `video`, `thumbnail` |
-| `PATCH` | `/lectures` | Update a lecture — same file fields |
-| `GET` | `/lectures/:lectureId` | Lecture details |
-| `POST` | `/lectures/progress/:lectureId` | Record watched duration and completion |
+| Method  | Path                            | Description                                    |
+| ------- | ------------------------------- | ---------------------------------------------- |
+| `POST`  | `/lectures`                     | Lectures of a course (body carries `courseId`) |
+| `POST`  | `/lectures/create`              | Create a lecture — fields `video`, `thumbnail` |
+| `PATCH` | `/lectures`                     | Update a lecture — same file fields            |
+| `GET`   | `/lectures/:lectureId`          | Lecture details                                |
+| `POST`  | `/lectures/progress/:lectureId` | Record watched duration and completion         |
 
 ### Payments — `/api/payments`
 
-| Method | Path | Description |
-| --- | --- | --- |
-| `POST` | `/payments/payment-sheet` | Create a PaymentSheet for a course, applying a coupon if given |
-| `POST` | `/payments/webhook` | Stripe webhook — raw body, signature verified, enrolls the student |
+| Method | Path                      | Description                                                        |
+| ------ | ------------------------- | ------------------------------------------------------------------ |
+| `POST` | `/payments/payment-sheet` | Create a PaymentSheet for a course, applying a coupon if given     |
+| `POST` | `/payments/webhook`       | Stripe webhook — raw body, signature verified, enrolls the student |
 
 ### Coupons — `/api/coupons`
 
-| Method | Path | Description |
-| --- | --- | --- |
-| `GET` | `/coupons/get-course-coupons/:courseId` | Coupons available for a course |
-| `POST` | `/coupons/get-coupon-data` | Validate a coupon code |
-| `POST` | `/coupons/create` | Create a coupon |
-| `DELETE` | `/coupons/delete` | Delete a coupon |
+| Method   | Path                                    | Description                    |
+| -------- | --------------------------------------- | ------------------------------ |
+| `GET`    | `/coupons/get-course-coupons/:courseId` | Coupons available for a course |
+| `POST`   | `/coupons/get-coupon-data`              | Validate a coupon code         |
+| `POST`   | `/coupons/create`                       | Create a coupon                |
+| `DELETE` | `/coupons/delete`                       | Delete a coupon                |
 
 ### Notes — `/api/notes`
 
-| Method | Path | Description |
-| --- | --- | --- |
-| `POST` | `/notes` | Create a note at a video timestamp |
-| `GET` | `/notes/get-lecture-notes/:lectureId` | Notes for a lecture |
-| `PATCH` | `/notes/:noteId` | Edit a note |
-| `DELETE` | `/notes/:noteId` | Delete a note |
+| Method   | Path                                  | Description                        |
+| -------- | ------------------------------------- | ---------------------------------- |
+| `POST`   | `/notes`                              | Create a note at a video timestamp |
+| `GET`    | `/notes/get-lecture-notes/:lectureId` | Notes for a lecture                |
+| `PATCH`  | `/notes/:noteId`                      | Edit a note                        |
+| `DELETE` | `/notes/:noteId`                      | Delete a note                      |
 
 ### Notifications — `/api/notifications`
 
-| Method | Path | Description |
-| --- | --- | --- |
-| `GET` | `/notifications` | Notifications for the current user |
-| `POST` | `/notifications/see/:notificationId` | Mark one as seen |
-| `POST` | `/notifications/see-all` | Mark all as seen |
+| Method | Path                                 | Description                        |
+| ------ | ------------------------------------ | ---------------------------------- |
+| `GET`  | `/notifications`                     | Notifications for the current user |
+| `POST` | `/notifications/see/:notificationId` | Mark one as seen                   |
+| `POST` | `/notifications/see-all`             | Mark all as seen                   |
 
 ### Swagger
 
@@ -265,9 +264,9 @@ Interactive documentation is served from `docs/swagger.yaml` at
 
 Socket.IO runs on the same HTTP server. Two namespaces are registered in `sockets/`:
 
-| Namespace | Purpose |
-| --- | --- |
-| `/api/chat` | Private student↔instructor conversations |
+| Namespace           | Purpose                                           |
+| ------------------- | ------------------------------------------------- |
+| `/api/chat`         | Private student↔instructor conversations          |
 | `/api/notification` | Push notifications for new lectures and purchases |
 
 Both authenticate the handshake with `io.engine.use(authenticateUser)`, which expects the same
@@ -275,16 +274,16 @@ bearer token used for REST, sent as an `Authorization: Bearer <token>` handshake
 
 **Chat events**
 
-| Direction | Event | Payload |
-| --- | --- | --- |
-| → server | `instructorsList` | — |
-| → server | `getConversations` | — |
-| → server | `getConversation` | other user's id |
-| → server | `getConversationMessages` | other user's id |
-| → server | `sendMessage` | recipient id, message text |
-| ← client | `instructorsList`, `getConversations`, `getConversation`, `getConversationMessages` | matching data |
-| ← client | `receiveMessage` | incoming message |
-| ← client | `errors` | error message |
+| Direction | Event                                                                               | Payload                    |
+| --------- | ----------------------------------------------------------------------------------- | -------------------------- |
+| → server  | `instructorsList`                                                                   | —                          |
+| → server  | `getConversations`                                                                  | —                          |
+| → server  | `getConversation`                                                                   | other user's id            |
+| → server  | `getConversationMessages`                                                           | other user's id            |
+| → server  | `sendMessage`                                                                       | recipient id, message text |
+| ← client  | `instructorsList`, `getConversations`, `getConversation`, `getConversationMessages` | matching data              |
+| ← client  | `receiveMessage`                                                                    | incoming message           |
+| ← client  | `errors`                                                                            | error message              |
 
 Each socket joins a personal room named `user:<userId>`, which is how targeted notifications and
 messages are delivered.
@@ -299,11 +298,11 @@ messages are delivered.
 Files are received as `multipart/form-data` through `multer` using in-memory storage and streamed
 to Cloudinary, so nothing is written to the local filesystem.
 
-| Field | Type | Limit |
-| --- | --- | --- |
-| `profilePicture`, `coursePicture` | JPEG, PNG, GIF | 5 MB |
-| `thumbnail` | JPEG, PNG, GIF | 5 MB |
-| `video`, `courseOverview` | MP4, MOV, AVI, MKV, WEBM | 100 MB |
+| Field                             | Type                     | Limit  |
+| --------------------------------- | ------------------------ | ------ |
+| `profilePicture`, `coursePicture` | JPEG, PNG, GIF           | 5 MB   |
+| `thumbnail`                       | JPEG, PNG, GIF           | 5 MB   |
+| `video`, `courseOverview`         | MP4, MOV, AVI, MKV, WEBM | 100 MB |
 
 Cloudinary returns a `public_id`; the API stores the derived playback URL on the document and
 transcodes video for streaming.
